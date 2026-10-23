@@ -1,0 +1,120 @@
+<section class="page-lenses" aria-labelledby="lenses-title">
+  <header class="page-heading">
+    <div>
+      <h1 id="lenses-title">Lenses</h1>
+      <p class="page-heading__lede">
+        Primes and zooms plotted against the focal lengths they cover. Read it
+        like a map: the longer the bar, the more range a lens gives you.
+      </p>
+    </div>
+    <p class="page-heading__meta">
+      <%= items.length %> lenses · <%= extent.min %>–<%= extent.max %>mm
+    </p>
+  </header>
+
+  <section class="focal-atlas" aria-labelledby="focal-atlas-title">
+    <header class="focal-atlas__head">
+      <div class="focal-atlas__intro">
+        <h2 id="focal-atlas-title">Focal coverage</h2>
+        <p>
+          One row per lens. Bars span a zoom range; dots mark fixed primes.
+          Logarithmic spacing keeps the long end readable.
+        </p>
+      </div>
+
+      <div class="focal-key">
+        <span class="focal-key__item">
+          <span class="focal-key__dot" aria-hidden="true"></span>
+          Prime
+        </span>
+        <span class="focal-key__item">
+          <span class="focal-key__bar" aria-hidden="true"></span>
+          Zoom
+        </span>
+      </div>
+    </header>
+
+    <div class="focal-map">
+      <div class="focal-map__grid" aria-hidden="true">
+        <% chart.ticks.forEach(function (tick) { %>
+        <span style="--pos: <%= tick.pos.toFixed(2) %>%"></span>
+        <% }); %>
+      </div>
+
+      <ul class="focal-map__rows">
+        <% chart.marks.forEach(function (mark) { %>
+        <li class="focal-map__row">
+          <a
+            class="focal-map__label"
+            href="/product/<%= mark.slug %>"
+            aria-label="<%= mark.brand %> <%= mark.name %>, <%= mark.label %>, <%= mark.kind %>"
+          >
+            <span class="focal-map__brand"><%= mark.brand %></span>
+            <span class="focal-map__range"><%= mark.label %></span>
+          </a>
+          <span class="focal-map__track" aria-hidden="true">
+            <span
+              class="focal-marker<%= mark.kind === 'prime' ? ' focal-marker--prime' : '' %>"
+              style="--start: <%= mark.start.toFixed(2) %>%; --span: <%= mark.span.toFixed(2) %>%"
+              title="<%= mark.brand %> <%= mark.name %> · <%= mark.label %>"
+            ></span>
+          </span>
+        </li>
+        <% }); %>
+      </ul>
+
+      <div class="focal-map__axis" aria-hidden="true">
+        <span class="focal-map__axis-title">Focal length</span>
+        <div class="focal-map__axis-track">
+          <% chart.ticks.forEach(function (tick) { %>
+          <span style="--pos: <%= tick.pos.toFixed(2) %>%"><%= tick.mm %></span>
+          <% }); %>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="lens-columns">
+    <% [['Primes', primes], ['Zooms', zooms]].forEach(function (entry) { %>
+    <section class="lens-column" aria-label="<%= entry[0] %>">
+      <h2 class="lens-column__title">
+        <%= entry[0] %>
+        <span><%= entry[1].length %></span>
+      </h2>
+
+      <% entry[1].forEach(function (product) { %>
+      <article class="lens-row">
+        <a class="lens-row__media" href="/product/<%= product.slug %>">
+          <%- include('partials/product-media', {
+            product,
+            mediaClass: 'product-media--thumb'
+          }) %>
+        </a>
+
+        <div class="lens-row__info">
+          <div class="lens-row__head">
+            <span class="lens-row__focal"><%= product.focal.focalLabel %></span>
+            <span class="lens-row__kind"><%= product.focal.kind %></span>
+          </div>
+
+          <p class="product-card__brand"><%= product.brand %></p>
+          <h3 class="lens-row__name">
+            <a href="/product/<%= product.slug %>"><%= product.name %></a>
+          </h3>
+          <p class="lens-row__desc"><%= product.description %></p>
+
+          <%- include('partials/rating', { product }) %>
+
+          <div class="lens-row__buy">
+            <%- include('partials/price', { product }) %>
+            <% if (discountPercent(product) > 0) { %>
+            <span class="lens-row__badge">-<%= discountPercent(product) %>%</span>
+            <% } %>
+          </div>
+        </div>
+      </article>
+      <% }); %>
+    </section>
+    <% }); %>
+  </div>
+</section>

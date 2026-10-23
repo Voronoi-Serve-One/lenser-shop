@@ -44,24 +44,31 @@
           <i data-lucide="chevron-down" class="chevron"></i>
         </a>
         <div class="dropdown">
-          <% (navDropdowns && navDropdowns.cameras ? navDropdowns.cameras : []).forEach((item) => { %>
-            <% const pitem = (typeof productsCache !== 'undefined' && Array.isArray(productsCache)) ? productsCache.find(x => x.slug === item.slug) : null; %>
-            <a class="dropdown-item" href="/product/<%= item.slug %>">
-              <div class="dropdown-item__thumb">
-                <%- include('product-media', { product: pitem || { slug: item.slug, name: item.name, brand: item.brand, image: null } }) %>
-              </div>
-              <div class="dropdown-item__info">
-                <span class="dropdown-item__name"><%= item.name %></span>
-                <div class="dropdown-item__meta">
-                  <span class="dropdown-item__brand"><%= item.brand %></span>
-                  <% if (pitem) { %>
-                    <span class="dropdown-item__price"><%= formatPrice(pitem.discounted_price) %></span>
-                  <% } %>
+          <div class="dropdown__aside">
+            <span class="dropdown__eyebrow">Bodies</span>
+            <h3 class="dropdown__title">Cameras</h3>
+            <p class="dropdown__desc">Mirrorless, DSLR and action cams built for every frame.</p>
+            <a class="dropdown-more" href="/cameras">Shop all cameras <i data-lucide="arrow-right"></i></a>
+          </div>
+          <div class="dropdown__grid">
+            <% (navDropdowns && navDropdowns.cameras ? navDropdowns.cameras : []).forEach((item) => { %>
+              <% const pitem = (typeof productsCache !== 'undefined' && Array.isArray(productsCache)) ? productsCache.find(x => x.slug === item.slug) : null; %>
+              <a class="dropdown-item" href="/product/<%= item.slug %>">
+                <div class="dropdown-item__thumb">
+                  <%- include('product-media', { product: pitem || { slug: item.slug, name: item.name, brand: item.brand, image: null } }) %>
                 </div>
-              </div>
-            </a>
-          <% }) %>
-          <a class="dropdown-more" href="/cameras">See more</a>
+                <div class="dropdown-item__info">
+                  <span class="dropdown-item__name"><%= item.name %></span>
+                  <div class="dropdown-item__meta">
+                    <span class="dropdown-item__brand"><%= item.brand %></span>
+                    <% if (pitem) { %>
+                      <span class="dropdown-item__price"><%= formatPrice(pitem.discounted_price) %></span>
+                    <% } %>
+                  </div>
+                </div>
+              </a>
+            <% }) %>
+          </div>
         </div>
       </div>
       <div class="nav-item">
@@ -70,24 +77,31 @@
           <i data-lucide="chevron-down" class="chevron"></i>
         </a>
         <div class="dropdown">
-          <% (navDropdowns && navDropdowns.lenses ? navDropdowns.lenses : []).forEach((item) => { %>
-            <% const pitem = (typeof productsCache !== 'undefined' && Array.isArray(productsCache)) ? productsCache.find(x => x.slug === item.slug) : null; %>
-            <a class="dropdown-item" href="/product/<%= item.slug %>">
-              <div class="dropdown-item__thumb">
-                <%- include('product-media', { product: pitem || { slug: item.slug, name: item.name, brand: item.brand, image: null } }) %>
-              </div>
-              <div class="dropdown-item__info">
-                <span class="dropdown-item__name"><%= item.name %></span>
-                <div class="dropdown-item__meta">
-                  <span class="dropdown-item__brand"><%= item.brand %></span>
-                  <% if (pitem) { %>
-                    <span class="dropdown-item__price"><%= formatPrice(pitem.discounted_price) %></span>
-                  <% } %>
+          <div class="dropdown__aside">
+            <span class="dropdown__eyebrow">Glass</span>
+            <h3 class="dropdown__title">Lenses</h3>
+            <p class="dropdown__desc">Primes and zooms matched to the way you shoot.</p>
+            <a class="dropdown-more" href="/lenses">Shop all lenses <i data-lucide="arrow-right"></i></a>
+          </div>
+          <div class="dropdown__grid">
+            <% (navDropdowns && navDropdowns.lenses ? navDropdowns.lenses : []).forEach((item) => { %>
+              <% const pitem = (typeof productsCache !== 'undefined' && Array.isArray(productsCache)) ? productsCache.find(x => x.slug === item.slug) : null; %>
+              <a class="dropdown-item" href="/product/<%= item.slug %>">
+                <div class="dropdown-item__thumb">
+                  <%- include('product-media', { product: pitem || { slug: item.slug, name: item.name, brand: item.brand, image: null } }) %>
                 </div>
-              </div>
-            </a>
-          <% }) %>
-          <a class="dropdown-more" href="/lenses">See more</a>
+                <div class="dropdown-item__info">
+                  <span class="dropdown-item__name"><%= item.name %></span>
+                  <div class="dropdown-item__meta">
+                    <span class="dropdown-item__brand"><%= item.brand %></span>
+                    <% if (pitem) { %>
+                      <span class="dropdown-item__price"><%= formatPrice(pitem.discounted_price) %></span>
+                    <% } %>
+                  </div>
+                </div>
+              </a>
+            <% }) %>
+          </div>
         </div>
       </div>
       <div class="nav-item">
@@ -96,24 +110,31 @@
           <i data-lucide="chevron-down" class="chevron"></i>
         </a>
         <div class="dropdown">
-          <% (navDropdowns && navDropdowns.accessories ? navDropdowns.accessories : []).forEach((item) => { %>
-            <% const pitem = (typeof productsCache !== 'undefined' && Array.isArray(productsCache)) ? productsCache.find(x => x.slug === item.slug) : null; %>
-            <a class="dropdown-item" href="/product/<%= item.slug %>">
-              <div class="dropdown-item__thumb">
-                <%- include('product-media', { product: pitem || { slug: item.slug, name: item.name, brand: item.brand, image: null } }) %>
-              </div>
-              <div class="dropdown-item__info">
-                <span class="dropdown-item__name"><%= item.name %></span>
-                <div class="dropdown-item__meta">
-                  <span class="dropdown-item__brand"><%= item.brand %></span>
-                  <% if (pitem) { %>
-                    <span class="dropdown-item__price"><%= formatPrice(pitem.discounted_price) %></span>
-                  <% } %>
+          <div class="dropdown__aside">
+            <span class="dropdown__eyebrow">Gear</span>
+            <h3 class="dropdown__title">Accessories</h3>
+            <p class="dropdown__desc">Bags, lighting and support to complete the kit.</p>
+            <a class="dropdown-more" href="/accessories">Shop all accessories <i data-lucide="arrow-right"></i></a>
+          </div>
+          <div class="dropdown__grid">
+            <% (navDropdowns && navDropdowns.accessories ? navDropdowns.accessories : []).forEach((item) => { %>
+              <% const pitem = (typeof productsCache !== 'undefined' && Array.isArray(productsCache)) ? productsCache.find(x => x.slug === item.slug) : null; %>
+              <a class="dropdown-item" href="/product/<%= item.slug %>">
+                <div class="dropdown-item__thumb">
+                  <%- include('product-media', { product: pitem || { slug: item.slug, name: item.name, brand: item.brand, image: null } }) %>
                 </div>
-              </div>
-            </a>
-          <% }) %>
-          <a class="dropdown-more" href="/accessories">See more</a>
+                <div class="dropdown-item__info">
+                  <span class="dropdown-item__name"><%= item.name %></span>
+                  <div class="dropdown-item__meta">
+                    <span class="dropdown-item__brand"><%= item.brand %></span>
+                    <% if (pitem) { %>
+                      <span class="dropdown-item__price"><%= formatPrice(pitem.discounted_price) %></span>
+                    <% } %>
+                  </div>
+                </div>
+              </a>
+            <% }) %>
+          </div>
         </div>
       </div>
       <a href="/about">About us</a>

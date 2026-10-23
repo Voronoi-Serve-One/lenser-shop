@@ -1,0 +1,98 @@
+<%
+  const slugify = (value) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const hero = heroPick;
+%>
+<section class="page-cameras" aria-labelledby="cameras-title">
+  <header class="page-heading">
+    <div>
+      <h1 id="cameras-title">Cameras</h1>
+      <p class="page-heading__lede">
+        Every body on the shelf, grouped by the maker it comes from. From
+        pocketable action cams to full-frame mirrorless workhorses.
+      </p>
+    </div>
+    <p class="page-heading__meta">
+      <%= items.length %> bodies · <%= formatPrice(priceFloor) %>–<%= formatPrice(priceCeil) %>
+    </p>
+  </header>
+
+  <nav class="camera-index" aria-label="Jump to a brand">
+    <% brands.forEach(function (group) { %>
+    <a class="camera-index__link" href="#brand-<%= slugify(group.brand) %>">
+      <span class="camera-index__name"><%= group.brand %></span>
+      <span class="camera-index__count"><%= group.products.length %></span>
+    </a>
+    <% }); %>
+  </nav>
+
+  <% if (hero) { %>
+  <article class="camera-hero">
+    <div class="camera-hero__media">
+      <%- include('partials/product-media', {
+        product: hero,
+        badge: 'Top rated',
+        mediaClass: 'product-media--wide'
+      }) %>
+    </div>
+
+    <div class="camera-hero__body">
+      <p class="product-card__brand"><%= hero.brand %></p>
+      <h2><%= hero.name %></h2>
+      <p class="camera-hero__desc"><%= hero.description %></p>
+
+      <%- include('partials/rating', { product: hero }) %>
+
+      <div class="camera-hero__pricing">
+        <%- include('partials/price', { product: hero }) %>
+      </div>
+
+      <a class="camera-hero__link" href="/product/<%= hero.slug %>">
+        View body
+        <i data-lucide="arrow-right"></i>
+      </a>
+    </div>
+  </article>
+  <% } %>
+
+  <div class="camera-lineup">
+    <% brands.forEach(function (group) { %>
+    <section class="camera-brand" id="brand-<%= slugify(group.brand) %>" aria-label="<%= group.brand %> bodies">
+      <header class="camera-brand__head">
+        <h2 class="camera-brand__name"><%= group.brand %></h2>
+        <span class="camera-brand__count">
+          <%= group.products.length %> body<%= group.products.length === 1 ? '' : 's' %>
+        </span>
+      </header>
+
+      <div class="camera-brand__items">
+        <% group.products.forEach(function (product) { %>
+        <article class="camera-row">
+          <a class="camera-row__media" href="/product/<%= product.slug %>">
+            <%- include('partials/product-media', {
+              product,
+              mediaClass: 'product-media--thumb'
+            }) %>
+          </a>
+
+          <div class="camera-row__info">
+            <p class="product-card__brand"><%= product.brand %></p>
+            <h3 class="camera-row__name">
+              <a href="/product/<%= product.slug %>"><%= product.name %></a>
+            </h3>
+            <p class="camera-row__desc"><%= product.description %></p>
+            <%- include('partials/rating', { product }) %>
+          </div>
+
+          <div class="camera-row__buy">
+            <%- include('partials/price', { product }) %>
+            <% if (discountPercent(product) > 0) { %>
+            <span class="camera-row__badge">-<%= discountPercent(product) %>%</span>
+            <% } %>
+          </div>
+        </article>
+        <% }); %>
+      </div>
+    </section>
+    <% }); %>
+  </div>
+</section>

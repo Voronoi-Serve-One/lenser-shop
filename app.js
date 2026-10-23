@@ -33,6 +33,77 @@ const productIcon = (product) => {
   return 'package';
 };
 
+const parseFocal = (name) => {
+  const match = /(\d+)(?:\s*-\s*(\d+))?\s*mm/i.exec(name);
+  if (!match) {
+    return { focalMin: null, focalMax: null, focalLabel: '', kind: '' };
+  }
+
+  const min = Number(match[1]);
+  const max = match[2] ? Number(match[2]) : min;
+
+  return {
+    focalMin: min,
+    focalMax: max,
+    focalLabel: match[2] ? `${match[1]}\u2013${match[2]}mm` : `${match[1]}mm`,
+    kind: match[2] ? 'zoom' : 'prime',
+  };
+};
+
+const buildFocalChart = (items, extent) => {
+  const hasRange = extent.max > extent.min;
+  const logMin = Math.log(extent.min || 1);
+  const logMax = Math.log(extent.max > extent.min ? extent.max : (extent.min || 0) + 1);
+  const position = (value) => {
+    if (!Number.isFinite(value) || !hasRange) return 0;
+    return ((Math.log(value) - logMin) / (logMax - logMin)) * 100;
+  };
+  const marks = [...items]
+    .sort(
+      (a, b) =>
+        Number(a.focal.focalMin) - Number(b.focal.focalMin) ||
+        Number(a.focal.focalMax) - Number(b.focal.focalMax),
+    )
+    .map((product) => {
+      const start = position(product.focal.focalMin);
+      const end = Math.max(position(product.focal.focalMax), start + 1.2);
+
+      return {
+        start,
+        span: end - start,
+        kind: product.focal.kind,
+        label: product.focal.focalLabel,
+        name: product.name,
+        brand: product.brand,
+        slug: product.slug,
+      };
+    });
+  const ticks = [24, 35, 50, 85, 135, 200]
+    .filter((mm) => mm >= extent.min && mm <= extent.max)
+    .map((mm) => ({ mm, pos: position(mm) }));
+
+  return { marks, ticks };
+};
+
+const accessoryRoles = {
+  'manfrotto-befree-advanced-tripod': {
+    role: 'Support',
+    note: 'A steady base for long exposures, timelapse and product work.',
+  },
+  'dji-rs-4-gimbal': {
+    role: 'Support',
+    note: 'Balanced motors for smooth movement with mirrorless and phone rigs.',
+  },
+  'sandisk-extreme-pro-128gb-sdxc': {
+    role: 'Storage',
+    note: 'Fast UHS-I capacity for 4K video and long burst sequences.',
+  },
+  'peak-design-everyday-sling-10l': {
+    role: 'Carry',
+    note: 'Ten litres of padded carry that stays out of the way on a shoot.',
+  },
+};
+
 let productsCache = [];
 
 const loadProducts = async () => {
@@ -65,12 +136,13 @@ const loadProducts = async () => {
       .slice(0, 8)
       .map((product) => ({ slug: product.slug, name: product.name, brand: product.brand })),
     accessories: productsCache
-      .filter((product) => product.type.includes('accessories'))
+      .filter((product) => product.type.includes('accessories') && !product.type.includes('camera'))
       .slice(0, 6)
       .map((product) => ({ slug: product.slug, name: product.name, brand: product.brand })),
   };
 
   app.locals.navDropdowns = navDropdowns;
+  app.locals.productsCache = productsCache;
   return productsCache;
 };
 
@@ -180,22 +252,73 @@ app.get('/new-arrivals', (req, res) => {
   });
 });
 
-const categoryRoutes = [
-  { path: '/cameras', type: 'camera', title: 'Cameras' },
-  { path: '/lenses', type: 'lenses', title: 'Lenses' },
-  { path: '/accessories', type: 'accessories', title: 'Accessories' },
-];
+app.get('/cameras', (req, res) => {
+  const items = productsCache.filter((product) => product.type.includes('camera'));
+  const brandMap = new Map();
 
-for (const route of categoryRoutes) {
-  app.get(route.path, (req, res) => {
-    const items = productsCache.filter((product) => product.type.includes(route.type));
-    res.render('category', {
-      currentPath: req.path,
-      title: route.title,
-      items,
-    });
+  items.forEach((product) => {
+    if (!brandMap.has(product.brand)) brandMap.set(product.brand, []);
+    brandMap.get(product.brand).push(product);
   });
-}
+
+  const brands = Array.from(brandMap, ([brand, products]) => ({ brand, products })).sort(
+    (a, b) => b.products.length - a.products.length || a.brand.localeCompare(b.brand),
+  );
+  const prices = items.map((product) => Number(product.discounted_price));
+  const heroPick =
+    [...items].sort((a, b) => (Number(b.ratings) || 0) - (Number(a.ratings) || 0))[0] || null;
+
+  res.render('cameras', {
+    currentPath: req.path,
+    items,
+    brands,
+    heroPick,
+    priceFloor: prices.length ? Math.min(...prices) : 0,
+    priceCeil: prices.length ? Math.max(...prices) : 0,
+  });
+});
+
+app.get('/lenses', (req, res) => {
+  const items = productsCache
+    .filter((product) => product.type.includes('lenses'))
+    .map((product) => ({ ...product, focal: parseFocal(product.name) }));
+  const focals = items
+    .flatMap((product) => [product.focal.focalMin, product.focal.focalMax])
+    .filter((value) => Number.isFinite(value));
+  const extent = {
+    min: focals.length ? Math.min(...focals) : 0,
+    max: focals.length ? Math.max(...focals) : 0,
+  };
+
+  res.render('lenses', {
+    currentPath: req.path,
+    items,
+    primes: items.filter((product) => product.focal.kind === 'prime'),
+    zooms: items.filter((product) => product.focal.kind === 'zoom'),
+    extent,
+    chart: buildFocalChart(items, extent),
+  });
+});
+
+app.get('/accessories', (req, res) => {
+  const items = productsCache
+    .filter(
+      (product) => product.type.includes('accessories') && !product.type.includes('camera'),
+    )
+    .map((product) => {
+      const meta = accessoryRoles[product.slug] || {};
+      return {
+        ...product,
+        role: meta.role || 'Kit',
+        roleNote: meta.note || '',
+      };
+    });
+
+  res.render('accessories', {
+    currentPath: req.path,
+    items,
+  });
+});
 
 app.get('/product/:slug', (req, res) => {
   const product = productsCache.find((entry) => entry.slug === req.params.slug);

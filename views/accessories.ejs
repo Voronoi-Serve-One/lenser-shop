@@ -1,0 +1,53 @@
+<section class="page-accessories" aria-labelledby="accessories-title">
+  <header class="page-heading">
+    <div>
+      <h1 id="accessories-title">Accessories</h1>
+      <p class="page-heading__lede">
+        The four pieces that keep a body and a lens working: something to stand
+        on, something to move with, something to carry, something to save it all to.
+      </p>
+      <p class="page-heading__meta"><%= items.length %> pieces · support, carry, storage</p>
+    </div>
+  </header>
+
+  <div class="kit-intro">
+    <p>
+      Build outward from the camera you already have. Each piece below solves a
+      different problem on set, so pick the role you are missing rather than the
+      one that looks best on a shelf.
+    </p>
+    <div class="kit-intro__links">
+      <a href="/cameras">Shop bodies</a>
+      <a href="/lenses">Shop lenses</a>
+    </div>
+  </div>
+
+  <div class="kit-grid">
+    <% items.forEach(function (product, index) { %>
+    <article class="kit-tile<%= index === 0 ? ' kit-tile--wide' : '' %>">
+      <a class="kit-tile__media" href="/product/<%= product.slug %>">
+        <%- include('partials/product-media', {
+          product,
+          mediaClass: 'product-media--wide'
+        }) %>
+      </a>
+
+      <div class="kit-tile__body">
+        <span class="kit-tile__role"><%= product.role %></span>
+        <p class="product-card__brand"><%= product.brand %></p>
+        <h2 class="kit-tile__name">
+          <a href="/product/<%= product.slug %>"><%= product.name %></a>
+        </h2>
+        <p class="kit-tile__desc"><%= product.description %></p>
+
+        <% if (product.roleNote) { %>
+        <p class="kit-tile__note"><%= product.roleNote %></p>
+        <% } %>
+
+        <%- include('partials/rating', { product }) %>
+        <%- include('partials/price', { product }) %>
+      </div>
+    </article>
+    <% }); %>
+  </div>
+</section>
