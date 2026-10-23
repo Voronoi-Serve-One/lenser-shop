@@ -1,0 +1,414 @@
+[
+  {
+    "id": 1,
+    "slug": "canon-eos-rebel-sl3",
+    "name": "EOS Rebel SL3",
+    "description": "A compact, lightweight DSLR with powerful performance for beginners and creators.",
+    "discounted_price": 32999,
+    "real_price": 40000,
+    "brand": "Canon",
+    "ratings": 4.8,
+    "type": [
+      "camera"
+    ],
+    "is_featured": true,
+    "amount_sold": 128,
+    "date_added": "2026-05-18",
+    "image": "/assets/products/canon-eos-rebel-sl3.webp"
+  },
+  {
+    "id": 2,
+    "slug": "sony-alpha-7-iv",
+    "name": "Alpha 7 IV",
+    "description": "A full-frame hybrid built for stills, video, and everything in between.",
+    "discounted_price": 129999,
+    "real_price": 139999,
+    "brand": "Sony",
+    "ratings": 4.9,
+    "type": [
+      "camera"
+    ],
+    "is_featured": true,
+    "amount_sold": 94,
+    "date_added": "2026-04-02",
+    "image": "/assets/products/sony-alpha-7-iv.webp"
+  },
+  {
+    "id": 3,
+    "slug": "nikon-z6-ii",
+    "name": "Z6 II",
+    "description": "A balanced full-frame mirrorless body with fast autofocus and dual card slots.",
+    "discounted_price": 109990,
+    "real_price": 119990,
+    "brand": "Nikon",
+    "ratings": 4.7,
+    "type": [
+      "camera"
+    ],
+    "is_featured": true,
+    "amount_sold": 76,
+    "date_added": "2026-03-21",
+    "image": "/assets/products/nikon-z6-ii.webp"
+  },
+  {
+    "id": 4,
+    "slug": "gopro-hero12-black",
+    "name": "HERO12 Black",
+    "description": "A rugged action camera with 5.3K video and improved stabilization.",
+    "discounted_price": 24990,
+    "real_price": 27990,
+    "brand": "GoPro",
+    "ratings": 4.6,
+    "type": [
+      "camera",
+      "accessories"
+    ],
+    "is_featured": true,
+    "amount_sold": 211,
+    "date_added": "2026-06-11",
+    "image": "/assets/products/gopro-hero12-black.webp"
+  },
+  {
+    "id": 5,
+    "slug": "canon-rf-50mm-f18",
+    "name": "RF 50mm f/1.8 STM",
+    "description": "A compact prime with a bright aperture for portraits and everyday shooting.",
+    "discounted_price": 11990,
+    "real_price": 13490,
+    "brand": "Canon",
+    "ratings": 4.9,
+    "type": [
+      "lenses"
+    ],
+    "is_featured": false,
+    "amount_sold": 184,
+    "date_added": "2026-10-12",
+    "image": "/assets/products/canon-rf-50mm-f18.webp"
+  },
+  {
+    "id": 6,
+    "slug": "sony-fe-24-70mm-f28-gm-ii",
+    "name": "FE 24-70mm f/2.8 GM II",
+    "description": "A fast standard zoom with edge-to-edge sharpness and quiet focusing.",
+    "discounted_price": 149990,
+    "real_price": 159990,
+    "brand": "Sony",
+    "ratings": 4.9,
+    "type": [
+      "lenses"
+    ],
+    "is_featured": false,
+    "amount_sold": 42,
+    "date_added": "2026-10-08",
+    "image": "/assets/products/sony-fe-24-70mm-f28-gm-ii.webp"
+  },
+  {
+    "id": 7,
+    "slug": "nikon-nikkor-z-40mm-f2",
+    "name": "NIKKOR Z 40mm f/2",
+    "description": "A lightweight everyday prime that keeps a low profile on the street.",
+    "discounted_price": 14990,
+    "real_price": 16490,
+    "brand": "Nikon",
+    "ratings": 4.6,
+    "type": [
+      "lenses"
+    ],
+    "is_featured": false,
+    "amount_sold": 67,
+    "date_added": "2026-10-03",
+    "image": "/assets/products/nikon-nikkor-z-40mm-f2.webp"
+  },
+  {
+    "id": 8,
+    "slug": "gopro-hero11-black-mini",
+    "name": "HERO11 Black Mini",
+    "description": "A smaller, lighter action camera made for helmet and handlebar mounts.",
+    "discounted_price": 17990,
+    "real_price": 20990,
+    "brand": "GoPro",
+    "ratings": 4.4,
+    "type": [
+      "camera",
+      "accessories"
+    ],
+    "is_featured": false,
+    "amount_sold": 153,
+    "date_added": "2026-09-27",
+    "image": "/assets/products/gopro-hero11-black-mini.webp"
+  },
+  {
+    "id": 9,
+    "slug": "canon-eos-r50",
+    "name": "EOS R50",
+    "description": "A light mirrorless body with guided controls and strong autofocus.",
+    "discounted_price": 44990,
+    "real_price": 49990,
+    "brand": "Canon",
+    "ratings": 4.7,
+    "type": [
+      "camera"
+    ],
+    "is_featured": false,
+    "amount_sold": 89,
+    "date_added": "2026-08-14",
+    "image": "/assets/products/canon-eos-r50.webp"
+  },
+  {
+    "id": 10,
+    "slug": "sony-zv-e10",
+    "name": "ZV-E10",
+    "description": "A vlogging-first mirrorless camera with a flip screen and clean audio.",
+    "discounted_price": 36999,
+    "real_price": 39999,
+    "brand": "Sony",
+    "ratings": 4.5,
+    "type": [
+      "camera"
+    ],
+    "is_featured": false,
+    "amount_sold": 142,
+    "date_added": "2026-07-22",
+    "image": "/assets/products/sony-zv-e10.webp"
+  },
+  {
+    "id": 11,
+    "slug": "nikon-z-fc",
+    "name": "Z fc",
+    "description": "A retro-styled mirrorless body with modern internals and dial controls.",
+    "discounted_price": 62990,
+    "real_price": 68990,
+    "brand": "Nikon",
+    "ratings": 4.8,
+    "type": [
+      "camera"
+    ],
+    "is_featured": false,
+    "amount_sold": 54,
+    "date_added": "2026-07-05",
+    "image": "/assets/products/nikon-z-fc.webp"
+  },
+  {
+    "id": 12,
+    "slug": "gopro-max",
+    "name": "MAX",
+    "description": "A 360-degree action camera for immersive footage and reframed clips.",
+    "discounted_price": 29990,
+    "real_price": 32990,
+    "brand": "GoPro",
+    "ratings": 4.3,
+    "type": [
+      "camera",
+      "accessories"
+    ],
+    "is_featured": false,
+    "amount_sold": 73,
+    "date_added": "2026-06-28",
+    "image": "/assets/products/gopro-max.webp"
+  },
+  {
+    "id": 13,
+    "slug": "canon-eos-r6-mark-ii",
+    "name": "EOS R6 Mark II",
+    "description": "A fast full-frame hybrid with subject-tracking autofocus and 4K 60p video.",
+    "discounted_price": 149990,
+    "real_price": 159990,
+    "brand": "Canon",
+    "ratings": 4.8,
+    "type": [
+      "camera"
+    ],
+    "is_featured": true,
+    "amount_sold": 61,
+    "date_added": "2026-09-30",
+    "image": "/assets/products/canon-eos-r6-mark-ii.webp"
+  },
+  {
+    "id": 14,
+    "slug": "sony-alpha-zv-e1",
+    "name": "Alpha ZV-E1",
+    "description": "A full-frame vlogging camera with cinematic looks and dependable low-light performance.",
+    "discounted_price": 129999,
+    "real_price": 139999,
+    "brand": "Sony",
+    "ratings": 4.6,
+    "type": [
+      "camera"
+    ],
+    "is_featured": false,
+    "amount_sold": 38,
+    "date_added": "2026-09-15",
+    "image": "/assets/products/sony-alpha-zv-e1.webp"
+  },
+  {
+    "id": 15,
+    "slug": "fujifilm-x-t5",
+    "name": "X-T5",
+    "description": "A 40MP APS-C body with classic dials, in-body stabilization, and film simulations.",
+    "discounted_price": 99990,
+    "real_price": 109990,
+    "brand": "Fujifilm",
+    "ratings": 4.8,
+    "type": [
+      "camera"
+    ],
+    "is_featured": true,
+    "amount_sold": 47,
+    "date_added": "2026-08-02",
+    "image": "/assets/products/fujifilm-x-t5.webp"
+  },
+  {
+    "id": 16,
+    "slug": "dji-osmo-pocket-3",
+    "name": "Osmo Pocket 3",
+    "description": "A pocket-sized 1-inch sensor gimbal camera for stable 4K footage anywhere.",
+    "discounted_price": 34990,
+    "real_price": 37990,
+    "brand": "DJI",
+    "ratings": 4.7,
+    "type": [
+      "camera",
+      "accessories"
+    ],
+    "is_featured": true,
+    "amount_sold": 176,
+    "date_added": "2026-10-18",
+    "image": "/assets/products/dji-osmo-pocket-3.webp"
+  },
+  {
+    "id": 17,
+    "slug": "sigma-24-70mm-f28-dg-dn-art",
+    "name": "24-70mm f/2.8 DG DN Art",
+    "description": "A bright standard zoom with Art-series sharpness for mirrorless bodies.",
+    "discounted_price": 62990,
+    "real_price": 69990,
+    "brand": "Sigma",
+    "ratings": 4.8,
+    "type": [
+      "lenses"
+    ],
+    "is_featured": false,
+    "amount_sold": 58,
+    "date_added": "2026-09-22",
+    "image": "/assets/products/sigma-24-70mm-f28-dg-dn-art.webp"
+  },
+  {
+    "id": 18,
+    "slug": "tamron-28-75mm-f28-g2",
+    "name": "28-75mm f/2.8 G2",
+    "description": "A compact f/2.8 zoom with fast focusing and strong close-up performance.",
+    "discounted_price": 48990,
+    "real_price": 54990,
+    "brand": "Tamron",
+    "ratings": 4.7,
+    "type": [
+      "lenses"
+    ],
+    "is_featured": false,
+    "amount_sold": 73,
+    "date_added": "2026-08-25",
+    "image": "/assets/products/tamron-28-75mm-f28-g2.webp"
+  },
+  {
+    "id": 19,
+    "slug": "canon-rf-70-200mm-f28l-is-usm",
+    "name": "RF 70-200mm f/2.8L IS USM",
+    "description": "A professional telephoto zoom with image stabilization in a compact body.",
+    "discounted_price": 139990,
+    "real_price": 149990,
+    "brand": "Canon",
+    "ratings": 4.9,
+    "type": [
+      "lenses"
+    ],
+    "is_featured": false,
+    "amount_sold": 26,
+    "date_added": "2026-07-18",
+    "image": "/assets/products/canon-rf-70-200mm-f28l-is-usm.webp"
+  },
+  {
+    "id": 20,
+    "slug": "sony-fe-85mm-f18",
+    "name": "FE 85mm f/1.8",
+    "description": "A lightweight portrait prime with smooth bokeh and quiet autofocus.",
+    "discounted_price": 29990,
+    "real_price": 33990,
+    "brand": "Sony",
+    "ratings": 4.8,
+    "type": [
+      "lenses"
+    ],
+    "is_featured": true,
+    "amount_sold": 88,
+    "date_added": "2026-10-15",
+    "image": "/assets/products/sony-fe-85mm-f18.webp"
+  },
+  {
+    "id": 21,
+    "slug": "manfrotto-befree-advanced-tripod",
+    "name": "Befree Advanced Tripod",
+    "description": "A travel tripod with a ball head, quick-release plate, and compact folded size.",
+    "discounted_price": 12990,
+    "real_price": 14990,
+    "brand": "Manfrotto",
+    "ratings": 4.6,
+    "type": [
+      "accessories"
+    ],
+    "is_featured": false,
+    "amount_sold": 64,
+    "date_added": "2026-06-20",
+    "image": "/assets/products/manfrotto-befree-advanced-tripod.webp"
+  },
+  {
+    "id": 22,
+    "slug": "dji-rs-4-gimbal",
+    "name": "RS 4 Gimbal",
+    "description": "A three-axis stabilizer with rapid balancing and active subject tracking.",
+    "discounted_price": 32990,
+    "real_price": 35990,
+    "brand": "DJI",
+    "ratings": 4.7,
+    "type": [
+      "accessories"
+    ],
+    "is_featured": false,
+    "amount_sold": 41,
+    "date_added": "2026-09-05",
+    "image": "/assets/products/dji-rs-4-gimbal.webp"
+  },
+  {
+    "id": 23,
+    "slug": "sandisk-extreme-pro-128gb-sdxc",
+    "name": "Extreme PRO 128GB SDXC",
+    "description": "A UHS-II card rated for fast bursts and reliable 4K video capture.",
+    "discounted_price": 3490,
+    "real_price": 4290,
+    "brand": "SanDisk",
+    "ratings": 4.8,
+    "type": [
+      "accessories"
+    ],
+    "is_featured": false,
+    "amount_sold": 312,
+    "date_added": "2026-10-20",
+    "image": "/assets/products/sandisk-extreme-pro-128gb-sdxc.webp"
+  },
+  {
+    "id": 24,
+    "slug": "peak-design-everyday-sling-10l",
+    "name": "Everyday Sling 10L",
+    "description": "A weather-resistant sling bag with configurable dividers for a body and two lenses.",
+    "discounted_price": 9990,
+    "real_price": 11490,
+    "brand": "Peak Design",
+    "ratings": 4.7,
+    "type": [
+      "accessories"
+    ],
+    "is_featured": false,
+    "amount_sold": 95,
+    "date_added": "2026-07-30",
+    "image": "/assets/products/peak-design-everyday-sling-10l.webp"
+  }
+]

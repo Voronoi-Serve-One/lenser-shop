@@ -1,0 +1,26 @@
+<%
+  const mediaModifier = typeof mediaClass !== 'undefined' && mediaClass ? ' ' + mediaClass : '';
+  const badgeLabel = typeof badge !== 'undefined' ? badge : '';
+  const isPhoto = Boolean(product.image);
+  const altText = isPhoto ? `${product.brand} ${product.name}` : '';
+  const hasBackground = isPhoto && typeof product.image_background === 'string' && /^#[0-9a-f]{6}$/i.test(product.image_background);
+  const toneStyle = hasBackground ? ` style="--media-bg: ${product.image_background}"` : '';
+  const kindClass = isPhoto ? ' product-media--photo' : '';
+%>
+<div class="product-media<%= mediaModifier %><%= kindClass %>"<%- toneStyle %>>
+  <% if (isPhoto) { %>
+    <img
+      src="<%= product.image %>"
+      alt="<%= altText %>"
+      loading="lazy"
+      decoding="async"
+    />
+  <% } else { %>
+    <span class="product-media__placeholder" aria-hidden="true">
+      <i data-lucide="<%= productIcon(product) %>"></i>
+    </span>
+  <% } %>
+  <% if (badgeLabel) { %>
+    <span class="badge"><%= badgeLabel %></span>
+  <% } %>
+</div>

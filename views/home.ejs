@@ -1,0 +1,58 @@
+<section class="hero" aria-labelledby="hero-heading">
+  <div class="hero__copy">
+    <h1 id="hero-heading">See it before you shoot it.</h1>
+    <p class="hero__lede">
+      Cameras, lenses, and accessories picked for the way you actually shoot.
+    </p>
+    <div class="hero__actions">
+      <a class="btn btn--primary" href="/featured">Shop featured</a>
+      <a class="btn btn--ghost" href="/new-arrivals">See new arrivals</a>
+    </div>
+  </div>
+
+  <figure class="hero__media">
+    <img
+      src="/assets/blog/blog-image-1.png"
+      width="1672"
+      height="941"
+      alt="Camera gear from the Lenser collection"
+      loading="eager"
+      fetchpriority="high"
+    />
+    <span class="hero__corner hero__corner--tl" aria-hidden="true"></span>
+    <span class="hero__corner hero__corner--tr" aria-hidden="true"></span>
+    <span class="hero__corner hero__corner--bl" aria-hidden="true"></span>
+    <span class="hero__corner hero__corner--br" aria-hidden="true"></span>
+    <span class="hero__tag" aria-hidden="true">50mm</span>
+  </figure>
+</section>
+
+<section class="section" aria-labelledby="featured-heading">
+  <%- include('partials/section-heading', {
+    id: 'featured-heading',
+    title: 'Featured this week',
+    href: '/featured',
+    linkLabel: 'View all featured'
+  }) %>
+
+  <div class="product-grid">
+    <% featuredProducts.forEach(function (product) { %>
+      <%- include('partials/product-card', { product: product }) %>
+    <% }); %>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="new-heading">
+  <%- include('partials/section-heading', {
+    id: 'new-heading',
+    title: 'New arrivals',
+    href: '/new-arrivals',
+    linkLabel: 'View all new arrivals'
+  }) %>
+
+  <div class="product-grid">
+    <% newProducts.forEach(function (product) { %>
+      <%- include('partials/product-card', { product: product }) %>
+    <% }); %>
+  </div>
+</section>

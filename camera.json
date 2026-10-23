@@ -1,0 +1,15 @@
+{
+  "product": {
+    "id": 1,
+    "name": "EOS REBEL SL3",
+    "description": "Capture your world with the Canon EOS Rebel SL3. A compact, lightweight DSLR with powerful performance, perfect for beginners and creators alike.",
+    "discounted_price": 32999,
+    "real_price": 40000,
+    "brand": "canon",
+    "ratings": 5,
+    "type": ["camera", "accessories", "lenses"],
+    "is_featured": true,
+    "amount_sold": 100,
+    "date_added": "DATETIME"
+  }
+}

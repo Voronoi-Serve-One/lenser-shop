@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <title>Lenser</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+  </head>
+  <body>
+    <main>
+      <%- include("partials/header") %>
+      <div class="main-body"><%- body %></div>
+
+      <%- include("partials/footer") %>
+      <!-- Functionality Script -->
+      <script src="/js/main.js"></script>
+      <script>
+        lucide.createIcons();
+      </script>
+    </main>
+  </body>
+</html>

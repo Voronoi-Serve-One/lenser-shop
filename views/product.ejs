@@ -1,0 +1,62 @@
+<section class="product-detail">
+  <div class="product-detail__grid">
+    <div class="product-detail__media">
+      <%- include('partials/product-media', { product }) %>
+    </div>
+    <div class="product-detail__info">
+      <p class="eyebrow"><%= product.brand %></p>
+      <h1><%= product.name %></h1>
+      <div class="product-detail__pricing">
+        <span class="product-detail__price"><%= formatPrice(product.discounted_price) %></span>
+        <% if (product.real_price > product.discounted_price) { %>
+          <span class="product-detail__price product-detail__price--old"><%= formatPrice(product.real_price) %></span>
+          <span class="product-detail__save">Save <%= formatPrice(savings(product)) %> (-<%= discountPercent(product) %>%)</span>
+        <% } %>
+      </div>
+      <p class="product-detail__desc"><%= product.description %></p>
+      <div class="product-detail__meta">
+        <div>
+          <span class="label">Sold</span>
+          <span class="value"><%= product.amount_sold.toLocaleString('en-PH') %></span>
+        </div>
+        <% if (product.ratings) { %>
+          <div>
+            <span class="label">Rating</span>
+            <span class="value"><%= product.ratings %> / 5</span>
+          </div>
+        <% } %>
+        <div>
+          <span class="label">Added</span>
+          <span class="value"><%= formatShortDate(product.date_added) %></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% if (related.length) { %>
+    <section class="related">
+      <header class="related__header">
+        <h2>Related</h2>
+      </header>
+      <div class="product-grid product-grid--compact">
+        <% related.forEach((item) => { %>
+          <article class="product-card">
+            <a class="product-card__media-link" href="/product/<%= item.slug %>">
+              <%- include('partials/product-media', { product: item }) %>
+            </a>
+            <div class="product-card__body">
+              <div class="product-card__meta">
+                <span class="product-card__brand"><%= item.brand %></span>
+              </div>
+              <h3 class="product-card__title">
+                <a href="/product/<%= item.slug %>"><%= item.name %></a>
+              </h3>
+              <div class="product-card__pricing">
+                <span class="product-card__price"><%= formatPrice(item.discounted_price) %></span>
+              </div>
+            </div>
+          </article>
+        <% }) %>
+      </div>
+    </section>
+  <% } %>
+</section>

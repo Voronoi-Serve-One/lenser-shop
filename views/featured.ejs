@@ -1,0 +1,63 @@
+<%
+  const topPick = featuredProducts[0];
+  const picks = featuredProducts.slice(1);
+%>
+<section class="page-featured" aria-labelledby="featured-title">
+  <header class="page-heading">
+    <div>
+      <h1 id="featured-title">Featured</h1>
+      <p class="page-heading__lede">
+        A rotating shortlist of gear we reach for first, chosen for how it shoots
+        rather than how it reads on a spec sheet.
+      </p>
+    </div>
+    <p class="page-heading__meta"><%= featuredProducts.length %> picks, updated weekly</p>
+  </header>
+
+  <% if (topPick) { %>
+  <article class="featured-spotlight">
+    <div class="featured-spotlight__media">
+      <%- include('partials/product-media', {
+        product: topPick,
+        badge: "Editor's pick",
+        mediaClass: 'product-media--wide'
+      }) %>
+    </div>
+
+    <div class="featured-spotlight__body">
+      <p class="featured-spotlight__brand"><%= topPick.brand %></p>
+      <h2><%= topPick.name %></h2>
+      <p class="featured-spotlight__desc"><%= topPick.description %></p>
+
+      <%- include('partials/rating', { product: topPick }) %>
+
+      <div class="featured-spotlight__pricing">
+        <%- include('partials/price', { product: topPick }) %>
+        <span class="featured-spotlight__save">Save <%= formatPrice(savings(topPick)) %></span>
+      </div>
+    </div>
+  </article>
+  <% } %>
+
+  <div class="featured-picks">
+    <% picks.forEach(function (product, index) { %>
+    <article class="featured-pick <%= index % 3 === 0 ? 'featured-pick--wide' : '' %>">
+      <div class="featured-pick__media">
+        <%- include('partials/product-media', {
+          product: product,
+          mediaClass: 'product-media--wide'
+        }) %>
+      </div>
+
+      <div class="featured-pick__body">
+        <p class="featured-pick__brand"><%= product.brand %></p>
+        <h3><%= product.name %></h3>
+        <p class="featured-pick__desc"><%= product.description %></p>
+
+        <%- include('partials/rating', { product: product }) %>
+        <%- include('partials/price', { product: product }) %>
+      </div>
+    </article>
+    <% }); %>
+  </div>
+</section>

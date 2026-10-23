@@ -1,0 +1,84 @@
+<%
+  const topDeal = dealOfWeek;
+%>
+<section class="page-deals" aria-labelledby="deals-title">
+  <header class="page-heading">
+    <div>
+      <h1 id="deals-title">Deals</h1>
+      <p class="page-heading__lede">
+        Current price drops across bodies, glass, and the accessories that keep
+        them working. Savings are shown against the regular price.
+      </p>
+    </div>
+    <p class="page-heading__meta"><%= deals.length %> price drops</p>
+  </header>
+
+  <% if (topDeal) { const topDiscount = discountPercent(topDeal); %>
+  <article class="deal-hero">
+    <div class="deal-hero__media">
+      <%- include('partials/product-media', {
+        product: topDeal,
+        badge: `-${topDiscount}%`,
+        mediaClass: 'product-media--flush'
+      }) %>
+    </div>
+
+    <div class="deal-hero__body">
+      <p class="deal-hero__flag">
+        <i data-lucide="trending-down"></i>
+        Biggest price drop this week
+      </p>
+      <p class="deal-hero__brand"><%= topDeal.brand %></p>
+      <h2><%= topDeal.name %></h2>
+      <p class="deal-hero__desc"><%= topDeal.description %></p>
+
+      <div class="deal-hero__pricing">
+        <%- include('partials/price', { product: topDeal }) %>
+        <span class="deal-hero__save">Save <%= formatPrice(savings(topDeal)) %></span>
+      </div>
+
+      <div
+        class="deal-meter"
+        style="--discount: <%= topDiscount %>%"
+        aria-hidden="true"
+      >
+        <span></span>
+      </div>
+      <p class="deal-hero__meter-label"><%= topDiscount %>% off, save <%= formatPrice(savings(topDeal)) %></p>
+    </div>
+  </article>
+  <% } %>
+
+  <h2 class="deals-subheading">More price drops</h2>
+
+  <div class="deals-grid">
+    <% otherDeals.forEach(function (product) { const discount = discountPercent(product); %>
+    <article class="deal-card">
+      <%- include('partials/product-media', {
+        product: product,
+        badge: `-${discount}%`,
+        mediaClass: 'product-media--wide'
+      }) %>
+
+      <div class="deal-card__body">
+        <p class="product-card__brand"><%= product.brand %></p>
+        <h3><%= product.name %></h3>
+        <p class="deal-card__desc"><%= product.description %></p>
+
+        <%- include('partials/rating', { product: product }) %>
+        <%- include('partials/price', { product: product }) %>
+        <p class="deal-card__savings">Save <%= formatPrice(savings(product)) %></p>
+
+        <div
+          class="deal-meter"
+          style="--discount: <%= discount %>%"
+          aria-hidden="true"
+        >
+          <span></span>
+        </div>
+        <span class="deal-card__percent"><%= discount %>% off</span>
+      </div>
+    </article>
+    <% }); %>
+  </div>
+</section>

@@ -1,0 +1,11 @@
+<%
+  const roundedRating = Math.round(product.ratings);
+%>
+<span class="rating" aria-label="Rated <%= product.ratings %> out of 5">
+  <span class="rating__stars" aria-hidden="true">
+    <% for (let i = 1; i <= 5; i++) { %>
+      <span class="<%= i <= roundedRating ? 'is-filled' : '' %>">&#9733;</span>
+    <% } %>
+  </span>
+  <span class="rating__value"><%= product.ratings.toFixed(1) %></span>
+</span>

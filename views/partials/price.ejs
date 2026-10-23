@@ -1,0 +1,6 @@
+<div class="price">
+  <span class="price__current"><%= formatPrice(product.discounted_price) %></span>
+  <% if (product.real_price > product.discounted_price) { %>
+    <span class="price__compare"><%= formatPrice(product.real_price) %></span>
+  <% } %>
+</div>

@@ -1,0 +1,68 @@
+<section class="page-arrivals" aria-labelledby="arrivals-title">
+  <header class="page-heading">
+    <div>
+      <h1 id="arrivals-title">New Arrivals</h1>
+      <p class="page-heading__lede">
+        The latest bodies, glass, and kit to land on the shelf, newest first.
+      </p>
+    </div>
+    <p class="page-heading__meta"><%= newArrivals.length %> new this season</p>
+  </header>
+
+  <section class="arrivals-rail" aria-labelledby="landed-title">
+    <h2 class="arrivals-subheading" id="landed-title">Just landed</h2>
+
+    <div class="just-landed">
+      <% justLanded.forEach(function (product) { %>
+      <article class="landed-card">
+        <%- include('partials/product-media', {
+          product: product,
+          badge: 'New',
+          mediaClass: 'product-media--wide'
+        }) %>
+
+        <p class="landed-card__date">Added <%= formatShortDate(product.date_added) %></p>
+        <p class="product-card__brand"><%= product.brand %></p>
+        <h3 class="landed-card__name"><%= product.name %></h3>
+
+        <%- include('partials/price', { product: product }) %>
+      </article>
+      <% }); %>
+    </div>
+  </section>
+
+  <div class="arrival-timeline">
+    <% arrivalGroups.forEach(function (group) { %>
+    <section class="arrival-group" aria-label="<%= group.label %> arrivals">
+      <h2 class="arrival-group__label"><%= group.label %></h2>
+
+      <div class="arrival-group__items">
+        <% group.items.forEach(function (product, index) { %>
+        <article class="arrival-item <%= index % 2 === 1 ? 'arrival-item--flip' : '' %>">
+          <div class="arrival-item__media">
+            <%- include('partials/product-media', {
+              product: product,
+              mediaClass: 'product-media--wide'
+            }) %>
+          </div>
+
+          <div class="arrival-item__body">
+            <div class="arrival-item__meta">
+              <span class="arrival-item__date"><%= formatShortDate(product.date_added) %></span>
+              <span class="arrival-item__tag">New</span>
+            </div>
+
+            <p class="product-card__brand"><%= product.brand %></p>
+            <h3><%= product.name %></h3>
+            <p class="arrival-item__desc"><%= product.description %></p>
+
+            <%- include('partials/rating', { product: product }) %>
+            <%- include('partials/price', { product: product }) %>
+          </div>
+        </article>
+        <% }); %>
+      </div>
+    </section>
+    <% }); %>
+  </div>
+</section>

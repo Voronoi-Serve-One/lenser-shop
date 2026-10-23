@@ -1,0 +1,73 @@
+<section class="page-best" aria-labelledby="best-title">
+  <header class="page-heading">
+    <div>
+      <h1 id="best-title">Best Sellers</h1>
+      <p class="page-heading__lede">
+        The ten pieces moving fastest right now, ranked by units sold this season.
+      </p>
+    </div>
+    <p class="page-heading__meta"><%= totalSold.toLocaleString('en-PH') %> units sold</p>
+  </header>
+
+  <div class="best-layout">
+    <aside class="best-rail">
+      <p class="best-rail__title">Chart notes</p>
+      <p class="best-rail__note">
+        Ranked by units sold across the current catalog. Brands are tallied from
+        the top ten only.
+      </p>
+
+      <ul class="best-rail__list">
+        <% brandTally.forEach(function (entry) { %>
+        <li class="best-rail__row">
+          <span><%= entry[0] %></span>
+          <span><%= entry[1] %></span>
+        </li>
+        <% }); %>
+      </ul>
+    </aside>
+
+    <div class="best-board">
+      <div class="best-podium">
+        <% podium.forEach(function (product, index) { %>
+        <article class="best-podium__item">
+          <span class="best-podium__rank"><%= String(index + 1).padStart(2, '0') %></span>
+
+          <%- include('partials/product-media', {
+            product: product,
+            mediaClass: 'product-media--wide'
+          }) %>
+
+          <p class="product-card__brand"><%= product.brand %></p>
+          <h2 class="best-podium__name"><%= product.name %></h2>
+          <p class="best-podium__units"><%= product.amount_sold %> sold</p>
+
+          <%- include('partials/price', { product: product }) %>
+        </article>
+        <% }); %>
+      </div>
+
+      <ol class="best-list" start="4">
+        <% runnersUp.forEach(function (product, index) { %>
+        <li class="best-row">
+          <span class="best-row__rank"><%= String(index + 4).padStart(2, '0') %></span>
+
+          <%- include('partials/product-media', {
+            product: product,
+            mediaClass: 'product-media--thumb'
+          }) %>
+
+          <div class="best-row__info">
+            <p class="product-card__brand"><%= product.brand %></p>
+            <h3><%= product.name %></h3>
+            <%- include('partials/rating', { product: product }) %>
+          </div>
+
+          <span class="best-row__units"><%= product.amount_sold %> sold</span>
+          <%- include('partials/price', { product: product }) %>
+        </li>
+        <% }); %>
+      </ol>
+    </div>
+  </div>
+</section>
