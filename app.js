@@ -325,13 +325,58 @@ app.get('/product/:slug', (req, res) => {
   if (!product) {
     return res.status(404).send('Product not found');
   }
+
+  const typeLabels = {
+    camera: 'Cameras',
+    lenses: 'Lenses',
+    accessories: 'Accessories',
+  };
+
+  const primaryType = Array.isArray(product.type) ? product.type.find((t) => typeLabels[t]) : null;
+  const categoryLabel = primaryType ? typeLabels[primaryType] : product.type?.[0] || 'Products';
+  const categoryHref =
+    primaryType === 'camera'
+      ? '/cameras'
+      : primaryType === 'lenses'
+        ? '/lenses'
+        : primaryType === 'accessories'
+          ? '/accessories'
+          : '/';
+
+  const breadcrumbs = [
+    { label: 'Home', href: '/' },
+    { label: categoryLabel, href: categoryHref },
+    { label: product.name },
+  ];
+
   const related = productsCache
     .filter((entry) => entry.slug !== product.slug && entry.type.some((type) => product.type.includes(type)))
+    .sort((a, b) => {
+      const aSameBrand = a.brand === product.brand ? 1 : 0;
+      const bSameBrand = b.brand === product.brand ? 1 : 0;
+      if (aSameBrand !== bSameBrand) return bSameBrand - aSameBrand;
+      const ratingDiff = Number(b.ratings || 0) - Number(a.ratings || 0);
+      if (ratingDiff !== 0) return ratingDiff;
+      const soldDiff = Number(b.amount_sold || 0) - Number(a.amount_sold || 0);
+      if (soldDiff !== 0) return soldDiff;
+      return new Date(b.date_added) - new Date(a.date_added);
+    })
     .slice(0, 4);
+
+  const savingsAmount = Math.max(Number(product.real_price) - Number(product.discounted_price), 0);
+  const savingsPercentValue = Number(product.real_price) > Number(product.discounted_price)
+    ? Math.round((1 - Number(product.discounted_price) / Number(product.real_price)) * 100)
+    : 0;
+
   res.render('product', {
-    currentPath: '/product',
+    currentPath: req.path,
     product,
     related,
+    categoryLabel,
+    categoryHref,
+    breadcrumbs,
+    savingsAmount,
+    savingsPercentValue,
   });
 });
 

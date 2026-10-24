@@ -1,62 +1,86 @@
-<section class="product-detail">
-  <div class="product-detail__grid">
-    <div class="product-detail__media">
-      <%- include('partials/product-media', { product }) %>
-    </div>
-    <div class="product-detail__info">
-      <p class="eyebrow"><%= product.brand %></p>
-      <h1><%= product.name %></h1>
-      <div class="product-detail__pricing">
-        <span class="product-detail__price"><%= formatPrice(product.discounted_price) %></span>
-        <% if (product.real_price > product.discounted_price) { %>
-          <span class="product-detail__price product-detail__price--old"><%= formatPrice(product.real_price) %></span>
-          <span class="product-detail__save">Save <%= formatPrice(savings(product)) %> (-<%= discountPercent(product) %>%)</span>
-        <% } %>
+<main class="page-product" aria-labelledby="product-title">
+  <% if (Array.isArray(breadcrumbs) && breadcrumbs.length) { %>
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol class="breadcrumbs__list">
+        <% breadcrumbs.forEach((crumb, index) => { %>
+          <li class="breadcrumbs__item">
+            <% if (crumb.href && index < breadcrumbs.length - 1) { %>
+              <a class="breadcrumbs__link" href="<%= crumb.href %>"><%= crumb.label %></a>
+            <% } else { %>
+              <span class="breadcrumbs__current" aria-current="page"><%= crumb.label %></span>
+            <% } %>
+            <% if (index < breadcrumbs.length - 1) { %>
+              <span class="breadcrumbs__separator" aria-hidden="true">/</span>
+            <% } %>
+          </li>
+        <% }) %>
+      </ol>
+    </nav>
+  <% } %>
+
+  <section class="product-detail">
+    <div class="product-detail__grid">
+      <div class="product-detail__media">
+        <%- include('partials/product-media', { product, mediaClass: 'product-media--detail' }) %>
       </div>
-      <p class="product-detail__desc"><%= product.description %></p>
-      <div class="product-detail__meta">
-        <div>
-          <span class="label">Sold</span>
-          <span class="value"><%= product.amount_sold.toLocaleString('en-PH') %></span>
+      <div class="product-detail__info">
+        <div class="product-detail__header">
+          <h1 id="product-title"><%= product.name %></h1>
+          <p class="product-detail__brand"><%= product.brand %></p>
         </div>
-        <% if (product.ratings) { %>
-          <div>
-            <span class="label">Rating</span>
-            <span class="value"><%= product.ratings %> / 5</span>
+        <div class="product-detail__pricing">
+          <div class="product-detail__price-row">
+            <span class="product-detail__price"><%= formatPrice(product.discounted_price) %></span>
+            <% if (product.real_price > product.discounted_price) { %>
+              <span class="product-detail__price product-detail__price--old"><%= formatPrice(product.real_price) %></span>
+            <% } %>
           </div>
-        <% } %>
-        <div>
-          <span class="label">Added</span>
-          <span class="value"><%= formatShortDate(product.date_added) %></span>
+          <% if (product.real_price > product.discounted_price && (savingsPercentValue || savingsAmount)) { %>
+            <span class="product-detail__save">Save <%= savingsPercentValue ? savingsPercentValue + '%' : formatPrice(savingsAmount) %></span>
+          <% } %>
         </div>
-      </div>
-    </div>
-  </div>
-  <% if (related.length) { %>
-    <section class="related">
-      <header class="related__header">
-        <h2>Related</h2>
-      </header>
-      <div class="product-grid product-grid--compact">
-        <% related.forEach((item) => { %>
-          <article class="product-card">
-            <a class="product-card__media-link" href="/product/<%= item.slug %>">
-              <%- include('partials/product-media', { product: item }) %>
-            </a>
-            <div class="product-card__body">
-              <div class="product-card__meta">
-                <span class="product-card__brand"><%= item.brand %></span>
-              </div>
-              <h3 class="product-card__title">
-                <a href="/product/<%= item.slug %>"><%= item.name %></a>
-              </h3>
-              <div class="product-card__pricing">
-                <span class="product-card__price"><%= formatPrice(item.discounted_price) %></span>
+        <p class="product-detail__desc"><%= product.description %></p>
+        <div class="product-detail__meta">
+          <div class="product-detail__meta-item">
+            <span class="label">Sold</span>
+            <span class="value"><%= Number(product.amount_sold || 0).toLocaleString('en-PH') %></span>
+          </div>
+          <% if (product.ratings) { %>
+            <div class="product-detail__meta-item">
+              <span class="label">Rating</span>
+              <div class="value value--rating">
+                <%- include('partials/rating', { product }) %>
               </div>
             </div>
-          </article>
+          <% } %>
+          <div class="product-detail__meta-item">
+            <span class="label">Added</span>
+            <span class="value"><%= formatShortDate(product.date_added) %></span>
+          </div>
+          <% if (categoryLabel) { %>
+            <div class="product-detail__meta-item">
+              <span class="label">Category</span>
+              <a class="value value--link" href="<%= categoryHref %>"><%= categoryLabel %></a>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <% if (related && related.length) { %>
+    <section class="related">
+      <header class="related__header">
+        <div>
+          <p class="eyebrow">You might also like</p>
+          <h2>Related products</h2>
+        </div>
+      </header>
+      <div class="product-grid">
+        <% related.forEach((item) => { %>
+          <%- include('partials/product-card', { product: item }) %>
         <% }) %>
       </div>
     </section>
   <% } %>
-</section>
+</main>

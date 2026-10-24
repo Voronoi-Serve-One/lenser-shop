@@ -25,8 +25,10 @@
     </div>
 
     <div class="featured-spotlight__body">
-      <p class="featured-spotlight__brand"><%= topPick.brand %></p>
-      <h2><%= topPick.name %></h2>
+      <div class="featured-spotlight__header">
+        <h2><%= topPick.name %></h2>
+        <p class="featured-spotlight__brand"><%= topPick.brand %></p>
+      </div>
       <p class="featured-spotlight__desc"><%= topPick.description %></p>
 
       <%- include('partials/rating', { product: topPick }) %>
@@ -50,8 +52,10 @@
       </div>
 
       <div class="featured-pick__body">
-        <p class="featured-pick__brand"><%= product.brand %></p>
-        <h3><%= product.name %></h3>
+        <div class="featured-pick__header">
+          <h3><%= product.name %></h3>
+          <p class="featured-pick__brand"><%= product.brand %></p>
+        </div>
         <p class="featured-pick__desc"><%= product.description %></p>
 
         <%- include('partials/rating', { product: product }) %>
