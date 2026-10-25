@@ -1,0 +1,1142 @@
+{
+  "canon-eos-rebel-sl3": {
+    "highlights": [
+      { "icon": "camera", "value": "24.1MP", "label": "APS-C CMOS sensor" },
+      { "icon": "video", "value": "4K24", "label": "Video recording" },
+      { "icon": "maximize", "value": "3-inch", "label": "Vari-angle touchscreen" },
+      { "icon": "weight", "value": "449g", "label": "Body only" }
+    ],
+    "overview": [
+      "The EOS Rebel SL3 is Canon's lightest DSLR, built for first-time creators who want an optical viewfinder without the bulk. The 24.1MP APS-C sensor and DIGIC 8 processor deliver clean stills, reliable colour and 4K video in a body that disappears into a day bag.",
+      "A guided interface, vari-angle touchscreen and 9-point autofocus keep the learning curve short, while the EF-S mount opens up one of the widest lens libraries in photography."
+    ],
+    "specs": [
+      {
+        "title": "Imaging",
+        "items": [
+          { "label": "Sensor", "value": "24.1MP APS-C CMOS" },
+          { "label": "Processor", "value": "DIGIC 8" },
+          { "label": "ISO range", "value": "100-25600" },
+          { "label": "Autofocus", "value": "9-point phase detection" }
+        ]
+      },
+      {
+        "title": "Video",
+        "items": [
+          { "label": "Max resolution", "value": "4K at 24p" },
+          { "label": "Full HD", "value": "1080p up to 60p" },
+          { "label": "Stabilisation", "value": "Digital 5-axis (movie)" }
+        ]
+      },
+      {
+        "title": "Body",
+        "items": [
+          { "label": "Mount", "value": "Canon EF-S" },
+          { "label": "Screen", "value": "3-inch vari-angle touch" },
+          { "label": "Weight", "value": "449g with battery" },
+          { "label": "Connectivity", "value": "Wi-Fi and Bluetooth" }
+        ]
+      }
+    ],
+    "box": [
+      "EOS Rebel SL3 body",
+      "LP-E17 battery pack",
+      "LC-E17 battery charger",
+      "Camera strap",
+      "Body cap",
+      "User manual"
+    ]
+  },
+  "sony-alpha-7-iv": {
+    "highlights": [
+      { "icon": "camera", "value": "33MP", "label": "Full-frame sensor" },
+      { "icon": "video", "value": "4K60", "label": "10-bit video" },
+      { "icon": "focus", "value": "759-point", "label": "Phase-detect AF" },
+      { "icon": "weight", "value": "658g", "label": "Body only" }
+    ],
+    "overview": [
+      "The Alpha 7 IV is Sony's all-round hybrid: a 33MP full-frame sensor for detailed stills and 4K60 10-bit video for productions that need room to grade. Real-time Eye AF tracks people, animals and birds without fuss.",
+      "A 3-inch vari-angle screen, dual card slots and 5-axis stabilisation make it equally at home on a tripod, a gimbal or a handheld documentary shoot."
+    ],
+    "specs": [
+      {
+        "title": "Imaging",
+        "items": [
+          { "label": "Sensor", "value": "33MP full-frame Exmor R CMOS" },
+          { "label": "Processor", "value": "BIONZ XR" },
+          { "label": "ISO range", "value": "100-51200" },
+          { "label": "Autofocus", "value": "759-point phase detection" }
+        ]
+      },
+      {
+        "title": "Video",
+        "items": [
+          { "label": "Max resolution", "value": "4K at 60p" },
+          { "label": "Colour", "value": "10-bit 4:2:2, S-Cinetone" },
+          { "label": "Stabilisation", "value": "5-axis in-body" }
+        ]
+      },
+      {
+        "title": "Body",
+        "items": [
+          { "label": "Mount", "value": "Sony E" },
+          { "label": "Screen", "value": "3-inch vari-angle touch" },
+          { "label": "Weight", "value": "658g with battery" },
+          { "label": "Storage", "value": "Dual SD slots" }
+        ]
+      }
+    ],
+    "box": [
+      "Alpha 7 IV body",
+      "NP-FZ100 battery",
+      "Battery charger",
+      "Shoulder strap",
+      "Body cap",
+      "User manual"
+    ]
+  },
+  "nikon-z6-ii": {
+    "highlights": [
+      { "icon": "camera", "value": "24.5MP", "label": "Full-frame sensor" },
+      { "icon": "video", "value": "4K60", "label": "Video recording" },
+      { "icon": "activity", "value": "5-axis", "label": "In-body VR" },
+      { "icon": "weight", "value": "705g", "label": "Body only" }
+    ],
+    "overview": [
+      "The Z6 II pairs a 24.5MP full-frame sensor with dual EXPEED 6 processors for fast, dependable performance in low light. It is the practical choice for event, wedding and travel work.",
+      "Dual card slots, 4K60 video and 5-axis vibration reduction cover both stills and motion, while the deep Z-mount grip keeps long lenses balanced."
+    ],
+    "specs": [
+      {
+        "title": "Imaging",
+        "items": [
+          { "label": "Sensor", "value": "24.5MP full-frame CMOS" },
+          { "label": "Processor", "value": "Dual EXPEED 6" },
+          { "label": "ISO range", "value": "100-51200" },
+          { "label": "Autofocus", "value": "273-point hybrid AF" }
+        ]
+      },
+      {
+        "title": "Video",
+        "items": [
+          { "label": "Max resolution", "value": "4K at 60p" },
+          { "label": "Full HD", "value": "1080p up to 120p" },
+          { "label": "Stabilisation", "value": "5-axis in-body VR" }
+        ]
+      },
+      {
+        "title": "Body",
+        "items": [
+          { "label": "Mount", "value": "Nikon Z" },
+          { "label": "Screen", "value": "3.2-inch tilting touch" },
+          { "label": "Weight", "value": "705g with battery" },
+          { "label": "Storage", "value": "CFexpress/XQD and SD" }
+        ]
+      }
+    ],
+    "box": [
+      "Z6 II body",
+      "EN-EL15c battery",
+      "Battery charger",
+      "Camera strap",
+      "Body cap",
+      "User manual"
+    ]
+  },
+  "gopro-hero12-black": {
+    "highlights": [
+      { "icon": "video", "value": "5.3K60", "label": "Video resolution" },
+      { "icon": "camera", "value": "27MP", "label": "Photo capture" },
+      { "icon": "activity", "value": "HyperSmooth 6.0", "label": "Stabilisation" },
+      { "icon": "droplets", "value": "10m", "label": "Waterproof" }
+    ],
+    "overview": [
+      "The HERO12 Black is GoPro's flagship action camera, built around a taller 8:7 sensor that captures more of the scene for reframing in vertical or horizontal edits. HDR video and photo modes hold detail in bright skies and deep shade.",
+      "HyperSmooth 6.0 with Horizon Lock keeps footage level through heavy movement, and the 10m waterproof body means no housing is needed for most shoots."
+    ],
+    "specs": [
+      {
+        "title": "Imaging",
+        "items": [
+          { "label": "Sensor", "value": "1/1.9-inch CMOS" },
+          { "label": "Photo", "value": "27MP" },
+          { "label": "Video", "value": "5.3K at 60p" },
+          { "label": "Field of view", "value": "8:7 sensor capture" }
+        ]
+      },
+      {
+        "title": "Stabilisation",
+        "items": [
+          { "label": "System", "value": "HyperSmooth 6.0" },
+          { "label": "Horizon Lock", "value": "360-degree levelling" },
+          { "label": "Slow motion", "value": "2.7K at 240p" }
+        ]
+      },
+      {
+        "title": "Body",
+        "items": [
+          { "label": "Waterproof", "value": "10m without housing" },
+          { "label": "Displays", "value": "2.27-inch rear, 1.4-inch front" },
+          { "label": "Weight", "value": "154g with battery" },
+          { "label": "Connectivity", "value": "Wi-Fi, Bluetooth, USB-C" }
+        ]
+      }
+    ],
+    "box": [
+      "HERO12 Black camera",
+      "Enduro rechargeable battery",
+      "Curved adhesive mount",
+      "Mounting buckle",
+      "USB-C cable",
+      "Thumb screw"
+    ]
+  },
+  "canon-rf-50mm-f18": {
+    "highlights": [
+      { "icon": "aperture", "value": "50mm", "label": "Focal length" },
+      { "icon": "sun", "value": "f/1.8", "label": "Maximum aperture" },
+      { "icon": "focus", "value": "STM", "label": "Stepping motor" },
+      { "icon": "weight", "value": "160g", "label": "Lens weight" }
+    ],
+    "overview": [
+      "The RF 50mm f/1.8 STM is the compact normal prime for Canon's full-frame mirrorless bodies. Its bright aperture separates subjects from backgrounds and keeps handheld shooting comfortable in low light.",
+      "A stepping motor delivers smooth, quiet focus for video, and the control ring can be mapped to aperture, ISO or exposure compensation."
+    ],
+    "specs": [
+      {
+        "title": "Optics",
+        "items": [
+          { "label": "Focal length", "value": "50mm" },
+          { "label": "Aperture", "value": "f/1.8-22" },
+          { "label": "Mount", "value": "Canon RF" },
+          { "label": "Format", "value": "Full-frame" }
+        ]
+      },
+      {
+        "title": "Construction",
+        "items": [
+          { "label": "Elements", "value": "6 in 5 groups" },
+          { "label": "Aperture blades", "value": "7" },
+          { "label": "Minimum focus", "value": "0.30m" },
+          { "label": "Max magnification", "value": "0.25x" }
+        ]
+      },
+      {
+        "title": "Physical",
+        "items": [
+          { "label": "Filter thread", "value": "43mm" },
+          { "label": "Dimensions", "value": "69.2 x 40.5mm" },
+          { "label": "Weight", "value": "160g" },
+          { "label": "Features", "value": "Control ring, weather-sealed mount" }
+        ]
+      }
+    ],
+    "box": [
+      "RF 50mm f/1.8 STM lens",
+      "Front lens cap",
+      "Rear lens cap",
+      "User manual"
+    ]
+  },
+  "sony-fe-24-70mm-f28-gm-ii": {
+    "highlights": [
+      { "icon": "aperture", "value": "24-70mm", "label": "Focal range" },
+      { "icon": "sun", "value": "f/2.8", "label": "Constant aperture" },
+      { "icon": "ruler", "value": "82mm", "label": "Filter thread" },
+      { "icon": "weight", "value": "695g", "label": "Lens weight" }
+    ],
+    "overview": [
+      "The FE 24-70mm f/2.8 GM II is Sony's second-generation pro standard zoom, rebuilt to be lighter and sharper across the frame. Four XD linear motors make focus fast and quiet enough for hybrid work.",
+      "A constant f/2.8 aperture, 11-blade diaphragm and close 0.21m minimum focus make it a capable one-lens kit for portraits, events and documentary."
+    ],
+    "specs": [
+      {
+        "title": "Optics",
+        "items": [
+          { "label": "Focal length", "value": "24-70mm" },
+          { "label": "Aperture", "value": "f/2.8-22" },
+          { "label": "Mount", "value": "Sony E" },
+          { "label": "Format", "value": "Full-frame" }
+        ]
+      },
+      {
+        "title": "Construction",
+        "items": [
+          { "label": "Elements", "value": "20 in 15 groups" },
+          { "label": "Aperture blades", "value": "11" },
+          { "label": "Minimum focus", "value": "0.21m wide, 0.32m tele" },
+          { "label": "Max magnification", "value": "0.32x" }
+        ]
+      },
+      {
+        "title": "Physical",
+        "items": [
+          { "label": "Filter thread", "value": "82mm" },
+          { "label": "Dimensions", "value": "87.8 x 119.9mm" },
+          { "label": "Weight", "value": "695g" },
+          { "label": "Features", "value": "Aperture ring, weather sealing" }
+        ]
+      }
+    ],
+    "box": [
+      "FE 24-70mm f/2.8 GM II lens",
+      "Front lens cap",
+      "Rear lens cap",
+      "Lens hood",
+      "Lens case",
+      "User manual"
+    ]
+  },
+  "nikon-nikkor-z-40mm-f2": {
+    "highlights": [
+      { "icon": "aperture", "value": "40mm", "label": "Focal length" },
+      { "icon": "sun", "value": "f/2", "label": "Maximum aperture" },
+      { "icon": "ruler", "value": "52mm", "label": "Filter thread" },
+      { "icon": "weight", "value": "170g", "label": "Lens weight" }
+    ],
+    "overview": [
+      "The NIKKOR Z 40mm f/2 is a compact everyday prime with a natural field of view that suits street, travel and candid portraits. The fast f/2 aperture keeps the lens small while still offering separation.",
+      "A quiet stepping motor and weather-sealed mount make it a practical companion for the Z series, and the control ring can be customised to taste."
+    ],
+    "specs": [
+      {
+        "title": "Optics",
+        "items": [
+          { "label": "Focal length", "value": "40mm" },
+          { "label": "Aperture", "value": "f/2-16" },
+          { "label": "Mount", "value": "Nikon Z" },
+          { "label": "Format", "value": "Full-frame" }
+        ]
+      },
+      {
+        "title": "Construction",
+        "items": [
+          { "label": "Elements", "value": "6 in 4 groups" },
+          { "label": "Aperture blades", "value": "9" },
+          { "label": "Minimum focus", "value": "0.29m" },
+          { "label": "Max magnification", "value": "0.17x" }
+        ]
+      },
+      {
+        "title": "Physical",
+        "items": [
+          { "label": "Filter thread", "value": "52mm" },
+          { "label": "Dimensions", "value": "70 x 45.5mm" },
+          { "label": "Weight", "value": "170g" },
+          { "label": "Features", "value": "Control ring, weather-sealed mount" }
+        ]
+      }
+    ],
+    "box": [
+      "NIKKOR Z 40mm f/2 lens",
+      "Front lens cap",
+      "Rear lens cap",
+      "User manual"
+    ]
+  },
+  "gopro-hero11-black-mini": {
+    "highlights": [
+      { "icon": "video", "value": "5.3K60", "label": "Video resolution" },
+      { "icon": "droplets", "value": "10m", "label": "Waterproof" },
+      { "icon": "activity", "value": "HyperSmooth 5.0", "label": "Stabilisation" },
+      { "icon": "bike", "value": "Mount ready", "label": "Helmet and handlebar" }
+    ],
+    "overview": [
+      "The HERO11 Black Mini packs the same 5.3K sensor and HyperSmooth 5.0 stabilisation as the full-size HERO11 into a smaller, lighter body made for helmet and handlebar mounts. There is no front screen, so the camera stays out of the way and keeps recording.",
+      "An 8:7 sensor gives you room to reframe in the GoPro app, while the folding mount fingers attach directly to most action mounts without extra hardware."
+    ],
+    "specs": [
+      {
+        "title": "Imaging",
+        "items": [
+          { "label": "Sensor", "value": "1/1.9-inch CMOS" },
+          { "label": "Photo", "value": "27MP" },
+          { "label": "Video", "value": "5.3K at 60p" },
+          { "label": "Field of view", "value": "8:7 sensor capture" }
+        ]
+      },
+      {
+        "title": "Stabilisation",
+        "items": [
+          { "label": "System", "value": "HyperSmooth 5.0" },
+          { "label": "Horizon Lock", "value": "360-degree levelling" },
+          { "label": "Slow motion", "value": "2.7K at 240p" }
+        ]
+      },
+      {
+        "title": "Body",
+        "items": [
+          { "label": "Waterproof", "value": "10m without housing" },
+          { "label": "Mount", "value": "Built-in folding fingers" },
+          { "label": "Weight", "value": "133g with battery" },
+          { "label": "Connectivity", "value": "Wi-Fi, Bluetooth, USB-C" }
+        ]
+      }
+    ],
+    "box": [
+      "HERO11 Black Mini camera",
+      "Enduro rechargeable battery",
+      "Curved adhesive mount",
+      "Mounting buckle",
+      "USB-C cable",
+      "Thumb screw"
+    ]
+  },
+  "canon-eos-r50": {
+    "highlights": [
+      { "icon": "camera", "value": "24.2MP", "label": "APS-C sensor" },
+      { "icon": "video", "value": "4K30", "label": "Video recording" },
+      { "icon": "focus", "value": "651-point", "label": "Dual Pixel AF II" },
+      { "icon": "weight", "value": "375g", "label": "Body only" }
+    ],
+    "overview": [
+      "The EOS R50 is a compact mirrorless body for creators stepping up from a phone. A 24.2MP APS-C sensor and DIGIC X processor deliver detailed stills, oversampled 4K30 video and dependable subject tracking.",
+      "The vari-angle screen, electronic viewfinder and RF mount make it a versatile first camera, while the lightweight body is easy to carry all day."
+    ],
+    "specs": [
+      {
+        "title": "Imaging",
+        "items": [
+          { "label": "Sensor", "value": "24.2MP APS-C CMOS" },
+          { "label": "Processor", "value": "DIGIC X" },
+          { "label": "ISO range", "value": "100-32000" },
+          { "label": "Autofocus", "value": "651-point Dual Pixel CMOS AF II" }
+        ]
+      },
+      {
+        "title": "Video",
+        "items": [
+          { "label": "Max resolution", "value": "4K at 30p" },
+          { "label": "Full HD", "value": "1080p up to 120p" },
+          { "label": "Profile", "value": "HDR PQ" }
+        ]
+      },
+      {
+        "title": "Body",
+        "items": [
+          { "label": "Mount", "value": "Canon RF" },
+          { "label": "Viewfinder", "value": "2.36m-dot OLED EVF" },
+          { "label": "Screen", "value": "3-inch vari-angle touch" },
+          { "label": "Weight", "value": "375g with battery" }
+        ]
+      }
+    ],
+    "box": [
+      "EOS R50 body",
+      "LP-E17 battery",
+      "Battery charger",
+      "Camera strap",
+      "Body cap",
+      "User manual"
+    ]
+  },
+  "sony-zv-e10": {
+    "highlights": [
+      { "icon": "camera", "value": "24.2MP", "label": "APS-C sensor" },
+      { "icon": "video", "value": "4K30", "label": "Video recording" },
+      { "icon": "focus", "value": "425-point", "label": "Phase-detect AF" },
+      { "icon": "weight", "value": "343g", "label": "Body only" }
+    ],
+    "overview": [
+      "The ZV-E10 is Sony's mirrorless camera built around vlogging. A 24.2MP APS-C sensor, vari-angle screen and directional three-capsule microphone make it quick to frame yourself and record clean speech.",
+      "Real-time Eye AF, Product Showcase mode and interchangeable E-mount lenses give it more range than a fixed-lens vlogging camera."
+    ],
+    "specs": [
+      {
+        "title": "Imaging",
+        "items": [
+          { "label": "Sensor", "value": "24.2MP APS-C Exmor CMOS" },
+          { "label": "ISO range", "value": "100-32000" },
+          { "label": "Autofocus", "value": "425-point phase detection" },
+          { "label": "Eye AF", "value": "Real-time human and animal" }
+        ]
+      },
+      {
+        "title": "Video",
+        "items": [
+          { "label": "Max resolution", "value": "4K at 30p" },
+          { "label": "Full HD", "value": "1080p up to 120p" },
+          { "label": "Profile", "value": "S-Log3 and HLG" }
+        ]
+      },
+      {
+        "title": "Body",
+        "items": [
+          { "label": "Mount", "value": "Sony E" },
+          { "label": "Screen", "value": "3-inch vari-angle touch" },
+          { "label": "Weight", "value": "343g with battery" },
+          { "label": "Audio", "value": "Directional 3-capsule mic" }
+        ]
+      }
+    ],
+    "box": [
+      "ZV-E10 body",
+      "NP-FW50 battery",
+      "USB-C cable",
+      "Wind screen",
+      "Shoulder strap",
+      "User manual"
+    ]
+  },
+  "nikon-z-fc": {
+    "highlights": [
+      { "icon": "camera", "value": "20.9MP", "label": "DX-format sensor" },
+      { "icon": "video", "value": "4K30", "label": "Video recording" },
+      { "icon": "focus", "value": "209-point", "label": "Hybrid AF" },
+      { "icon": "weight", "value": "445g", "label": "Body only" }
+    ],
+    "overview": [
+      "The Z fc brings Nikon's classic FM2 styling to the Z mount, with tactile ISO, shutter and exposure dials on a compact DX-format body. The 20.9MP sensor and EXPEED 6 processor handle everyday stills and 4K video.",
+      "A vari-angle screen, 2.36m-dot EVF and 209-point hybrid autofocus make it as usable as it is good-looking."
+    ],
+    "specs": [
+      {
+        "title": "Imaging",
+        "items": [
+          { "label": "Sensor", "value": "20.9MP DX-format CMOS" },
+          { "label": "Processor", "value": "EXPEED 6" },
+          { "label": "ISO range", "value": "100-51200" },
+          { "label": "Autofocus", "value": "209-point hybrid AF" }
+        ]
+      },
+      {
+        "title": "Video",
+        "items": [
+          { "label": "Max resolution", "value": "4K at 30p" },
+          { "label": "Full HD", "value": "1080p up to 120p" },
+          { "label": "Stabilisation", "value": "3-axis digital VR" }
+        ]
+      },
+      {
+        "title": "Body",
+        "items": [
+          { "label": "Mount", "value": "Nikon Z" },
+          { "label": "Viewfinder", "value": "2.36m-dot OLED EVF" },
+          { "label": "Screen", "value": "3-inch vari-angle touch" },
+          { "label": "Weight", "value": "445g with battery" }
+        ]
+      }
+    ],
+    "box": [
+      "Z fc body",
+      "EN-EL25 battery",
+      "Battery charger",
+      "Camera strap",
+      "Body cap",
+      "User manual"
+    ]
+  },
+  "gopro-max": {
+    "highlights": [
+      { "icon": "video", "value": "5.6K30", "label": "360 video" },
+      { "icon": "camera", "value": "16.6MP", "label": "Photo capture" },
+      { "icon": "activity", "value": "Max HyperSmooth", "label": "Stabilisation" },
+      { "icon": "droplets", "value": "5m", "label": "Waterproof" }
+    ],
+    "overview": [
+      "The GoPro MAX is a dual-lens 360 camera that captures the whole scene and lets you choose the framing later in the GoPro app. It also works as a conventional single-lens action camera when you want a standard shot.",
+      "Max HyperSmooth stabilisation, a 5m waterproof body and PowerPano mode make it a flexible tool for travel, skating and behind-the-scenes footage."
+    ],
+    "specs": [
+      {
+        "title": "Imaging",
+        "items": [
+          { "label": "Sensors", "value": "Dual 1/2.3-inch CMOS" },
+          { "label": "Photo", "value": "16.6MP" },
+          { "label": "Video", "value": "5.6K at 30p (360)" },
+          { "label": "Modes", "value": "360, Hero, PowerPano" }
+        ]
+      },
+      {
+        "title": "Stabilisation",
+        "items": [
+          { "label": "System", "value": "Max HyperSmooth" },
+          { "label": "Horizon Lock", "value": "360-degree levelling" },
+          { "label": "Reframing", "value": "In-app 360 reframe" }
+        ]
+      },
+      {
+        "title": "Body",
+        "items": [
+          { "label": "Waterproof", "value": "5m without housing" },
+          { "label": "Display", "value": "2-inch touchscreen" },
+          { "label": "Weight", "value": "154g with battery" },
+          { "label": "Connectivity", "value": "Wi-Fi and Bluetooth" }
+        ]
+      }
+    ],
+    "box": [
+      "MAX camera",
+      "Rechargeable battery",
+      "Curved adhesive mount",
+      "Two mounting buckles",
+      "USB-C cable",
+      "Protective case"
+    ]
+  },
+  "canon-eos-r6-mark-ii": {
+    "highlights": [
+      { "icon": "camera", "value": "24.2MP", "label": "Full-frame sensor" },
+      { "icon": "video", "value": "4K60", "label": "10-bit video" },
+      { "icon": "activity", "value": "8-stop", "label": "In-body IS" },
+      { "icon": "weight", "value": "670g", "label": "Body only" }
+    ],
+    "overview": [
+      "The EOS R6 Mark II is a fast full-frame hybrid for action, events and wildlife. A 24.2MP sensor, DIGIC X processor and 1,053-point autofocus track subjects across the frame with confidence.",
+      "Up to 40 fps electronic shooting, 4K60 10-bit video and 8-stop stabilisation make it a serious tool for both stills and motion."
+    ],
+    "specs": [
+      {
+        "title": "Imaging",
+        "items": [
+          { "label": "Sensor", "value": "24.2MP full-frame CMOS" },
+          { "label": "Processor", "value": "DIGIC X" },
+          { "label": "ISO range", "value": "100-102400" },
+          { "label": "Autofocus", "value": "1,053-point Dual Pixel CMOS AF II" }
+        ]
+      },
+      {
+        "title": "Video",
+        "items": [
+          { "label": "Max resolution", "value": "4K at 60p" },
+          { "label": "Full HD", "value": "1080p up to 180p" },
+          { "label": "Profile", "value": "Canon Log 3, 10-bit" }
+        ]
+      },
+      {
+        "title": "Body",
+        "items": [
+          { "label": "Mount", "value": "Canon RF" },
+          { "label": "Viewfinder", "value": "3.69m-dot OLED EVF" },
+          { "label": "Stabilisation", "value": "8-stop in-body IS" },
+          { "label": "Storage", "value": "Dual SD slots" }
+        ]
+      }
+    ],
+    "box": [
+      "EOS R6 Mark II body",
+      "LP-E6NH battery",
+      "Battery charger",
+      "Camera strap",
+      "Body cap",
+      "User manual"
+    ]
+  },
+  "sony-alpha-zv-e1": {
+    "highlights": [
+      { "icon": "camera", "value": "12.1MP", "label": "Full-frame sensor" },
+      { "icon": "video", "value": "4K60", "label": "10-bit video" },
+      { "icon": "scan-line", "value": "AI subject AF", "label": "Recognition" },
+      { "icon": "weight", "value": "483g", "label": "Body only" }
+    ],
+    "overview": [
+      "The Alpha ZV-E1 is a full-frame vlogging camera built around a 12.1MP sensor that prioritises low-light performance and video. AI subject recognition keeps focus on faces, products and pets as they move.",
+      "S-Cinetone, 4K60 10-bit recording and 5-axis stabilisation give solo creators a cinematic look without a large rig."
+    ],
+    "specs": [
+      {
+        "title": "Imaging",
+        "items": [
+          { "label": "Sensor", "value": "12.1MP full-frame Exmor R" },
+          { "label": "Processor", "value": "BIONZ XR" },
+          { "label": "ISO range", "value": "80-102400" },
+          { "label": "Autofocus", "value": "759-point AI subject detection" }
+        ]
+      },
+      {
+        "title": "Video",
+        "items": [
+          { "label": "Max resolution", "value": "4K at 60p" },
+          { "label": "Colour", "value": "S-Cinetone, S-Log3" },
+          { "label": "Stabilisation", "value": "5-axis in-body" }
+        ]
+      },
+      {
+        "title": "Body",
+        "items": [
+          { "label": "Mount", "value": "Sony E" },
+          { "label": "Screen", "value": "3-inch vari-angle touch" },
+          { "label": "Weight", "value": "483g with battery" },
+          { "label": "Audio", "value": "Intelligent 3-capsule mic" }
+        ]
+      }
+    ],
+    "box": [
+      "Alpha ZV-E1 body",
+      "NP-FZ100 battery",
+      "Wind screen",
+      "USB-C cable",
+      "Shoulder strap",
+      "User manual"
+    ]
+  },
+  "fujifilm-x-t5": {
+    "highlights": [
+      { "icon": "camera", "value": "40.2MP", "label": "APS-C sensor" },
+      { "icon": "video", "value": "6.2K30", "label": "Video recording" },
+      { "icon": "activity", "value": "7-stop", "label": "In-body IS" },
+      { "icon": "weight", "value": "557g", "label": "Body only" }
+    ],
+    "overview": [
+      "The X-T5 puts Fujifilm's 40.2MP X-Trans 5 HR sensor into the classic X-T body, with dedicated dials for ISO, shutter speed and exposure compensation. It is a stills-first camera with a deep set of film simulations.",
+      "A 7-stop in-body stabiliser, 6.2K video and dual card slots make it capable beyond photography, while the tilting screen keeps the body compact."
+    ],
+    "specs": [
+      {
+        "title": "Imaging",
+        "items": [
+          { "label": "Sensor", "value": "40.2MP X-Trans CMOS 5 HR" },
+          { "label": "Processor", "value": "X-Processor 5" },
+          { "label": "ISO range", "value": "125-12800" },
+          { "label": "Autofocus", "value": "425-point intelligent hybrid" }
+        ]
+      },
+      {
+        "title": "Video",
+        "items": [
+          { "label": "Max resolution", "value": "6.2K at 30p" },
+          { "label": "4K", "value": "4K at 60p" },
+          { "label": "Colour", "value": "10-bit 4:2:2 internal" }
+        ]
+      },
+      {
+        "title": "Body",
+        "items": [
+          { "label": "Mount", "value": "Fujifilm X" },
+          { "label": "Viewfinder", "value": "3.69m-dot OLED EVF" },
+          { "label": "Stabilisation", "value": "7-stop in-body IS" },
+          { "label": "Storage", "value": "Dual SD slots" }
+        ]
+      }
+    ],
+    "box": [
+      "X-T5 body",
+      "NP-W235 battery",
+      "Battery charger",
+      "Shoulder strap",
+      "Body cap",
+      "User manual"
+    ]
+  },
+  "dji-osmo-pocket-3": {
+    "highlights": [
+      { "icon": "camera", "value": "1-inch", "label": "CMOS sensor" },
+      { "icon": "video", "value": "4K120", "label": "Video recording" },
+      { "icon": "move-3d", "value": "3-axis", "label": "Mechanical gimbal" },
+      { "icon": "weight", "value": "179g", "label": "Camera weight" }
+    ],
+    "overview": [
+      "The Osmo Pocket 3 is a pocket-sized gimbal camera with a 1-inch sensor, a rotating 2-inch screen and 4K120 recording. It is built for travel, interviews and run-and-gun footage that needs to stay stable.",
+      "A 20mm equivalent f/2.0 lens, fast autofocus and 10-bit D-Log M give it more image quality than its size suggests."
+    ],
+    "specs": [
+      {
+        "title": "Imaging",
+        "items": [
+          { "label": "Sensor", "value": "1-inch CMOS" },
+          { "label": "Photo", "value": "9.4MP" },
+          { "label": "Lens", "value": "20mm equivalent, f/2.0" },
+          { "label": "Video", "value": "4K at 120p" }
+        ]
+      },
+      {
+        "title": "Stabilisation",
+        "items": [
+          { "label": "System", "value": "3-axis mechanical gimbal" },
+          { "label": "Modes", "value": "Follow, tilt lock, FPV" },
+          { "label": "Colour", "value": "10-bit D-Log M" }
+        ]
+      },
+      {
+        "title": "Body",
+        "items": [
+          { "label": "Display", "value": "2-inch rotating touchscreen" },
+          { "label": "Weight", "value": "179g" },
+          { "label": "Battery", "value": "Up to 166 minutes" },
+          { "label": "Connectivity", "value": "Wi-Fi and Bluetooth" }
+        ]
+      }
+    ],
+    "box": [
+      "Osmo Pocket 3 camera",
+      "Protective cover",
+      "Handle with 1/4-inch thread",
+      "USB-C cable",
+      "Wrist strap"
+    ]
+  },
+  "sigma-24-70mm-f28-dg-dn-art": {
+    "highlights": [
+      { "icon": "aperture", "value": "24-70mm", "label": "Focal range" },
+      { "icon": "sun", "value": "f/2.8", "label": "Constant aperture" },
+      { "icon": "ruler", "value": "82mm", "label": "Filter thread" },
+      { "icon": "weight", "value": "835g", "label": "Lens weight" }
+    ],
+    "overview": [
+      "The Sigma 24-70mm f/2.8 DG DN Art is a full-frame standard zoom built for high-resolution bodies. It balances a constant f/2.8 aperture with sharpness across the frame and a weather-sealed barrel.",
+      "A stepping motor keeps autofocus fast and quiet, while the close 0.18m minimum focus makes it useful for detail shots as well as events."
+    ],
+    "specs": [
+      {
+        "title": "Optics",
+        "items": [
+          { "label": "Focal length", "value": "24-70mm" },
+          { "label": "Aperture", "value": "f/2.8-22" },
+          { "label": "Mount", "value": "Sony E or Leica L" },
+          { "label": "Format", "value": "Full-frame" }
+        ]
+      },
+      {
+        "title": "Construction",
+        "items": [
+          { "label": "Elements", "value": "19 in 15 groups" },
+          { "label": "Aperture blades", "value": "11" },
+          { "label": "Minimum focus", "value": "0.18m wide, 0.38m tele" },
+          { "label": "Max magnification", "value": "0.34x" }
+        ]
+      },
+      {
+        "title": "Physical",
+        "items": [
+          { "label": "Filter thread", "value": "82mm" },
+          { "label": "Dimensions", "value": "87.8 x 122.9mm" },
+          { "label": "Weight", "value": "835g" },
+          { "label": "Features", "value": "Weather sealing, AFL button" }
+        ]
+      }
+    ],
+    "box": [
+      "24-70mm f/2.8 DG DN Art lens",
+      "Front lens cap",
+      "Rear lens cap",
+      "Lens hood",
+      "Lens case",
+      "User manual"
+    ]
+  },
+  "tamron-28-75mm-f28-g2": {
+    "highlights": [
+      { "icon": "aperture", "value": "28-75mm", "label": "Focal range" },
+      { "icon": "sun", "value": "f/2.8", "label": "Constant aperture" },
+      { "icon": "ruler", "value": "67mm", "label": "Filter thread" },
+      { "icon": "weight", "value": "540g", "label": "Lens weight" }
+    ],
+    "overview": [
+      "The Tamron 28-75mm f/2.8 G2 is a compact fast standard zoom for Sony E-mount. The second-generation model improves sharpness, close focus and autofocus while keeping the low weight that made the original popular.",
+      "A VXD linear motor drives focus quickly and quietly, and the weather-sealed barrel makes it a practical everyday lens."
+    ],
+    "specs": [
+      {
+        "title": "Optics",
+        "items": [
+          { "label": "Focal length", "value": "28-75mm" },
+          { "label": "Aperture", "value": "f/2.8-22" },
+          { "label": "Mount", "value": "Sony E" },
+          { "label": "Format", "value": "Full-frame" }
+        ]
+      },
+      {
+        "title": "Construction",
+        "items": [
+          { "label": "Elements", "value": "17 in 15 groups" },
+          { "label": "Aperture blades", "value": "9" },
+          { "label": "Minimum focus", "value": "0.18m wide, 0.38m tele" },
+          { "label": "Max magnification", "value": "0.37x" }
+        ]
+      },
+      {
+        "title": "Physical",
+        "items": [
+          { "label": "Filter thread", "value": "67mm" },
+          { "label": "Dimensions", "value": "75.8 x 117.6mm" },
+          { "label": "Weight", "value": "540g" },
+          { "label": "Features", "value": "Weather sealing, zoom lock" }
+        ]
+      }
+    ],
+    "box": [
+      "28-75mm f/2.8 G2 lens",
+      "Front lens cap",
+      "Rear lens cap",
+      "Lens hood",
+      "User manual"
+    ]
+  },
+  "canon-rf-70-200mm-f28l-is-usm": {
+    "highlights": [
+      { "icon": "aperture", "value": "70-200mm", "label": "Focal range" },
+      { "icon": "sun", "value": "f/2.8", "label": "Constant aperture" },
+      { "icon": "shield-check", "value": "5-stop", "label": "Optical IS" },
+      { "icon": "weight", "value": "1070g", "label": "Lens weight" }
+    ],
+    "overview": [
+      "The RF 70-200mm f/2.8L IS USM is Canon's pro telephoto zoom for the RF mount, rebuilt to be shorter and lighter than the EF version. The constant f/2.8 aperture and L-series optics deliver sharp, high-contrast images wide open.",
+      "Dual Nano USM focus, 5-stop optical stabilisation and weather sealing make it suitable for weddings, sport and reportage."
+    ],
+    "specs": [
+      {
+        "title": "Optics",
+        "items": [
+          { "label": "Focal length", "value": "70-200mm" },
+          { "label": "Aperture", "value": "f/2.8-32" },
+          { "label": "Mount", "value": "Canon RF" },
+          { "label": "Format", "value": "Full-frame" }
+        ]
+      },
+      {
+        "title": "Construction",
+        "items": [
+          { "label": "Elements", "value": "17 in 13 groups" },
+          { "label": "Aperture blades", "value": "9" },
+          { "label": "Minimum focus", "value": "0.7m" },
+          { "label": "Max magnification", "value": "0.23x" }
+        ]
+      },
+      {
+        "title": "Physical",
+        "items": [
+          { "label": "Filter thread", "value": "77mm" },
+          { "label": "Dimensions", "value": "89.9 x 146mm" },
+          { "label": "Weight", "value": "1070g" },
+          { "label": "Features", "value": "5-stop IS, weather sealing" }
+        ]
+      }
+    ],
+    "box": [
+      "RF 70-200mm f/2.8L IS USM lens",
+      "Front lens cap",
+      "Rear lens cap",
+      "Lens hood",
+      "Lens case",
+      "User manual"
+    ]
+  },
+  "sony-fe-85mm-f18": {
+    "highlights": [
+      { "icon": "aperture", "value": "85mm", "label": "Focal length" },
+      { "icon": "sun", "value": "f/1.8", "label": "Maximum aperture" },
+      { "icon": "ruler", "value": "67mm", "label": "Filter thread" },
+      { "icon": "weight", "value": "371g", "label": "Lens weight" }
+    ],
+    "overview": [
+      "The FE 85mm f/1.8 is a compact portrait prime for Sony's full-frame bodies. The short telephoto perspective flatters faces, and the bright f/1.8 aperture produces smooth background blur.",
+      "A double linear motor focuses quickly and quietly, making it useful for both stills and video in a lightweight package."
+    ],
+    "specs": [
+      {
+        "title": "Optics",
+        "items": [
+          { "label": "Focal length", "value": "85mm" },
+          { "label": "Aperture", "value": "f/1.8-22" },
+          { "label": "Mount", "value": "Sony E" },
+          { "label": "Format", "value": "Full-frame" }
+        ]
+      },
+      {
+        "title": "Construction",
+        "items": [
+          { "label": "Elements", "value": "9 in 8 groups" },
+          { "label": "Aperture blades", "value": "9" },
+          { "label": "Minimum focus", "value": "0.80m" },
+          { "label": "Max magnification", "value": "0.13x" }
+        ]
+      },
+      {
+        "title": "Physical",
+        "items": [
+          { "label": "Filter thread", "value": "67mm" },
+          { "label": "Dimensions", "value": "78 x 82mm" },
+          { "label": "Weight", "value": "371g" },
+          { "label": "Features", "value": "Weather-sealed mount, custom button" }
+        ]
+      }
+    ],
+    "box": [
+      "FE 85mm f/1.8 lens",
+      "Front lens cap",
+      "Rear lens cap",
+      "Lens hood",
+      "Lens case",
+      "User manual"
+    ]
+  },
+  "manfrotto-befree-advanced-tripod": {
+    "highlights": [
+      { "icon": "weight", "value": "8kg", "label": "Payload capacity" },
+      { "icon": "ruler", "value": "150cm", "label": "Maximum height" },
+      { "icon": "package", "value": "40cm", "label": "Folded length" },
+      { "icon": "feather", "value": "1.5kg", "label": "Tripod weight" }
+    ],
+    "overview": [
+      "The Befree Advanced is a travel tripod that folds down to 40cm and still supports up to 8kg. Aluminium legs and twist locks keep it light enough to carry while remaining stable for mirrorless and DSLR kits.",
+      "A ball head with a 200PL-Pro quick-release plate, independent leg angle selectors and a bubble level cover most travel and landscape setups."
+    ],
+    "specs": [
+      {
+        "title": "Build",
+        "items": [
+          { "label": "Material", "value": "Aluminium" },
+          { "label": "Leg sections", "value": "4" },
+          { "label": "Head", "value": "Ball head with 200PL-Pro plate" },
+          { "label": "Leg locks", "value": "Twist locks" }
+        ]
+      },
+      {
+        "title": "Height",
+        "items": [
+          { "label": "Folded length", "value": "40cm" },
+          { "label": "Maximum height", "value": "150cm" },
+          { "label": "Maximum height (column down)", "value": "127cm" }
+        ]
+      },
+      {
+        "title": "Capacity",
+        "items": [
+          { "label": "Payload", "value": "8kg" },
+          { "label": "Weight", "value": "1.5kg" },
+          { "label": "Included", "value": "Carry bag and bubble level" }
+        ]
+      }
+    ],
+    "box": [
+      "Befree Advanced tripod",
+      "Ball head",
+      "200PL-Pro quick-release plate",
+      "Carry bag",
+      "User manual"
+    ]
+  },
+  "dji-rs-4-gimbal": {
+    "highlights": [
+      { "icon": "move-3d", "value": "3-axis", "label": "Stabilisation" },
+      { "icon": "weight", "value": "3kg", "label": "Payload capacity" },
+      { "icon": "monitor", "value": "1.4-inch", "label": "Touchscreen" },
+      { "icon": "feather", "value": "1.3kg", "label": "Gimbal weight" }
+    ],
+    "overview": [
+      "The DJI RS 4 is a three-axis gimbal for mirrorless cameras, with high-torque motors and a 3kg payload. Native vertical shooting and a 1.4-inch touchscreen make it faster to switch between formats on set.",
+      "A second-generation stabilisation algorithm, quick-release plates and a 29.5-hour battery support long shooting days without rebalancing."
+    ],
+    "specs": [
+      {
+        "title": "Stabilisation",
+        "items": [
+          { "label": "Axes", "value": "3-axis" },
+          { "label": "Algorithm", "value": "2nd-generation RS stabilisation" },
+          { "label": "Modes", "value": "Follow, pan, FPV, vertical" }
+        ]
+      },
+      {
+        "title": "Capacity",
+        "items": [
+          { "label": "Payload", "value": "3kg" },
+          { "label": "Gimbal weight", "value": "1.3kg" },
+          { "label": "Battery life", "value": "Up to 29.5 hours" },
+          { "label": "Charging", "value": "18W fast charge" }
+        ]
+      },
+      {
+        "title": "Features",
+        "items": [
+          { "label": "Display", "value": "1.4-inch touchscreen" },
+          { "label": "Mounting", "value": "Quick-release plate" },
+          { "label": "Ports", "value": "RSA, USB-C" },
+          { "label": "Connectivity", "value": "Bluetooth" }
+        ]
+      }
+    ],
+    "box": [
+      "RS 4 gimbal",
+      "Tripod",
+      "Quick-release plate",
+      "Handle",
+      "USB-C cable",
+      "Carry case"
+    ]
+  },
+  "sandisk-extreme-pro-128gb-sdxc": {
+    "highlights": [
+      { "icon": "hard-drive", "value": "128GB", "label": "Capacity" },
+      { "icon": "gauge", "value": "200MB/s", "label": "Read speed" },
+      { "icon": "zap", "value": "90MB/s", "label": "Write speed" },
+      { "icon": "shield-check", "value": "V30", "label": "Video speed class" }
+    ],
+    "overview": [
+      "The SanDisk Extreme PRO 128GB SDXC card is built for 4K video, high-speed bursts and fast offloads. UHS-I speeds up to 200MB/s read and 90MB/s write keep cards from becoming the bottleneck.",
+      "A V30 rating and U3 class make it suitable for most mirrorless and DSLR video modes, and the card is tested for shock, temperature and water resistance."
+    ],
+    "specs": [
+      {
+        "title": "Capacity",
+        "items": [
+          { "label": "Capacity", "value": "128GB" },
+          { "label": "Format", "value": "SDXC" },
+          { "label": "Interface", "value": "UHS-I" }
+        ]
+      },
+      {
+        "title": "Speed",
+        "items": [
+          { "label": "Read speed", "value": "Up to 200MB/s" },
+          { "label": "Write speed", "value": "Up to 90MB/s" },
+          { "label": "Speed class", "value": "V30, U3, Class 10" }
+        ]
+      },
+      {
+        "title": "Durability",
+        "items": [
+          { "label": "Protection", "value": "Shock, vibration, temperature, water" },
+          { "label": "Warranty", "value": "Limited lifetime" }
+        ]
+      }
+    ],
+    "box": [
+      "Extreme PRO 128GB SDXC card",
+      "Protective plastic case"
+    ]
+  },
+  "peak-design-everyday-sling-10l": {
+    "highlights": [
+      { "icon": "backpack", "value": "10L", "label": "Capacity" },
+      { "icon": "tablet", "value": "13-inch", "label": "Tablet sleeve" },
+      { "icon": "droplets", "value": "Weatherproof", "label": "Zip and shell" },
+      { "icon": "weight", "value": "680g", "label": "Bag weight" }
+    ],
+    "overview": [
+      "The Everyday Sling 10L is a compact carry bag for a camera, a couple of lenses and daily essentials. The wide adjustable strap keeps the bag close to the body, and the top zip gives quick access without taking it off.",
+      "Flexible dividers let you reconfigure the interior, while the weather-resistant shell and zip handle light rain and dust."
+    ],
+    "specs": [
+      {
+        "title": "Capacity",
+        "items": [
+          { "label": "Volume", "value": "10L" },
+          { "label": "Tablet sleeve", "value": "Fits up to 13-inch tablet" },
+          { "label": "Dividers", "value": "Flexible padded divider set" }
+        ]
+      },
+      {
+        "title": "Build",
+        "items": [
+          { "label": "Shell", "value": "400D nylon" },
+          { "label": "Weather resistance", "value": "Weather-resistant zip and shell" },
+          { "label": "Hardware", "value": "Aluminium adjusters" }
+        ]
+      },
+      {
+        "title": "Carry",
+        "items": [
+          { "label": "Strap", "value": "Adjustable sling strap" },
+          { "label": "Access", "value": "Quick-access top zip" },
+          { "label": "Weight", "value": "680g" },
+          { "label": "Dimensions", "value": "20 x 36 x 14cm" }
+        ]
+      }
+    ],
+    "box": [
+      "Everyday Sling 10L",
+      "Divider set",
+      "User manual"
+    ]
+  }
+}

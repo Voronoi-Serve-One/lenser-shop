@@ -1,6 +1,10 @@
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
+const session = require('express-session');
+const pgSession = require('connect-pg-simple')(session);
+const bcrypt = require('bcryptjs');
 const pool = require('./config/db');
+const productSpecs = require('./data/product-specs.json');
 
 const app = express();
 
@@ -31,6 +35,37 @@ const productIcon = (product) => {
   if (types.includes('camera')) return 'camera';
   if (types.includes('lenses')) return 'aperture';
   return 'package';
+};
+
+const fallbackSpecContent = (product) => {
+  const types = Array.isArray(product.type) ? product.type : [];
+  const typeLabel = types.includes('camera')
+    ? 'Camera'
+    : types.includes('lenses')
+      ? 'Lens'
+      : 'Accessory';
+
+  return {
+    highlights: [
+      { icon: productIcon(product), value: product.brand, label: 'Brand' },
+      { icon: 'star', value: `${Number(product.ratings || 0).toFixed(1)} / 5`, label: 'Customer rating' },
+      { icon: 'package', value: `${Number(product.amount_sold || 0).toLocaleString('en-PH')} sold`, label: 'Units sold' },
+      { icon: 'shield-check', value: '1 year', label: 'Warranty' },
+    ],
+    overview: [product.description || ''],
+    specs: [
+      {
+        title: 'Catalog details',
+        items: [
+          { label: 'Type', value: typeLabel },
+          { label: 'Brand', value: product.brand },
+          { label: 'Price', value: phpPrice.format(Number(product.discounted_price)) },
+          { label: 'Added', value: shortDate.format(new Date(product.date_added)) },
+        ],
+      },
+    ],
+    box: [product.name, 'Documentation', 'Warranty card'],
+  };
 };
 
 const parseFocal = (name) => {
@@ -149,6 +184,26 @@ const loadProducts = async () => {
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(expressLayouts);
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+app.use(session({
+  store: new pgSession({ pool, tableName: 'session', createTableIfMissing: true }),
+  secret: process.env.SESSION_SECRET || 'lenser-dev-secret-change-in-prod',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    sameSite: 'lax',
+    maxAge: 1000 * 60 * 60 * 24 * 7
+  }
+}));
+
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || null;
+  next();
+});
 
 app.use(async (req, res, next) => {
   if (productsCache.length === 0) {
@@ -367,6 +422,7 @@ app.get('/product/:slug', (req, res) => {
   const savingsPercentValue = Number(product.real_price) > Number(product.discounted_price)
     ? Math.round((1 - Number(product.discounted_price) / Number(product.real_price)) * 100)
     : 0;
+  const specContent = productSpecs[product.slug] || fallbackSpecContent(product);
 
   res.render('product', {
     currentPath: req.path,
@@ -377,12 +433,174 @@ app.get('/product/:slug', (req, res) => {
     breadcrumbs,
     savingsAmount,
     savingsPercentValue,
+    specContent,
   });
 });
 
 app.get('/about', (req, res) => {
   res.render('about', {
     currentPath: req.path,
+  });
+});
+
+const redirectIfAuth = (req, res, next) => {
+  if (req.session.user) {
+    return res.redirect('/');
+  }
+  next();
+};
+
+app.get('/register', redirectIfAuth, (req, res) => {
+  res.render('register', {
+    currentPath: req.path,
+    error: null,
+    values: {}
+  });
+});
+
+app.post('/register', redirectIfAuth, async (req, res) => {
+  const { firstName, lastName, email, password } = req.body || {};
+  const formValues = {
+    firstName: firstName || '',
+    lastName: lastName || '',
+    email: email || ''
+  };
+
+  if (!firstName || !lastName || !email || !password) {
+    return res.render('register', {
+      currentPath: '/register',
+      error: 'All fields are required.',
+      values: formValues
+    });
+  }
+
+  if (String(password).length < 8) {
+    return res.render('register', {
+      currentPath: '/register',
+      error: 'Password must be at least 8 characters.',
+      values: formValues
+    });
+  }
+
+  const emailNorm = String(email).trim().toLowerCase();
+
+  try {
+    const existing = await pool.query('SELECT id FROM users WHERE LOWER(email) = $1', [emailNorm]);
+    if (existing.rows.length > 0) {
+      return res.render('register', {
+        currentPath: '/register',
+        error: 'An account with that email already exists.',
+        values: formValues
+      });
+    }
+
+    const passwordHash = await bcrypt.hash(String(password), 10);
+    const { rows } = await pool.query(
+      'INSERT INTO users (email, password_hash, first_name, last_name) VALUES ($1, $2, $3, $4) RETURNING id, email, first_name, last_name',
+      [emailNorm, passwordHash, String(firstName).trim(), String(lastName).trim()]
+    );
+
+    const user = rows[0];
+    req.session.regenerate((err) => {
+      if (err) {
+        console.error(err);
+        return res.redirect('/login');
+      }
+      req.session.user = {
+        id: user.id,
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name
+      };
+      req.session.save(() => {
+        res.redirect('/');
+      });
+    });
+  } catch (error) {
+    console.error('Register error', error);
+    return res.render('register', {
+      currentPath: '/register',
+      error: 'Something went wrong. Please try again.',
+      values: formValues
+    });
+  }
+});
+
+app.get('/login', redirectIfAuth, (req, res) => {
+  res.render('login', {
+    currentPath: req.path,
+    error: null,
+    values: {}
+  });
+});
+
+app.post('/login', redirectIfAuth, async (req, res) => {
+  const { email, password } = req.body || {};
+  const formValues = { email: email || '' };
+
+  if (!email || !password) {
+    return res.render('login', {
+      currentPath: '/login',
+      error: 'Email and password are required.',
+      values: formValues
+    });
+  }
+
+  const emailNorm = String(email).trim().toLowerCase();
+
+  try {
+    const { rows } = await pool.query(
+      'SELECT id, email, password_hash, first_name, last_name FROM users WHERE LOWER(email) = $1',
+      [emailNorm]
+    );
+
+    if (rows.length === 0) {
+      return res.render('login', {
+        currentPath: '/login',
+        error: 'Invalid email or password.',
+        values: formValues
+      });
+    }
+
+    const user = rows[0];
+    const match = await bcrypt.compare(String(password), user.password_hash);
+
+    if (!match) {
+      return res.render('login', {
+        currentPath: '/login',
+        error: 'Invalid email or password.',
+        values: formValues
+      });
+    }
+
+    req.session.regenerate((err) => {
+      if (err) {
+        console.error(err);
+        return res.redirect('/login');
+      }
+      req.session.user = {
+        id: user.id,
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name
+      };
+      req.session.save(() => {
+        res.redirect('/');
+      });
+    });
+  } catch (error) {
+    console.error('Login error', error);
+    return res.render('login', {
+      currentPath: '/login',
+      error: 'Something went wrong. Please try again.',
+      values: formValues
+    });
+  }
+});
+
+app.get('/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.redirect('/');
   });
 });
 

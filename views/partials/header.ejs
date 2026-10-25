@@ -35,11 +35,11 @@
   </svg>
 
   <div class="nav-top">
-    <h2 class="logo">LENSER</h2>
-    <nav class="nav">
-      <a href="/">Shop</a>
+    <a class="logo" href="/" aria-label="Lenser home">LENSER</a>
+    <nav class="nav" aria-label="Shop categories">
+      <a href="/" class="<%= currentPath === '/' ? 'active' : '' %>" <%- currentPath === '/' ? 'aria-current="page"' : '' %>>Shop</a>
       <div class="nav-item">
-        <a href="/cameras">
+        <a href="/cameras" class="<%= currentPath === '/cameras' ? 'active' : '' %>" <%- currentPath === '/cameras' ? 'aria-current="page"' : '' %>>
           Cameras
           <i data-lucide="chevron-down" class="chevron"></i>
         </a>
@@ -69,7 +69,7 @@
         </div>
       </div>
       <div class="nav-item">
-        <a href="/lenses">
+        <a href="/lenses" class="<%= currentPath === '/lenses' ? 'active' : '' %>" <%- currentPath === '/lenses' ? 'aria-current="page"' : '' %>>
           Lenses
           <i data-lucide="chevron-down" class="chevron"></i>
         </a>
@@ -99,7 +99,7 @@
         </div>
       </div>
       <div class="nav-item">
-        <a href="/accessories">
+        <a href="/accessories" class="<%= currentPath === '/accessories' ? 'active' : '' %>" <%- currentPath === '/accessories' ? 'aria-current="page"' : '' %>>
           Accessories
           <i data-lucide="chevron-down" class="chevron"></i>
         </a>
@@ -128,16 +128,34 @@
           </div>
         </div>
       </div>
-      <a href="/about">About us</a>
+      <a href="/about" class="<%= currentPath === '/about' ? 'active' : '' %>" <%- currentPath === '/about' ? 'aria-current="page"' : '' %>>About us</a>
     </nav>
 
     <div class="misc">
       <button class="icon-btn" type="button" aria-label="Search">
         <i data-lucide="search"></i>
       </button>
-      <button class="icon-btn" type="button" aria-label="Account">
-        <i data-lucide="user-round"></i>
-      </button>
+      <% if (typeof user !== 'undefined' && user) { %>
+        <div class="nav-item nav-item--account">
+          <button class="icon-btn" type="button" aria-label="Account">
+            <i data-lucide="user-round"></i>
+          </button>
+          <div class="dropdown dropdown--account">
+            <div class="dropdown__aside">
+              <span class="dropdown__eyebrow">Account</span>
+              <h3 class="dropdown__title"><%= user.first_name %> <%= user.last_name %></h3>
+              <p class="dropdown__desc"><%= user.email %></p>
+            </div>
+            <div class="dropdown__grid dropdown__grid--account">
+              <a class="dropdown-item dropdown-item--single" href="/logout">Sign out</a>
+            </div>
+          </div>
+        </div>
+      <% } else { %>
+        <a class="icon-btn" href="/register" aria-label="Create account">
+          <i data-lucide="user-round"></i>
+        </a>
+      <% } %>
       <button class="icon-btn" type="button" aria-label="Cart">
         <i data-lucide="shopping-cart"></i>
       </button>
@@ -162,12 +180,12 @@
     </svg>
   </div>
 
-  <div class="nav-bottom">
+  <nav class="nav-bottom" aria-label="Shop sections">
     <a href="/" class="<%= currentPath === '/' ? 'active' : '' %>" <%- currentPath === '/' ? 'aria-current="page"' : '' %>>Home</a>
     <a href="/featured" class="<%= currentPath === '/featured' ? 'active' : '' %>" <%- currentPath === '/featured' ? 'aria-current="page"' : '' %>>Featured</a>
     <a href="/deals" class="<%= currentPath === '/deals' ? 'active' : '' %>" <%- currentPath === '/deals' ? 'aria-current="page"' : '' %>>Deals</a>
     <a href="/best-sellers" class="<%= currentPath === '/best-sellers' ? 'active' : '' %>" <%- currentPath === '/best-sellers' ? 'aria-current="page"' : '' %>>Best Sellers</a>
     <a href="/new-arrivals" class="<%= currentPath === '/new-arrivals' ? 'active' : '' %>" <%- currentPath === '/new-arrivals' ? 'aria-current="page"' : '' %>>New Arrivals</a>
     <span class="nav-bottom__indicator" aria-hidden="true"></span>
-  </div>
+  </nav>
 </header>

@@ -9,8 +9,8 @@
     }) %>
 
     <div class="product-card__body">
-      <h3 class="product-card__brand"><%= product.brand %></h3>
-      <p class="product-card__name"><%= product.name %></p>
+      <p class="product-card__brand"><%= product.brand %></p>
+      <h3 class="product-card__name"><%= product.name %></h3>
 
       <%- include('rating', { product: product }) %>
       <%- include('price', { product: product }) %>

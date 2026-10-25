@@ -1,0 +1,166 @@
+<section class="auth" aria-labelledby="register-title">
+  <div class="auth__stage">
+    <figure class="auth__visual auth__visual--register">
+      <img
+        src="/assets/blog/register-hero.webp"
+        alt="Cutaway view of a camera lens showing its internal optical elements"
+        width="1536"
+        height="1024"
+        loading="eager"
+        decoding="async"
+      />
+    </figure>
+
+    <div class="auth__content">
+      <header class="auth__intro">
+        <h1 id="register-title">Create your account</h1>
+        <p class="auth__lede">
+          Save the gear you're weighing, track orders, and keep your picks in one place.
+        </p>
+      </header>
+
+      <nav class="auth__tabs" aria-label="Account access">
+        <a class="auth__tab" href="/login">Sign in</a>
+        <a class="auth__tab is-active" href="/register" aria-current="page">Create account</a>
+      </nav>
+
+      <div class="auth__panel">
+        <% if (error) { %>
+          <p class="auth__error" role="alert">
+            <i data-lucide="circle-alert" aria-hidden="true"></i>
+            <span><%= error %></span>
+          </p>
+        <% } %>
+
+        <form class="auth__form" action="/register" method="POST" data-auth-form>
+          <div class="auth__row">
+            <div class="auth__field">
+              <label for="register-first">First name</label>
+              <div class="auth__control">
+                <span class="auth__field-icon" aria-hidden="true"><i data-lucide="user-round"></i></span>
+                <input
+                  id="register-first"
+                  type="text"
+                  name="firstName"
+                  autocomplete="given-name"
+                  placeholder="Jordan"
+                  value="<%= typeof values !== 'undefined' && values ? values.firstName || '' : '' %>"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="auth__field">
+              <label for="register-last">Last name</label>
+              <div class="auth__control">
+                <span class="auth__field-icon" aria-hidden="true"><i data-lucide="user-round"></i></span>
+                <input
+                  id="register-last"
+                  type="text"
+                  name="lastName"
+                  autocomplete="family-name"
+                  placeholder="Ellis"
+                  value="<%= typeof values !== 'undefined' && values ? values.lastName || '' : '' %>"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="auth__field">
+            <label for="register-email">Email address</label>
+            <div class="auth__control">
+              <span class="auth__field-icon" aria-hidden="true"><i data-lucide="mail"></i></span>
+              <input
+                id="register-email"
+                type="email"
+                name="email"
+                autocomplete="email"
+                placeholder="you@example.com"
+                value="<%= typeof values !== 'undefined' && values ? values.email || '' : '' %>"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="auth__field">
+            <div class="auth__label-row">
+              <label for="register-password">Password</label>
+              <span class="auth__caps" data-caps-hint aria-live="polite" hidden>Caps Lock is on</span>
+            </div>
+            <div class="auth__control">
+              <span class="auth__field-icon" aria-hidden="true"><i data-lucide="lock"></i></span>
+              <input
+                id="register-password"
+                type="password"
+                name="password"
+                autocomplete="new-password"
+                minlength="8"
+                aria-describedby="register-password-hint"
+                placeholder="At least 8 characters"
+                data-password
+                required
+              />
+              <button
+                class="auth__reveal"
+                type="button"
+                data-password-toggle
+                aria-label="Show password"
+                aria-pressed="false"
+                hidden
+              >
+                <span class="auth__reveal-show" aria-hidden="true"><i data-lucide="eye"></i></span>
+                <span class="auth__reveal-hide" aria-hidden="true"><i data-lucide="eye-off"></i></span>
+              </button>
+            </div>
+            <div class="auth__strength" data-strength data-score="0">
+              <div class="auth__strength-bars" aria-hidden="true">
+                <span></span><span></span><span></span><span></span>
+              </div>
+              <p class="auth__strength-label" id="register-password-hint" data-strength-label aria-live="polite">
+                At least 8 characters
+              </p>
+            </div>
+          </div>
+
+          <div class="auth__field">
+            <label for="register-confirm">Confirm password</label>
+            <div class="auth__control">
+              <span class="auth__field-icon" aria-hidden="true"><i data-lucide="shield-check"></i></span>
+              <input
+                id="register-confirm"
+                type="password"
+                name="confirmPassword"
+                autocomplete="new-password"
+                minlength="8"
+                aria-describedby="register-confirm-hint"
+                placeholder="Re-enter your password"
+                data-confirm
+                required
+              />
+              <button
+                class="auth__reveal"
+                type="button"
+                data-password-toggle
+                aria-label="Show password"
+                aria-pressed="false"
+                hidden
+              >
+                <span class="auth__reveal-show" aria-hidden="true"><i data-lucide="eye"></i></span>
+                <span class="auth__reveal-hide" aria-hidden="true"><i data-lucide="eye-off"></i></span>
+              </button>
+            </div>
+            <p class="auth__hint" id="register-confirm-hint" data-confirm-hint aria-live="polite">Enter the same password again</p>
+          </div>
+
+          <button
+            class="btn btn--primary auth__submit"
+            type="submit"
+            data-submit
+            data-busy-label="Creating account..."
+          >Create account</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>

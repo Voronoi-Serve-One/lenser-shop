@@ -1,6 +1,7 @@
 <%
   const mediaModifier = typeof mediaClass !== 'undefined' && mediaClass ? ' ' + mediaClass : '';
   const badgeLabel = typeof badge !== 'undefined' ? badge : '';
+  const loadingMode = typeof mediaLoading !== 'undefined' && mediaLoading ? mediaLoading : 'lazy';
   const isPhoto = Boolean(product.image);
   const altText = isPhoto ? `${product.brand} ${product.name}` : '';
   const hasBackground = isPhoto && typeof product.image_background === 'string' && /^#[0-9a-f]{6}$/i.test(product.image_background);
@@ -12,7 +13,8 @@
     <img
       src="<%= product.image %>"
       alt="<%= altText %>"
-      loading="lazy"
+      loading="<%= loadingMode %>"
+      fetchpriority="<%= loadingMode === 'eager' ? 'high' : 'auto' %>"
       decoding="async"
     />
   <% } else { %>

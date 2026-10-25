@@ -1,4 +1,4 @@
-<main class="page-product" aria-labelledby="product-title">
+<section class="page-product" aria-labelledby="product-title">
   <% if (Array.isArray(breadcrumbs) && breadcrumbs.length) { %>
     <nav class="breadcrumbs" aria-label="Breadcrumb">
       <ol class="breadcrumbs__list">
@@ -18,55 +18,200 @@
     </nav>
   <% } %>
 
-  <section class="product-detail">
-    <div class="product-detail__grid">
-      <div class="product-detail__media">
-        <%- include('partials/product-media', { product, mediaClass: 'product-media--detail' }) %>
+  <section class="product-hero">
+    <div class="product-hero__media">
+      <%- include('partials/product-media', {
+        product,
+        mediaClass: 'product-media--detail',
+        mediaLoading: 'eager'
+      }) %>
+    </div>
+
+    <div class="product-hero__info">
+      <div class="product-hero__header">
+        <p class="product-hero__brand"><%= product.brand %></p>
+        <h1 id="product-title"><%= product.name %></h1>
       </div>
-      <div class="product-detail__info">
-        <div class="product-detail__header">
-          <h1 id="product-title"><%= product.name %></h1>
-          <p class="product-detail__brand"><%= product.brand %></p>
-        </div>
-        <div class="product-detail__pricing">
-          <div class="product-detail__price-row">
-            <span class="product-detail__price"><%= formatPrice(product.discounted_price) %></span>
-            <% if (product.real_price > product.discounted_price) { %>
-              <span class="product-detail__price product-detail__price--old"><%= formatPrice(product.real_price) %></span>
-            <% } %>
-          </div>
-          <% if (product.real_price > product.discounted_price && (savingsPercentValue || savingsAmount)) { %>
-            <span class="product-detail__save">Save <%= savingsPercentValue ? savingsPercentValue + '%' : formatPrice(savingsAmount) %></span>
+
+      <p class="product-hero__lede"><%= product.description %></p>
+
+      <div class="product-hero__rating">
+        <%- include('partials/rating', { product, ratingClass: 'rating--lg' }) %>
+        <span class="product-hero__sold">
+          <%= Number(product.amount_sold || 0).toLocaleString('en-PH') %> sold
+        </span>
+      </div>
+
+      <div class="product-hero__pricing">
+        <div class="product-hero__price-row">
+          <span class="product-hero__price"><%= formatPrice(product.discounted_price) %></span>
+          <% if (product.real_price > product.discounted_price) { %>
+            <span class="product-hero__price-old"><%= formatPrice(product.real_price) %></span>
+          <% } %>
+          <% if (savingsPercentValue > 0) { %>
+            <span class="product-hero__save">Save <%= savingsPercentValue %>%</span>
           <% } %>
         </div>
-        <p class="product-detail__desc"><%= product.description %></p>
-        <div class="product-detail__meta">
-          <div class="product-detail__meta-item">
-            <span class="label">Sold</span>
-            <span class="value"><%= Number(product.amount_sold || 0).toLocaleString('en-PH') %></span>
-          </div>
-          <% if (product.ratings) { %>
-            <div class="product-detail__meta-item">
-              <span class="label">Rating</span>
-              <div class="value value--rating">
-                <%- include('partials/rating', { product }) %>
-              </div>
-            </div>
-          <% } %>
-          <div class="product-detail__meta-item">
-            <span class="label">Added</span>
-            <span class="value"><%= formatShortDate(product.date_added) %></span>
-          </div>
-          <% if (categoryLabel) { %>
-            <div class="product-detail__meta-item">
-              <span class="label">Category</span>
-              <a class="value value--link" href="<%= categoryHref %>"><%= categoryLabel %></a>
-            </div>
-          <% } %>
+      </div>
+
+      <div class="product-hero__buy">
+        <div class="qty" data-qty>
+          <button class="qty__button" type="button" data-qty-decrease aria-label="Decrease quantity">
+            <i data-lucide="minus" aria-hidden="true"></i>
+          </button>
+          <input
+            class="qty__input"
+            type="text"
+            inputmode="numeric"
+            value="1"
+            min="1"
+            max="10"
+            aria-label="Quantity"
+            data-qty-input
+          />
+          <button class="qty__button" type="button" data-qty-increase aria-label="Increase quantity">
+            <i data-lucide="plus" aria-hidden="true"></i>
+          </button>
         </div>
+        <button class="btn btn--primary product-hero__add" type="button">
+          <i data-lucide="shopping-bag" aria-hidden="true"></i>
+          Add to cart
+        </button>
+        <button class="btn btn--ghost product-hero__buy-now" type="button">
+          <i data-lucide="zap" aria-hidden="true"></i>
+          Buy now
+        </button>
+      </div>
+
+      <ul class="product-hero__assurances">
+        <li class="assurance">
+          <i data-lucide="truck" aria-hidden="true"></i>
+          <span>
+            <strong>Free shipping</strong>
+            <small>Orders over <%= formatPrice(2000) %></small>
+          </span>
+        </li>
+        <li class="assurance">
+          <i data-lucide="shield-check" aria-hidden="true"></i>
+          <span>
+            <strong>1-year warranty</strong>
+            <small>Official distributor</small>
+          </span>
+        </li>
+        <li class="assurance">
+          <i data-lucide="rotate-ccw" aria-hidden="true"></i>
+          <span>
+            <strong>7-day returns</strong>
+            <small>Hassle-free</small>
+          </span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="spec-strip" aria-label="Key specifications">
+    <% specContent.highlights.forEach((highlight) => { %>
+      <div class="spec-strip__item">
+        <i data-lucide="<%= highlight.icon %>" aria-hidden="true"></i>
+        <span class="spec-strip__value"><%= highlight.value %></span>
+        <span class="spec-strip__label"><%= highlight.label %></span>
+      </div>
+    <% }) %>
+  </section>
+
+  <%
+    const tabId = `product-tabs-${product.slug}`;
+    const tabs = [
+      { id: 'overview', label: 'Overview' },
+      { id: 'specifications', label: 'Specifications' },
+      { id: 'box', label: "What's in the box" },
+    ];
+  %>
+  <section class="product-tabs" data-tabs aria-label="Product details">
+    <div class="product-tabs__list" role="tablist" aria-label="Product details">
+      <% tabs.forEach((tab, index) => { %>
+        <button
+          class="product-tabs__tab<%= index === 0 ? ' is-active' : '' %>"
+          id="<%= tabId %>-tab-<%= tab.id %>"
+          type="button"
+          role="tab"
+          aria-selected="<%= index === 0 ? 'true' : 'false' %>"
+          aria-controls="<%= tabId %>-panel-<%= tab.id %>"
+          tabindex="<%= index === 0 ? '0' : '-1' %>"
+        ><%= tab.label %></button>
+      <% }) %>
+    </div>
+
+    <div class="product-tabs__panels">
+      <div
+        class="product-tabs__panel"
+        id="<%= tabId %>-panel-overview"
+        role="tabpanel"
+        aria-labelledby="<%= tabId %>-tab-overview"
+        tabindex="0"
+      >
+        <div class="overview">
+          <% specContent.overview.forEach((paragraph) => { %>
+            <p><%= paragraph %></p>
+          <% }) %>
+        </div>
+      </div>
+
+      <div
+        class="product-tabs__panel"
+        id="<%= tabId %>-panel-specifications"
+        role="tabpanel"
+        aria-labelledby="<%= tabId %>-tab-specifications"
+        tabindex="0"
+        hidden
+      >
+        <div class="spec-groups">
+          <% specContent.specs.forEach((group) => { %>
+            <section class="spec-group">
+              <h2 class="spec-group__title"><%= group.title %></h2>
+              <dl class="spec-group__list">
+                <% group.items.forEach((item) => { %>
+                  <div class="spec-row">
+                    <dt><%= item.label %></dt>
+                    <dd><%= item.value %></dd>
+                  </div>
+                <% }) %>
+              </dl>
+            </section>
+          <% }) %>
+        </div>
+      </div>
+
+      <div
+        class="product-tabs__panel"
+        id="<%= tabId %>-panel-box"
+        role="tabpanel"
+        aria-labelledby="<%= tabId %>-tab-box"
+        tabindex="0"
+        hidden
+      >
+        <ul class="box-list">
+          <% specContent.box.forEach((item) => { %>
+            <li class="box-item">
+              <i data-lucide="check" aria-hidden="true"></i>
+              <span><%= item %></span>
+            </li>
+          <% }) %>
+        </ul>
       </div>
     </div>
   </section>
+
+  <noscript>
+    <style>
+      .product-tabs__panel[hidden] {
+        display: block;
+      }
+      .product-tabs__list {
+        display: none;
+      }
+    </style>
+  </noscript>
 
   <% if (related && related.length) { %>
     <section class="related">
@@ -83,4 +228,4 @@
       </div>
     </section>
   <% } %>
-</main>
+</section>

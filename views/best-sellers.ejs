@@ -43,6 +43,7 @@
           <p class="best-podium__units"><%= product.amount_sold %> sold</p>
 
           <%- include('partials/price', { product: product }) %>
+          <a class="tile-hit" href="/product/<%= product.slug %>" aria-label="View <%= product.brand %> <%= product.name %>"></a>
         </article>
         <% }); %>
       </div>
@@ -65,6 +66,7 @@
 
           <span class="best-row__units"><%= product.amount_sold %> sold</span>
           <%- include('partials/price', { product: product }) %>
+          <a class="tile-hit" href="/product/<%= product.slug %>" aria-label="View <%= product.brand %> <%= product.name %>"></a>
         </li>
         <% }); %>
       </ol>

@@ -26,6 +26,7 @@
         <h3 class="landed-card__name"><%= product.name %></h3>
 
         <%- include('partials/price', { product: product }) %>
+        <a class="tile-hit" href="/product/<%= product.slug %>" aria-label="View <%= product.brand %> <%= product.name %>"></a>
       </article>
       <% }); %>
     </div>
@@ -59,6 +60,7 @@
             <%- include('partials/rating', { product: product }) %>
             <%- include('partials/price', { product: product }) %>
           </div>
+          <a class="tile-hit" href="/product/<%= product.slug %>" aria-label="View <%= product.brand %> <%= product.name %>"></a>
         </article>
         <% }); %>
       </div>

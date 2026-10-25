@@ -46,6 +46,7 @@
       </div>
       <p class="deal-hero__meter-label"><%= topDiscount %>% off, save <%= formatPrice(savings(topDeal)) %></p>
     </div>
+    <a class="tile-hit" href="/product/<%= topDeal.slug %>" aria-label="View <%= topDeal.brand %> <%= topDeal.name %>"></a>
   </article>
   <% } %>
 
@@ -78,6 +79,7 @@
         </div>
         <span class="deal-card__percent"><%= discount %>% off</span>
       </div>
+      <a class="tile-hit" href="/product/<%= product.slug %>" aria-label="View <%= product.brand %> <%= product.name %>"></a>
     </article>
     <% }); %>
   </div>

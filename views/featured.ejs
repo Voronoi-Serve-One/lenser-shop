@@ -26,8 +26,8 @@
 
     <div class="featured-spotlight__body">
       <div class="featured-spotlight__header">
-        <h2><%= topPick.name %></h2>
         <p class="featured-spotlight__brand"><%= topPick.brand %></p>
+        <h2><%= topPick.name %></h2>
       </div>
       <p class="featured-spotlight__desc"><%= topPick.description %></p>
 
@@ -38,29 +38,34 @@
         <span class="featured-spotlight__save">Save <%= formatPrice(savings(topPick)) %></span>
       </div>
     </div>
+    <a class="tile-hit" href="/product/<%= topPick.slug %>" aria-label="View <%= topPick.brand %> <%= topPick.name %>"></a>
   </article>
   <% } %>
 
   <div class="featured-picks">
     <% picks.forEach(function (product, index) { %>
-    <article class="featured-pick <%= index % 3 === 0 ? 'featured-pick--wide' : '' %>">
+    <article class="featured-pick <%= index === 0 ? 'featured-pick--wide' : '' %>">
       <div class="featured-pick__media">
         <%- include('partials/product-media', {
           product: product,
+          badge: index === 0 ? 'Also featured' : '',
           mediaClass: 'product-media--wide'
         }) %>
       </div>
 
       <div class="featured-pick__body">
         <div class="featured-pick__header">
-          <h3><%= product.name %></h3>
           <p class="featured-pick__brand"><%= product.brand %></p>
+          <h3><%= product.name %></h3>
         </div>
         <p class="featured-pick__desc"><%= product.description %></p>
 
-        <%- include('partials/rating', { product: product }) %>
-        <%- include('partials/price', { product: product }) %>
+        <div class="featured-pick__meta">
+          <%- include('partials/rating', { product: product }) %>
+          <%- include('partials/price', { product: product }) %>
+        </div>
       </div>
+      <a class="tile-hit" href="/product/<%= product.slug %>" aria-label="View <%= product.brand %> <%= product.name %>"></a>
     </article>
     <% }); %>
   </div>

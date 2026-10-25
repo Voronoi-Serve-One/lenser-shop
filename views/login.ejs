@@ -1,0 +1,92 @@
+<section class="auth" aria-labelledby="login-title">
+  <div class="auth__stage">
+    <figure class="auth__visual auth__visual--login">
+      <img
+        src="/assets/blog/login-hero.webp"
+        alt="Nikon DSLR with a Nikkor zoom lens on a dark studio surface"
+        width="1536"
+        height="1024"
+        loading="eager"
+        decoding="async"
+      />
+    </figure>
+
+    <div class="auth__content">
+      <header class="auth__intro">
+        <h1 id="login-title">Sign in to Lenser</h1>
+        <p class="auth__lede">
+          Pick up where you left off: saved gear, orders, and your wishlist.
+        </p>
+      </header>
+
+      <nav class="auth__tabs" aria-label="Account access">
+        <a class="auth__tab is-active" href="/login" aria-current="page">Sign in</a>
+        <a class="auth__tab" href="/register">Create account</a>
+      </nav>
+
+      <div class="auth__panel">
+        <% if (error) { %>
+          <p class="auth__error" role="alert">
+            <i data-lucide="circle-alert" aria-hidden="true"></i>
+            <span><%= error %></span>
+          </p>
+        <% } %>
+
+        <form class="auth__form" action="/login" method="POST" data-auth-form>
+          <div class="auth__field">
+            <label for="login-email">Email address</label>
+            <div class="auth__control">
+              <span class="auth__field-icon" aria-hidden="true"><i data-lucide="mail"></i></span>
+              <input
+                id="login-email"
+                type="email"
+                name="email"
+                autocomplete="email"
+                placeholder="you@example.com"
+                value="<%= typeof values !== 'undefined' && values ? values.email || '' : '' %>"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="auth__field">
+            <div class="auth__label-row">
+              <label for="login-password">Password</label>
+              <span class="auth__caps" data-caps-hint aria-live="polite" hidden>Caps Lock is on</span>
+            </div>
+            <div class="auth__control">
+              <span class="auth__field-icon" aria-hidden="true"><i data-lucide="lock"></i></span>
+              <input
+                id="login-password"
+                type="password"
+                name="password"
+                autocomplete="current-password"
+                placeholder="Enter your password"
+                data-password
+                required
+              />
+              <button
+                class="auth__reveal"
+                type="button"
+                data-password-toggle
+                aria-label="Show password"
+                aria-pressed="false"
+                hidden
+              >
+                <span class="auth__reveal-show" aria-hidden="true"><i data-lucide="eye"></i></span>
+                <span class="auth__reveal-hide" aria-hidden="true"><i data-lucide="eye-off"></i></span>
+              </button>
+            </div>
+          </div>
+
+          <button
+            class="btn btn--primary auth__submit"
+            type="submit"
+            data-submit
+            data-busy-label="Signing in..."
+          >Sign in</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
