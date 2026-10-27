@@ -106,17 +106,17 @@
           </span>
         </li>
       </ul>
-    </div>
-  </section>
 
-  <section class="spec-strip" aria-label="Key specifications">
-    <% specContent.highlights.forEach((highlight) => { %>
-      <div class="spec-strip__item">
-        <i data-lucide="<%= highlight.icon %>" aria-hidden="true"></i>
-        <span class="spec-strip__value"><%= highlight.value %></span>
-        <span class="spec-strip__label"><%= highlight.label %></span>
-      </div>
-    <% }) %>
+      <section class="spec-strip" aria-label="Key specifications">
+        <% specContent.highlights.forEach((highlight) => { %>
+          <div class="spec-strip__item">
+            <i data-lucide="<%= highlight.icon %>" aria-hidden="true"></i>
+            <span class="spec-strip__value"><%= highlight.value %></span>
+            <span class="spec-strip__label"><%= highlight.label %></span>
+          </div>
+        <% }) %>
+      </section>
+    </div>
   </section>
 
   <%

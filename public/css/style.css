@@ -1254,6 +1254,7 @@ header .nav-top .nav .dropdown-more:hover svg {
   display: flex;
   flex-direction: column;
   gap: clamp(1rem, 2vw, 1.35rem);
+  align-self: stretch;
 }
 .product-hero__header {
   display: flex;
@@ -1453,18 +1454,19 @@ header .nav-top .nav .dropdown-more:hover svg {
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   background: var(--border);
+  margin-top: auto;
 }
 .spec-strip__item {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
   min-width: 0;
-  padding: 1rem 1.15rem 1.1rem;
+  padding: 0.85rem 0.7rem 0.9rem;
   background: var(--surface-2);
 }
 .spec-strip__item svg {
-  width: 19px;
-  height: 19px;
+  width: 18px;
+  height: 18px;
   margin-bottom: 0.15rem;
   color: var(--accent);
   stroke-width: 1.5;
@@ -1472,15 +1474,17 @@ header .nav-top .nav .dropdown-more:hover svg {
 .spec-strip__value {
   color: var(--text-color-primary);
   font-family: var(--font-display);
-  font-size: 1.02rem;
+  font-size: 0.98rem;
   font-weight: 700;
   letter-spacing: -0.01em;
   line-height: 1.2;
+  overflow-wrap: anywhere;
 }
 .spec-strip__label {
   color: var(--text-muted);
   font-size: 0.74rem;
   line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 .product-tabs {
   margin-top: clamp(0.5rem, 1.5vw, 1rem);
@@ -2713,6 +2717,16 @@ header .nav-top .nav .dropdown-more:hover svg {
 }
 
 /* Responsive */
+@media (max-width: 1365px) and (min-width: 1280px) {
+  .spec-strip__value {
+    font-size: 0.92rem;
+  }
+}
+@media (max-width: 1279px) and (min-width: 1101px) {
+  .spec-strip__value {
+    font-size: 0.88rem;
+  }
+}
 @media (max-width: 1100px) {
   header .nav-top .dropdown {
     grid-template-columns: 170px minmax(0, 1fr);
@@ -2731,6 +2745,16 @@ header .nav-top .nav .dropdown-more:hover svg {
   }
   .product-media--detail {
     aspect-ratio: 4 / 3;
+  }
+  .spec-strip__item {
+    padding: 1rem 1.15rem 1.1rem;
+  }
+  .spec-strip__item svg {
+    width: 19px;
+    height: 19px;
+  }
+  .spec-strip__value {
+    font-size: 1.02rem;
   }
 }
 @media (max-width: 960px) {
