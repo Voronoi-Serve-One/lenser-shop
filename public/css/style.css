@@ -3166,6 +3166,7 @@ header .nav-top .misc .nav-item--account.is-open .dropdown--account {
 header .nav-top .misc .account-menu__link {
   display: flex;
   align-items: center;
+  gap: 0.6rem;
   min-height: 38px;
   padding: 0 0.65rem;
   border-radius: var(--radius-sm);
@@ -3174,6 +3175,19 @@ header .nav-top .misc .account-menu__link {
   transition:
     background-color 0.2s ease,
     color 0.2s ease;
+}
+
+header .nav-top .misc .account-menu__icon {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  opacity: 0.72;
+  transition: opacity 0.2s ease;
+}
+
+header .nav-top .misc .account-menu__link:hover .account-menu__icon,
+header .nav-top .misc .account-menu__link:focus-visible .account-menu__icon {
+  opacity: 1;
 }
 
 header .nav-top .misc .account-menu__link:hover,

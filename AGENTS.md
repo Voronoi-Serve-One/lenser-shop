@@ -4,7 +4,8 @@ Server-rendered camera-gear storefront: Express 5 + EJS 6 via `express-ejs-layou
 
 ## Commands
 
-- `npm start` — nodemon on http://localhost:3000. Entry is `app.js` (ignore `"main": "index.js"`; that file does not exist).
+- `cp .env.example .env` — copy the env template and fill in Postgres credentials. `.env` is gitignored; run this before the first start.
+- `npm start` — nodemon on http://localhost:`PORT` (default 3000). Entry is `app.js` (ignore `"main": "index.js"`; that file does not exist).
 - `npm run migrate:shop` — applies `schema.sql` idempotently (creates accounts/cart/wishlist/orders tables). Run after schema changes.
 - No lint, typecheck, build, or test suite. `npm test` is a stub that exits 1 — don't run it.
 
@@ -32,15 +33,15 @@ Server-rendered camera-gear storefront: Express 5 + EJS 6 via `express-ejs-layou
 ## Data / DB
 
 - `config/db.js` exports a `pg` Pool used by auth, cart, wishlist, order, and account routes.
-- `schema.sql` is valid Postgres and applied with `npm run migrate:shop`.
+- `schema.sql` is valid Postgres and applied with `npm run migrate:shop`. Catalog and spec data are seeded with `node scripts/migrate-products.js` (truncates products, so it clears cart/wishlist rows).
 - Commerce is DB-backed and requires login: `/cart`, `/checkout`, `/account`, plus POST routes for cart, wishlist, profile, password, and orders. Mock payment only (`cod` or `bank_transfer`); no payment gateway or password-reset email flow.
 - Shipping is free at a ₱2,000 subtotal (`FREE_SHIPPING_THRESHOLD`), otherwise ₱150 (`SHIPPING_FEE`).
-- `data/products.json` is the live catalog (24 products) and the source for all pages. Shape: `id, slug, name, description, discounted_price, real_price, brand, ratings, type[], is_featured, amount_sold, date_added, image`.
+- The live catalog is the `products` + `product_types` + `product_specs` tables, loaded once into `productsCache` at startup. `data/products.json` and `data/product-specs.json` are seed sources only, not read per request. Product JSON shape: `id, slug, name, description, discounted_price, real_price, brand, ratings, type[], is_featured, amount_sold, date_added, image`; specs live as JSONB (`highlights`, `overview`, `spec_groups`, `box_items`).
 - `image` is `/assets/products/<slug>.webp` for all 24 products. If an image is removed, the card falls back to a Lucide icon.
 - `data/product-assets.json` maps each product to its flat target path and stores `status`, `credit`, `license`, and `background`.
 - Keep image paths flat (no brand folders). Sourced photos are WebP, displayed with `object-fit: contain`; `app.js` merges each asset's `background` hex into `product.image_background`, used as the card's tile color. Never remove or key out image backgrounds.
 - `camera.json` is the older reference shape.
-- `config/db.js` has hardcoded local Postgres credentials.
+- `config/db.js` loads `dotenv` and reads Postgres settings from `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, and `PGPASSWORD`; session signing uses `SESSION_SECRET`. Never commit `.env`.
 
 ## Images
 

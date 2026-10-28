@@ -4,7 +4,6 @@ const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const bcrypt = require('bcryptjs');
 const pool = require('./config/db');
-const productSpecs = require('./data/product-specs.json');
 
 const app = express();
 
@@ -137,7 +136,7 @@ const searchProducts = (query, type = '') => {
       const brand = product.brand.toLowerCase();
       const description = String(product.description || '').toLowerCase();
       const types = product.type.join(' ').toLowerCase();
-      const specs = specSearchText(productSpecs[product.slug]);
+      const specs = specSearchText(product.specContent);
       const haystack = `${name} ${brand} ${description} ${types} ${specs}`;
 
       if (!tokens.every((token) => haystack.includes(token))) return null;
@@ -278,15 +277,37 @@ const accessoryRoles = {
 let productsCache = [];
 
 const loadProducts = async () => {
-  const { rows } = await pool.query(
-    `SELECT p.id, p.slug, p.name, p.description, p.discounted_price, p.real_price, p.brand, p.ratings, p.amount_sold, p.date_added, p.image, p.image_background, p.is_featured,
-            COALESCE(array_agg(pt.type) FILTER (WHERE pt.type IS NOT NULL), '{}') AS type
-     FROM products p
-     LEFT JOIN product_types pt ON pt.product_id = p.id
-     GROUP BY p.id
-     ORDER BY p.id`,
+  const [productsResult, specsResult] = await Promise.all([
+    pool.query(
+      `SELECT p.id, p.slug, p.name, p.description, p.discounted_price, p.real_price, p.brand, p.ratings, p.amount_sold, p.date_added, p.image, p.image_background, p.is_featured,
+              COALESCE(array_agg(pt.type) FILTER (WHERE pt.type IS NOT NULL), '{}') AS type
+       FROM products p
+       LEFT JOIN product_types pt ON pt.product_id = p.id
+       GROUP BY p.id
+       ORDER BY p.id`,
+    ),
+    pool.query(
+      `SELECT product_id, highlights, overview, spec_groups, box_items
+       FROM product_specs`,
+    ).catch((error) => {
+      console.error('Could not load product specs from database', error);
+      return { rows: [] };
+    }),
+  ]);
+
+  const specsById = new Map(
+    specsResult.rows.map((row) => [
+      Number(row.product_id),
+      {
+        highlights: Array.isArray(row.highlights) ? row.highlights : [],
+        overview: Array.isArray(row.overview) ? row.overview : [],
+        specs: Array.isArray(row.spec_groups) ? row.spec_groups : [],
+        box: Array.isArray(row.box_items) ? row.box_items : [],
+      },
+    ]),
   );
 
+  const { rows } = productsResult;
   productsCache = rows.map((row) => ({
     ...row,
     discounted_price: Number(row.discounted_price),
@@ -295,6 +316,7 @@ const loadProducts = async () => {
     amount_sold: Number(row.amount_sold),
     is_featured: Boolean(row.is_featured),
     type: Array.isArray(row.type) ? row.type : [],
+    specContent: specsById.get(Number(row.id)) || null,
   }));
 
   const navDropdowns = {
@@ -651,7 +673,14 @@ app.get('/product/:slug', (req, res) => {
   const savingsPercentValue = Number(product.real_price) > Number(product.discounted_price)
     ? Math.round((1 - Number(product.discounted_price) / Number(product.real_price)) * 100)
     : 0;
-  const specContent = productSpecs[product.slug] || fallbackSpecContent(product);
+  const fallbackSpec = fallbackSpecContent(product);
+  const storedSpec = product.specContent;
+  const specContent = {
+    highlights: storedSpec?.highlights?.length ? storedSpec.highlights : fallbackSpec.highlights,
+    overview: storedSpec?.overview?.length ? storedSpec.overview : fallbackSpec.overview,
+    specs: storedSpec?.specs?.length ? storedSpec.specs : fallbackSpec.specs,
+    box: storedSpec?.box?.length ? storedSpec.box : fallbackSpec.box,
+  };
 
   res.render('product', {
     currentPath: req.path,
@@ -1303,11 +1332,13 @@ app.get('/account/orders/:id', requireAuth, async (req, res) => {
   }
 });
 
+const PORT = Number(process.env.PORT) || 3000;
+
 loadProducts()
   .then(() => {
-    app.listen(3000, () => console.log('Server running at http://localhost:3000'));
+    app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
   })
   .catch((error) => {
     console.error('Failed to initialize products', error);
-    app.listen(3000, () => console.log('Server running at http://localhost:3000'));
+    app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
   });

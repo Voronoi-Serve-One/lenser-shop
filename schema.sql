@@ -20,6 +20,14 @@ CREATE TABLE IF NOT EXISTS product_types (
   PRIMARY KEY (product_id, type)
 );
 
+CREATE TABLE IF NOT EXISTS product_specs (
+  product_id INTEGER PRIMARY KEY REFERENCES products(id) ON DELETE CASCADE,
+  highlights JSONB NOT NULL DEFAULT '[]',
+  overview JSONB NOT NULL DEFAULT '[]',
+  spec_groups JSONB NOT NULL DEFAULT '[]',
+  box_items JSONB NOT NULL DEFAULT '[]'
+);
+
 CREATE TABLE IF NOT EXISTS users (
   id SERIAL PRIMARY KEY,
   email VARCHAR(255) UNIQUE NOT NULL,

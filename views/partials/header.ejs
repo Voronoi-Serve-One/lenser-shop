@@ -186,11 +186,23 @@
             <i data-lucide="chevron-down" class="account-trigger__chevron" aria-hidden="true"></i>
           </button>
           <div class="dropdown dropdown--account" id="account-menu" data-account-menu>
-            <a class="account-menu__link" href="/account">Account overview</a>
-            <a class="account-menu__link" href="/account#orders">Orders</a>
-            <a class="account-menu__link" href="/account#saved">Saved gear</a>
+            <a class="account-menu__link" href="/account">
+              <i data-lucide="layout-dashboard" class="account-menu__icon" aria-hidden="true"></i>
+              <span>Account overview</span>
+            </a>
+            <a class="account-menu__link" href="/account#orders">
+              <i data-lucide="package" class="account-menu__icon" aria-hidden="true"></i>
+              <span>Orders</span>
+            </a>
+            <a class="account-menu__link" href="/account#saved">
+              <i data-lucide="heart" class="account-menu__icon" aria-hidden="true"></i>
+              <span>Saved gear</span>
+            </a>
             <span class="account-menu__rule" aria-hidden="true"></span>
-            <a class="account-menu__link account-menu__link--quiet" href="/logout">Sign out</a>
+            <a class="account-menu__link account-menu__link--quiet" href="/logout">
+              <i data-lucide="log-out" class="account-menu__icon" aria-hidden="true"></i>
+              <span>Sign out</span>
+            </a>
           </div>
         </div>
       <% } else { %>

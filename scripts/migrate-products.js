@@ -1,6 +1,7 @@
 const pool = require('../config/db');
 const products = require('../data/products.json');
 const productAssets = require('../data/product-assets.json');
+const productSpecs = require('../data/product-specs.json');
 const fs = require('fs');
 const path = require('path');
 
@@ -19,7 +20,7 @@ async function migrate() {
     );
     await client.query(schemaSql);
 
-    await client.query('TRUNCATE product_types, products RESTART IDENTITY CASCADE');
+    await client.query('TRUNCATE product_types, product_specs, products RESTART IDENTITY CASCADE');
 
     for (const product of products) {
       const asset = assetBySlug.get(product.slug);
@@ -54,6 +55,21 @@ async function migrate() {
         await client.query(
           'INSERT INTO product_types (product_id, type) VALUES ($1, $2)',
           [productId, type],
+        );
+      }
+
+      const spec = productSpecs[product.slug];
+      if (spec) {
+        await client.query(
+          `INSERT INTO product_specs (product_id, highlights, overview, spec_groups, box_items)
+           VALUES ($1, $2::jsonb, $3::jsonb, $4::jsonb, $5::jsonb)`,
+          [
+            productId,
+            JSON.stringify(spec.highlights || []),
+            JSON.stringify(spec.overview || []),
+            JSON.stringify(spec.specs || []),
+            JSON.stringify(spec.box || []),
+          ],
         );
       }
     }
