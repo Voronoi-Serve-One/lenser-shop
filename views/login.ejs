@@ -33,6 +33,7 @@
         <% } %>
 
         <form class="auth__form" action="/login" method="POST" data-auth-form>
+          <input type="hidden" name="next" value="<%= typeof next !== 'undefined' ? next : '' %>" />
           <div class="auth__field">
             <label for="login-email">Email address</label>
             <div class="auth__control">

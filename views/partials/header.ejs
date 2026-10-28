@@ -132,23 +132,65 @@
     </nav>
 
     <div class="misc">
-      <button class="icon-btn" type="button" aria-label="Search">
-        <i data-lucide="search"></i>
-      </button>
+      <div class="nav-item--search">
+        <button
+          class="icon-btn"
+          type="button"
+          aria-label="Search"
+          aria-expanded="false"
+          aria-controls="search-menu"
+          data-search-trigger
+        >
+          <i data-lucide="search"></i>
+        </button>
+
+        <div class="dropdown dropdown--search" id="search-menu" data-search-menu>
+          <form class="search-form" action="/search" method="GET" role="search">
+            <label class="sr-only" for="header-search">Search products</label>
+            <i data-lucide="search" class="search-form__icon" aria-hidden="true"></i>
+            <input
+              id="header-search"
+              name="q"
+              type="search"
+              placeholder="Search cameras, lenses, gear"
+              value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
+              autocomplete="off"
+              maxlength="100"
+              data-search-input
+            />
+            <button class="search-form__submit" type="submit" aria-label="Search products">
+              <i data-lucide="arrow-right" aria-hidden="true"></i>
+            </button>
+          </form>
+
+          <div class="nav-search__quick">
+            <span>Popular</span>
+            <% searchQuickLinks.slice(0, 4).forEach((item) => { %>
+              <a href="<%= item.href %>"><%= item.label %></a>
+            <% }) %>
+          </div>
+        </div>
+      </div>
       <% if (typeof user !== 'undefined' && user) { %>
-        <div class="nav-item nav-item--account">
-          <button class="icon-btn" type="button" aria-label="Account">
-            <i data-lucide="user-round"></i>
+        <div class="nav-item nav-item--account<%= currentPath === '/account' ? ' is-current' : '' %>">
+          <button
+            class="account-trigger"
+            type="button"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-controls="account-menu"
+            aria-label="Account menu for <%= user.first_name %> <%= user.last_name %>"
+            data-account-trigger
+          >
+            <span class="account-trigger__avatar" aria-hidden="true"><%= userInitials || '?' %></span>
+            <i data-lucide="chevron-down" class="account-trigger__chevron" aria-hidden="true"></i>
           </button>
-          <div class="dropdown dropdown--account">
-            <div class="dropdown__aside">
-              <span class="dropdown__eyebrow">Account</span>
-              <h3 class="dropdown__title"><%= user.first_name %> <%= user.last_name %></h3>
-              <p class="dropdown__desc"><%= user.email %></p>
-            </div>
-            <div class="dropdown__grid dropdown__grid--account">
-              <a class="dropdown-item dropdown-item--single" href="/logout">Sign out</a>
-            </div>
+          <div class="dropdown dropdown--account" id="account-menu" data-account-menu>
+            <a class="account-menu__link" href="/account">Account overview</a>
+            <a class="account-menu__link" href="/account#orders">Orders</a>
+            <a class="account-menu__link" href="/account#saved">Saved gear</a>
+            <span class="account-menu__rule" aria-hidden="true"></span>
+            <a class="account-menu__link account-menu__link--quiet" href="/logout">Sign out</a>
           </div>
         </div>
       <% } else { %>
@@ -156,9 +198,85 @@
           <i data-lucide="user-round"></i>
         </a>
       <% } %>
-      <button class="icon-btn" type="button" aria-label="Cart">
-        <i data-lucide="shopping-cart"></i>
-      </button>
+      <% if (typeof user !== 'undefined' && user) { %>
+        <div class="nav-item--cart">
+          <button
+            class="icon-btn icon-btn--cart"
+            type="button"
+            aria-expanded="false"
+            aria-controls="cart-menu"
+            aria-label="Cart<%= cartCount > 0 ? `, ${cartCount} item${cartCount === 1 ? '' : 's'}` : ', empty' %>"
+            data-cart-trigger
+          >
+            <i data-lucide="shopping-cart"></i>
+            <% if (cartCount > 0) { %>
+              <span class="cart-count" aria-hidden="true"><%= cartCount > 9 ? '9+' : cartCount %></span>
+            <% } %>
+          </button>
+
+          <div class="dropdown dropdown--cart" id="cart-menu" data-cart-menu aria-label="Cart preview">
+            <div class="mini-cart">
+              <header class="mini-cart__head">
+                <p class="mini-cart__title">Your cart</p>
+                <% if (cartCount > 0) { %>
+                  <span class="mini-cart__count"><%= cartCount %> <%= cartCount === 1 ? 'item' : 'items' %></span>
+                <% } else { %>
+                  <span class="mini-cart__count">Empty</span>
+                <% } %>
+              </header>
+
+              <% if (cartPreview.length) { %>
+                <ul class="mini-cart__items">
+                  <% cartPreview.forEach((item) => { %>
+                    <li class="mini-cart__item">
+                      <a class="mini-cart__media" href="/product/<%= item.slug %>" aria-label="<%= item.brand %> <%= item.name %>">
+                        <%- include('product-media', {
+                          product: item,
+                          mediaClass: 'product-media--thumb'
+                        }) %>
+                      </a>
+                      <div class="mini-cart__info">
+                        <a class="mini-cart__name" href="/product/<%= item.slug %>"><%= item.name %></a>
+                        <p class="mini-cart__meta"><%= item.quantity %> &times; <%= formatPrice(item.discounted_price) %></p>
+                      </div>
+                      <p class="mini-cart__line"><%= formatPrice(item.discounted_price * item.quantity) %></p>
+                    </li>
+                  <% }) %>
+                </ul>
+
+                <% if (cartLines > cartPreview.length) { %>
+                  <p class="mini-cart__more">
+                    and <%= cartLines - cartPreview.length %> more <%= cartLines - cartPreview.length === 1 ? 'product' : 'products' %>
+                  </p>
+                <% } %>
+
+                <div class="mini-cart__footer">
+                  <div class="mini-cart__subtotal">
+                    <span>Subtotal</span>
+                    <strong><%= formatPrice(cartSubtotal) %></strong>
+                  </div>
+                  <div class="mini-cart__actions">
+                    <a class="btn btn--ghost" href="/cart">View cart</a>
+                    <a class="btn btn--primary" href="/checkout">Checkout</a>
+                  </div>
+                </div>
+              <% } else { %>
+                <div class="mini-cart__empty">
+                  <p><strong>Your bag is empty</strong>Add the gear you are considering and it will wait here.</p>
+                  <div class="mini-cart__empty-actions">
+                    <a class="btn btn--primary" href="/cameras">Shop cameras</a>
+                    <a class="btn btn--ghost" href="/lenses">Shop lenses</a>
+                  </div>
+                </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      <% } else { %>
+        <a class="icon-btn icon-btn--cart" href="/cart" aria-label="Cart">
+          <i data-lucide="shopping-cart"></i>
+        </a>
+      <% } %>
     </div>
   </div>
 
@@ -188,4 +306,6 @@
     <a href="/new-arrivals" class="<%= currentPath === '/new-arrivals' ? 'active' : '' %>" <%- currentPath === '/new-arrivals' ? 'aria-current="page"' : '' %>>New Arrivals</a>
     <span class="nav-bottom__indicator" aria-hidden="true"></span>
   </nav>
+
+  <div class="search-scrim" aria-hidden="true"></div>
 </header>

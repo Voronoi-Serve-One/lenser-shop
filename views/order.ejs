@@ -1,0 +1,79 @@
+<section class="order-page" aria-labelledby="order-title">
+  <header class="order-page__header">
+    <a class="order-page__back" href="/account#orders">Back to orders</a>
+    <div class="order-page__title-row">
+      <div>
+        <p class="eyebrow">Order #<%= String(order.id).padStart(5, '0') %></p>
+        <h1 id="order-title">Order receipt</h1>
+      </div>
+      <span class="order-status order-status--<%= order.status %>"><%= orderStatusLabel(order.status) %></span>
+    </div>
+    <p class="order-page__meta">Placed <%= formatDateTime(order.created_at) %> &middot; <%= formatPrice(order.total) %></p>
+  </header>
+
+  <% if (justPlaced) { %>
+    <p class="account__notice" role="status">Order placed. We will prepare it for delivery.</p>
+  <% } %>
+
+  <div class="order-page__layout">
+    <div class="order-page__items">
+      <% items.forEach((item) => { %>
+        <article class="order-item">
+          <a class="order-item__media" href="/product/<%= item.product_slug %>" aria-label="<%= item.product_name %>">
+            <% if (item.product_image) { %>
+              <div class="order-item__photo"<% if (item.image_background && /^#[0-9a-f]{6}$/i.test(item.image_background)) { %> style="--media-bg: <%= item.image_background %>"<% } %>>
+                <img src="<%= item.product_image %>" alt="<%= item.product_name %>" loading="lazy" decoding="async" />
+              </div>
+            <% } else { %>
+              <span class="order-item__placeholder" aria-hidden="true"><i data-lucide="package"></i></span>
+            <% } %>
+          </a>
+          <div class="order-item__info">
+            <a class="order-item__name" href="/product/<%= item.product_slug %>"><%= item.product_name %></a>
+            <p><%= item.quantity %> &times; <%= formatPrice(item.unit_price) %></p>
+          </div>
+          <p class="order-item__total"><%= formatPrice(item.line_total) %></p>
+        </article>
+      <% }) %>
+
+      <dl class="order-page__totals">
+        <div>
+          <dt>Subtotal</dt>
+          <dd><%= formatPrice(order.subtotal) %></dd>
+        </div>
+        <div>
+          <dt>Shipping</dt>
+          <dd><%= Number(order.shipping_fee) === 0 ? 'Free' : formatPrice(order.shipping_fee) %></dd>
+        </div>
+        <div class="order-page__totals-total">
+          <dt>Total</dt>
+          <dd><%= formatPrice(order.total) %></dd>
+        </div>
+      </dl>
+    </div>
+
+    <aside class="order-page__aside">
+      <section>
+        <h2>Delivery</h2>
+        <address>
+          <strong><%= order.shipping_name %></strong>
+          <span><%= order.shipping_address %></span>
+          <span><%= order.shipping_city %>, <%= order.shipping_province %> <%= order.shipping_postal || '' %></span>
+          <span><%= order.shipping_phone %></span>
+        </address>
+      </section>
+
+      <section>
+        <h2>Payment</h2>
+        <p><%= order.payment_method === 'bank_transfer' ? 'Bank transfer' : 'Cash on delivery' %></p>
+      </section>
+
+      <% if (order.notes) { %>
+        <section>
+          <h2>Notes</h2>
+          <p><%= order.notes %></p>
+        </section>
+      <% } %>
+    </aside>
+  </div>
+</section>

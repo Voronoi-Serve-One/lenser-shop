@@ -1,0 +1,125 @@
+<section class="checkout" aria-labelledby="checkout-title">
+  <header class="checkout__header">
+    <p class="eyebrow">Checkout</p>
+    <h1 id="checkout-title">Delivery details</h1>
+    <p class="checkout__lede">Tell us where the gear is going. Payment is confirmed on delivery or transfer.</p>
+  </header>
+
+  <div class="checkout__layout">
+    <form class="checkout__form" method="POST" action="/checkout">
+      <input type="hidden" name="next" value="/checkout" />
+      <section class="checkout__section" aria-labelledby="checkout-shipping-title">
+        <h2 id="checkout-shipping-title">Shipping</h2>
+        <div class="checkout__row">
+          <div class="auth__field">
+            <label for="checkout-name">Full name</label>
+            <div class="auth__control">
+              <span class="auth__field-icon" aria-hidden="true"><i data-lucide="user-round"></i></span>
+              <input id="checkout-name" type="text" name="shipping_name" autocomplete="name" value="<%= values.shipping_name %>" required />
+            </div>
+            <% if (errors.shipping_name) { %><p class="account__field-error"><%= errors.shipping_name %></p><% } %>
+          </div>
+
+          <div class="auth__field">
+            <label for="checkout-phone">Contact number</label>
+            <div class="auth__control">
+              <span class="auth__field-icon" aria-hidden="true"><i data-lucide="phone"></i></span>
+              <input id="checkout-phone" type="tel" name="shipping_phone" autocomplete="tel" value="<%= values.shipping_phone %>" required />
+            </div>
+            <% if (errors.shipping_phone) { %><p class="account__field-error"><%= errors.shipping_phone %></p><% } %>
+          </div>
+        </div>
+
+        <div class="auth__field">
+          <label for="checkout-address">Street address</label>
+          <div class="auth__control">
+            <span class="auth__field-icon" aria-hidden="true"><i data-lucide="map-pin"></i></span>
+            <input id="checkout-address" type="text" name="shipping_address" autocomplete="street-address" value="<%= values.shipping_address %>" required />
+          </div>
+          <% if (errors.shipping_address) { %><p class="account__field-error"><%= errors.shipping_address %></p><% } %>
+        </div>
+
+        <div class="checkout__row checkout__row--three">
+          <div class="auth__field">
+            <label for="checkout-city">City</label>
+            <div class="auth__control">
+              <input id="checkout-city" type="text" name="shipping_city" autocomplete="address-level2" value="<%= values.shipping_city %>" required />
+            </div>
+            <% if (errors.shipping_city) { %><p class="account__field-error"><%= errors.shipping_city %></p><% } %>
+          </div>
+
+          <div class="auth__field">
+            <label for="checkout-province">Province</label>
+            <div class="auth__control">
+              <input id="checkout-province" type="text" name="shipping_province" autocomplete="address-level1" value="<%= values.shipping_province %>" required />
+            </div>
+            <% if (errors.shipping_province) { %><p class="account__field-error"><%= errors.shipping_province %></p><% } %>
+          </div>
+
+          <div class="auth__field">
+            <label for="checkout-postal">Postal code</label>
+            <div class="auth__control">
+              <input id="checkout-postal" type="text" name="shipping_postal" inputmode="numeric" autocomplete="postal-code" value="<%= values.shipping_postal %>" />
+            </div>
+            <% if (errors.shipping_postal) { %><p class="account__field-error"><%= errors.shipping_postal %></p><% } %>
+          </div>
+        </div>
+      </section>
+
+      <section class="checkout__section" aria-labelledby="checkout-payment-title">
+        <h2 id="checkout-payment-title">Payment</h2>
+        <div class="checkout__payments">
+          <label class="checkout__payment">
+            <input type="radio" name="payment_method" value="cod" <%= values.payment_method !== 'bank_transfer' ? 'checked' : '' %> />
+            <span>
+              <strong>Cash on delivery</strong>
+              <small>Pay the courier when the order arrives.</small>
+            </span>
+          </label>
+          <label class="checkout__payment">
+            <input type="radio" name="payment_method" value="bank_transfer" <%= values.payment_method === 'bank_transfer' ? 'checked' : '' %> />
+            <span>
+              <strong>Bank transfer</strong>
+              <small>Transfer details are arranged after checkout.</small>
+            </span>
+          </label>
+        </div>
+
+        <div class="auth__field">
+          <label for="checkout-notes">Order notes <span class="checkout__optional">(optional)</span></label>
+          <textarea id="checkout-notes" name="notes" rows="3" placeholder="Gate code, preferred delivery window, anything else."><%= values.notes %></textarea>
+        </div>
+      </section>
+
+      <button class="btn btn--primary checkout__submit" type="submit">Place order</button>
+    </form>
+
+    <aside class="checkout__summary" aria-labelledby="checkout-summary-title">
+      <h2 id="checkout-summary-title">Your order</h2>
+      <ul class="checkout__items">
+        <% cart.items.forEach((item) => { %>
+          <li>
+            <span class="checkout__item-name"><%= item.quantity %> &times; <%= item.name %></span>
+            <span class="checkout__item-total"><%= formatPrice(item.discounted_price * item.quantity) %></span>
+          </li>
+        <% }) %>
+      </ul>
+      <dl class="cart__totals">
+        <div>
+          <dt>Subtotal</dt>
+          <dd><%= formatPrice(cart.subtotal) %></dd>
+        </div>
+        <div>
+          <dt>Shipping</dt>
+          <dd><%= cart.shipping === 0 ? 'Free' : formatPrice(cart.shipping) %></dd>
+        </div>
+        <div class="cart__totals-total">
+          <dt>Total</dt>
+          <dd><%= formatPrice(cart.total) %></dd>
+        </div>
+      </dl>
+      <p class="checkout__summary-note">Free shipping on orders of <%= formatPrice(freeShippingThreshold) %> or more.</p>
+      <a class="checkout__back" href="/cart">Back to cart</a>
+    </aside>
+  </div>
+</section>

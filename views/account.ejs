@@ -1,0 +1,275 @@
+<section class="account" aria-labelledby="account-title">
+  <aside class="account__rail">
+    <div class="account__monogram" aria-hidden="true"><%= initials %></div>
+    <div class="account__identity">
+      <p class="account__eyebrow">Your account</p>
+      <h1 id="account-title"><%= account.first_name %> <%= account.last_name %></h1>
+      <p class="account__email"><%= account.email %></p>
+      <p class="account__member">Member since <%= formatMonth(account.created_at) %></p>
+    </div>
+    <nav class="account__nav" aria-label="Account sections">
+      <a href="#profile">Profile</a>
+      <a href="#security">Security</a>
+      <a href="#orders">Orders<% if (orders.length) { %> <span><%= orders.length %></span><% } %></a>
+      <a href="#saved">Saved gear<% if (savedProducts.length) { %> <span><%= savedProducts.length %></span><% } %></a>
+    </nav>
+    <a class="btn btn--ghost account__signout" href="/logout">Sign out</a>
+  </aside>
+
+  <div class="account__content">
+    <section class="account__section" id="profile" aria-labelledby="account-profile-title">
+      <header class="account__section-head">
+        <p class="account__label">Profile</p>
+        <h2 id="account-profile-title">Profile details</h2>
+        <p>Keep the name and email we use for your orders up to date.</p>
+      </header>
+
+      <% if (status === 'profile') { %>
+        <p class="account__notice" role="status">Profile updated.</p>
+      <% } %>
+
+      <form class="account__form" action="/account/profile" method="POST" data-account-form>
+        <input type="hidden" name="next" value="/account#profile" />
+        <div class="account__row">
+          <div class="auth__field">
+            <label for="account-first">First name</label>
+            <div class="auth__control">
+              <span class="auth__field-icon" aria-hidden="true"><i data-lucide="user-round"></i></span>
+              <input
+                id="account-first"
+                type="text"
+                name="firstName"
+                autocomplete="given-name"
+                value="<%= profileValues.firstName %>"
+                required
+              />
+            </div>
+            <% if (errors.firstName) { %><p class="account__field-error"><%= errors.firstName %></p><% } %>
+          </div>
+
+          <div class="auth__field">
+            <label for="account-last">Last name</label>
+            <div class="auth__control">
+              <span class="auth__field-icon" aria-hidden="true"><i data-lucide="user-round"></i></span>
+              <input
+                id="account-last"
+                type="text"
+                name="lastName"
+                autocomplete="family-name"
+                value="<%= profileValues.lastName %>"
+                required
+              />
+            </div>
+            <% if (errors.lastName) { %><p class="account__field-error"><%= errors.lastName %></p><% } %>
+          </div>
+        </div>
+
+        <div class="auth__field">
+          <label for="account-email">Email address</label>
+          <div class="auth__control">
+            <span class="auth__field-icon" aria-hidden="true"><i data-lucide="mail"></i></span>
+            <input
+              id="account-email"
+              type="email"
+              name="email"
+              autocomplete="email"
+              value="<%= profileValues.email %>"
+              required
+            />
+          </div>
+          <% if (errors.email) { %><p class="account__field-error"><%= errors.email %></p><% } %>
+        </div>
+
+        <div class="account__actions">
+          <button class="btn btn--primary" type="submit" data-submit data-busy-label="Saving...">
+            Save changes
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section class="account__section" id="security" aria-labelledby="account-security-title">
+      <header class="account__section-head">
+        <p class="account__label">Security</p>
+        <h2 id="account-security-title">Change password</h2>
+        <p>Use at least 8 characters. Your current password confirms the change.</p>
+      </header>
+
+      <% if (status === 'password') { %>
+        <p class="account__notice" role="status">Password updated.</p>
+      <% } %>
+
+      <form class="account__form" action="/account/password" method="POST" data-account-form>
+        <input type="hidden" name="next" value="/account#security" />
+        <div class="auth__field">
+          <label for="account-current-password">Current password</label>
+          <div class="auth__control">
+            <span class="auth__field-icon" aria-hidden="true"><i data-lucide="lock"></i></span>
+            <input
+              id="account-current-password"
+              type="password"
+              name="currentPassword"
+              autocomplete="current-password"
+              required
+            />
+            <button
+              class="auth__reveal"
+              type="button"
+              data-password-toggle
+              aria-label="Show password"
+              aria-pressed="false"
+              hidden
+            >
+              <span class="auth__reveal-show" aria-hidden="true"><i data-lucide="eye"></i></span>
+              <span class="auth__reveal-hide" aria-hidden="true"><i data-lucide="eye-off"></i></span>
+            </button>
+          </div>
+          <% if (errors.currentPassword) { %><p class="account__field-error"><%= errors.currentPassword %></p><% } %>
+        </div>
+
+        <div class="account__row">
+          <div class="auth__field">
+            <label for="account-new-password">New password</label>
+            <div class="auth__control">
+              <span class="auth__field-icon" aria-hidden="true"><i data-lucide="lock"></i></span>
+              <input
+                id="account-new-password"
+                type="password"
+                name="newPassword"
+                autocomplete="new-password"
+                minlength="8"
+                data-password
+                required
+              />
+              <button
+                class="auth__reveal"
+                type="button"
+                data-password-toggle
+                aria-label="Show password"
+                aria-pressed="false"
+                hidden
+              >
+                <span class="auth__reveal-show" aria-hidden="true"><i data-lucide="eye"></i></span>
+                <span class="auth__reveal-hide" aria-hidden="true"><i data-lucide="eye-off"></i></span>
+              </button>
+            </div>
+            <% if (errors.newPassword) { %><p class="account__field-error"><%= errors.newPassword %></p><% } %>
+          </div>
+
+          <div class="auth__field">
+            <label for="account-confirm-password">Confirm new password</label>
+            <div class="auth__control">
+              <span class="auth__field-icon" aria-hidden="true"><i data-lucide="shield-check"></i></span>
+              <input
+                id="account-confirm-password"
+                type="password"
+                name="confirmPassword"
+                autocomplete="new-password"
+                minlength="8"
+                data-confirm
+                required
+              />
+              <button
+                class="auth__reveal"
+                type="button"
+                data-password-toggle
+                aria-label="Show password"
+                aria-pressed="false"
+                hidden
+              >
+                <span class="auth__reveal-show" aria-hidden="true"><i data-lucide="eye"></i></span>
+                <span class="auth__reveal-hide" aria-hidden="true"><i data-lucide="eye-off"></i></span>
+              </button>
+            </div>
+            <% if (errors.confirmPassword) { %><p class="account__field-error"><%= errors.confirmPassword %></p><% } %>
+          </div>
+        </div>
+        <p class="auth__hint" data-confirm-hint aria-live="polite">Enter the same password again</p>
+
+        <div class="account__actions">
+          <button class="btn btn--primary" type="submit" data-submit data-busy-label="Updating...">
+            Update password
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section class="account__section" id="orders" aria-labelledby="account-orders-title">
+      <header class="account__section-head">
+        <p class="account__label">Orders</p>
+        <h2 id="account-orders-title">Order history</h2>
+        <p>Every order placed with this account, newest first.</p>
+      </header>
+
+      <% if (orders.length) { %>
+        <div class="account-orders">
+          <% orders.forEach((order) => { %>
+            <a class="account-order" href="/account/orders/<%= order.id %>">
+              <span class="account-order__number">#<%= String(order.id).padStart(5, '0') %></span>
+              <span class="account-order__date"><%= formatOrderDate(order.created_at) %></span>
+              <span class="order-status order-status--<%= order.status %>"><%= orderStatusLabel(order.status) %></span>
+              <span class="account-order__items"><%= order.item_count %> <%= order.item_count === 1 ? 'item' : 'items' %></span>
+              <span class="account-order__total"><%= formatPrice(order.total) %></span>
+              <i data-lucide="arrow-up-right" aria-hidden="true"></i>
+            </a>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <div class="account-empty">
+          <i data-lucide="package" aria-hidden="true"></i>
+          <div>
+            <h3>No orders yet</h3>
+            <p>When you place an order, the receipt and delivery details will live here.</p>
+          </div>
+          <a class="btn btn--ghost" href="/cameras">Shop cameras</a>
+        </div>
+      <% } %>
+    </section>
+
+    <section class="account__section" id="saved" aria-labelledby="account-saved-title">
+      <header class="account__section-head">
+        <p class="account__label">Saved gear</p>
+        <h2 id="account-saved-title">Your wishlist</h2>
+        <p>Bodies, lenses, and accessories you want to come back to.</p>
+      </header>
+
+      <% if (savedProducts.length) { %>
+        <div class="saved-list">
+          <% savedProducts.forEach((saved) => { %>
+            <article class="saved-item">
+              <a class="saved-item__media" href="/product/<%= saved.slug %>" aria-label="<%= saved.brand %> <%= saved.name %>">
+                <%- include('partials/product-media', { product: saved, mediaClass: 'product-media--thumb' }) %>
+              </a>
+              <div class="saved-item__info">
+                <p class="saved-item__brand"><%= saved.brand %></p>
+                <a class="saved-item__name" href="/product/<%= saved.slug %>"><%= saved.name %></a>
+                <%- include('partials/price', { product: saved }) %>
+              </div>
+              <div class="saved-item__actions">
+                <form method="POST" action="/cart/add">
+                  <input type="hidden" name="productId" value="<%= saved.id %>" />
+                  <input type="hidden" name="next" value="/account#saved" />
+                  <button class="btn btn--primary" type="submit">Add to cart</button>
+                </form>
+                <form method="POST" action="/wishlist/toggle">
+                  <input type="hidden" name="productId" value="<%= saved.id %>" />
+                  <input type="hidden" name="next" value="/account#saved" />
+                  <button class="btn btn--ghost" type="submit">Remove</button>
+                </form>
+              </div>
+            </article>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <div class="account-empty">
+          <i data-lucide="heart" aria-hidden="true"></i>
+          <div>
+            <h3>Nothing saved yet</h3>
+            <p>Tap the heart on any product to keep it here while you compare.</p>
+          </div>
+          <a class="btn btn--ghost" href="/lenses">Browse gear</a>
+        </div>
+      <% } %>
+    </section>
+  </div>
+</section>

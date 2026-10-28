@@ -1,0 +1,91 @@
+<section class="cart" aria-labelledby="cart-title">
+  <header class="cart__header">
+    <p class="eyebrow">Your bag</p>
+    <h1 id="cart-title">Cart</h1>
+    <p class="cart__lede">
+      <% if (cart.items.length) { %>
+        <%= cart.itemCount %> <%= cart.itemCount === 1 ? 'item' : 'items' %> ready to check out.
+      <% } else { %>
+        Nothing in the bag yet.
+      <% } %>
+    </p>
+  </header>
+
+  <% if (!cart.items.length) { %>
+    <div class="cart-empty">
+      <i data-lucide="shopping-bag" aria-hidden="true"></i>
+      <div>
+        <h2>Your cart is empty</h2>
+        <p>Pick a body, match a lens, or add the support gear that finishes the kit.</p>
+      </div>
+      <div class="cart-empty__actions">
+        <a class="btn btn--primary" href="/cameras">Shop cameras</a>
+        <a class="btn btn--ghost" href="/lenses">Shop lenses</a>
+      </div>
+    </div>
+  <% } else { %>
+    <div class="cart__layout">
+      <div class="cart__lines">
+        <% cart.items.forEach((item) => { %>
+          <article class="cart-line">
+            <a class="cart-line__media" href="/product/<%= item.slug %>" aria-label="<%= item.brand %> <%= item.name %>">
+              <%- include('partials/product-media', { product: item, mediaClass: 'product-media--thumb' }) %>
+            </a>
+
+            <div class="cart-line__info">
+              <p class="cart-line__brand"><%= item.brand %></p>
+              <a class="cart-line__name" href="/product/<%= item.slug %>"><%= item.name %></a>
+              <p class="cart-line__unit"><%= formatPrice(item.discounted_price) %> each</p>
+            </div>
+
+            <form class="cart-line__qty" method="POST" action="/cart/update">
+              <input type="hidden" name="productId" value="<%= item.product_id %>" />
+              <input type="hidden" name="next" value="/cart" />
+              <label class="sr-only" for="cart-qty-<%= item.product_id %>">Quantity for <%= item.name %></label>
+              <input
+                id="cart-qty-<%= item.product_id %>"
+                type="number"
+                name="quantity"
+                min="1"
+                max="10"
+                value="<%= item.quantity %>"
+              />
+              <button class="btn btn--ghost" type="submit">Update</button>
+            </form>
+
+            <p class="cart-line__total"><%= formatPrice(item.discounted_price * item.quantity) %></p>
+
+            <form class="cart-line__remove" method="POST" action="/cart/remove">
+              <input type="hidden" name="productId" value="<%= item.product_id %>" />
+              <input type="hidden" name="next" value="/cart" />
+              <button class="cart-line__remove-btn" type="submit">Remove</button>
+            </form>
+          </article>
+        <% }) %>
+      </div>
+
+      <aside class="cart__summary" aria-labelledby="cart-summary-title">
+        <h2 id="cart-summary-title">Order summary</h2>
+        <dl class="cart__totals">
+          <div>
+            <dt>Subtotal</dt>
+            <dd><%= formatPrice(cart.subtotal) %></dd>
+          </div>
+          <div>
+            <dt>Shipping</dt>
+            <dd><%= cart.shipping === 0 ? 'Free' : formatPrice(cart.shipping) %></dd>
+          </div>
+          <div class="cart__totals-total">
+            <dt>Total</dt>
+            <dd><%= formatPrice(cart.total) %></dd>
+          </div>
+        </dl>
+        <p class="cart__shipping-note">
+          Free shipping on orders of <%= formatPrice(freeShippingThreshold) %> or more.
+        </p>
+        <a class="btn btn--primary cart__checkout" href="/checkout">Continue to checkout</a>
+        <a class="cart__continue" href="/">Continue shopping</a>
+      </aside>
+    </div>
+  <% } %>
+</section>

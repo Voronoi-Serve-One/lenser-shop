@@ -1,0 +1,142 @@
+<%
+  const isSearching = Boolean(searchQuery);
+%>
+<section class="page-search" aria-labelledby="search-title">
+  <header class="search-masthead">
+    <p class="eyebrow">Search the shelf</p>
+    <div class="search-masthead__intro">
+      <h1 id="search-title">Find your next frame.</h1>
+      <p class="search-masthead__lede">
+        Search bodies, glass and kit by name, brand, category or the details that
+        matter on a shoot.
+      </p>
+    </div>
+
+    <form class="search-form search-form--page" action="/search" method="GET" role="search">
+      <label class="sr-only" for="search-page-input">Search products</label>
+      <i data-lucide="search" class="search-form__icon" aria-hidden="true"></i>
+      <input
+        id="search-page-input"
+        name="q"
+        type="search"
+        placeholder="Try “Sony”, “full frame” or “tripod”"
+        value="<%= searchQuery %>"
+        autocomplete="off"
+        maxlength="100"
+        <% if (!isSearching) { %>autofocus<% } %>
+      />
+      <button class="search-form__submit" type="submit" aria-label="Search products">
+        <i data-lucide="arrow-right" aria-hidden="true"></i>
+      </button>
+    </form>
+  </header>
+
+  <% if (isSearching) { %>
+  <div class="search-results">
+    <div class="search-results__bar">
+      <p class="search-results__summary">
+        <strong><%= results.length %></strong>
+        <%= results.length === 1 ? 'result' : 'results' %> for
+        <span>“<%= searchQuery %>”</span>
+      </p>
+      <a class="search-results__clear" href="/search">
+        Clear search
+        <i data-lucide="x" aria-hidden="true"></i>
+      </a>
+    </div>
+
+    <nav class="search-filters" aria-label="Filter search results">
+      <% typeFilters.forEach((filter) => { %>
+      <a
+        class="search-filter<%= filter.active ? ' is-active' : '' %>"
+        href="<%= filter.href %>"
+        <%- filter.active ? 'aria-current="page"' : '' %>
+      ><%= filter.label %></a>
+      <% }) %>
+    </nav>
+
+    <% if (results.length) { %>
+    <div class="product-grid search-results__grid">
+      <% results.forEach((product) => { %>
+      <%- include('partials/product-card', { product, returnPath }) %>
+      <% }) %>
+    </div>
+    <% } else { %>
+    <div class="search-empty">
+      <span class="search-empty__icon" aria-hidden="true">
+        <i data-lucide="search"></i>
+      </span>
+      <p class="eyebrow">Nothing on the shelf</p>
+      <h2>No gear matched “<%= searchQuery %>”</h2>
+      <p class="search-empty__copy">
+        Try a brand, a focal length, or a broader term like “camera” or “lens”.
+      </p>
+      <div class="search-empty__links">
+        <% searchQuickLinks.slice(0, 4).forEach((item) => { %>
+        <a class="search-filter" href="<%= item.href %>"><%= item.label %></a>
+        <% }) %>
+      </div>
+    </div>
+    <% } %>
+  </div>
+  <% } else { %>
+  <section class="search-discovery" aria-label="Search suggestions">
+    <article class="search-discovery__block">
+      <p class="eyebrow">Start here</p>
+      <h2>Start with a name.</h2>
+      <p class="search-discovery__copy">
+        Jump straight to the makers and formats people ask for most.
+      </p>
+      <div class="search-discovery__links">
+        <% searchQuickLinks.forEach((item) => { %>
+        <a href="<%= item.href %>"><%= item.label %></a>
+        <% }) %>
+      </div>
+
+      <div class="search-discovery__group">
+        <p class="search-discovery__mini-label">Try a focal length</p>
+        <div class="search-discovery__links">
+          <a href="/search?q=24-70mm">24–70mm</a>
+          <a href="/search?q=50mm">50mm</a>
+          <a href="/search?q=85mm">85mm</a>
+          <a href="/search?q=200mm">200mm</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="search-discovery__block">
+      <p class="eyebrow">Or browse</p>
+      <h2>Shop the shelf.</h2>
+      <p class="search-discovery__copy">
+        Not sure what to type? Start from a category and narrow it down.
+      </p>
+      <div class="search-discovery__categories">
+        <a href="/cameras">
+          <span>Cameras</span>
+          <i data-lucide="arrow-up-right" aria-hidden="true"></i>
+        </a>
+        <a href="/lenses">
+          <span>Lenses</span>
+          <i data-lucide="arrow-up-right" aria-hidden="true"></i>
+        </a>
+        <a href="/accessories">
+          <span>Accessories</span>
+          <i data-lucide="arrow-up-right" aria-hidden="true"></i>
+        </a>
+      </div>
+    </article>
+  </section>
+
+  <section class="search-popular" aria-labelledby="search-popular-title">
+    <div class="section-heading">
+      <h2 id="search-popular-title">Popular right now</h2>
+      <a href="/best-sellers">See the best sellers</a>
+    </div>
+    <div class="product-grid">
+      <% popularProducts.forEach((product) => { %>
+      <%- include('partials/product-card', { product, returnPath: '/search' }) %>
+      <% }) %>
+    </div>
+  </section>
+  <% } %>
+</section>

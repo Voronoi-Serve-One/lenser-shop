@@ -1,10 +1,11 @@
 # LENSER
 
-Server-rendered camera-gear storefront: Express 5 + EJS 6 via `express-ejs-layouts`. Postgres is scaffolded but not connected.
+Server-rendered camera-gear storefront: Express 5 + EJS 6 via `express-ejs-layouts`. Postgres powers accounts, sessions, cart, wishlist, and orders.
 
 ## Commands
 
 - `npm start` — nodemon on http://localhost:3000. Entry is `app.js` (ignore `"main": "index.js"`; that file does not exist).
+- `npm run migrate:shop` — applies `schema.sql` idempotently (creates accounts/cart/wishlist/orders tables). Run after schema changes.
 - No lint, typecheck, build, or test suite. `npm test` is a stub that exits 1 — don't run it.
 
 ## Wiring
@@ -14,6 +15,7 @@ Server-rendered camera-gear storefront: Express 5 + EJS 6 via `express-ejs-layou
 - `layout.ejs` includes `partials/header`, `partials/footer`, `/css/style.css`, `/js/main.js`, and Lucide from unpkg.
 - Adding a page = route in `app.js` + `views/<name>.ejs` + link in `partials/header.ejs`. Route path and filename match: `/best-sellers` → `best-sellers.ejs`.
 - `currentPath` is required — `header.ejs` uses it for active nav (`/` = Blog, plus `/featured`, `/deals`, `/best-sellers`, `/new-arrivals`).
+- `/search` is server-rendered from the in-memory catalog; `q` matches name, brand, description, type, and spec text, with optional `type=camera|lenses|accessories`. The header search panel submits there.
 
 ## Frontend
 
@@ -23,12 +25,16 @@ Server-rendered camera-gear storefront: Express 5 + EJS 6 via `express-ejs-layou
 - Icons: `<i data-lucide="name">`; `lucide.createIcons()` runs once in `layout.ejs`. Re-run it after injecting icons dynamically.
 - Brand logos are inline `<symbol>` sprites at the top of `partials/header.ejs`, rendered via `<use href="#sony-logo">` etc.
 - Category nav (`.nav-bottom`) uses one shared underline indicator positioned by `public/js/main.js`; it slides on hover/focus and returns to the active link. Keep per-link underline CSS out.
+- Header account and cart menus are click-controlled (`data-account-trigger` / `data-cart-trigger`). Keep hover-open rules scoped away from `.nav-item--account` and `.nav-item--cart`; the account trigger shows the user's initials, not their name.
+- Header search is click-controlled (`data-search-trigger`) and opens a full-screen `.search-scrim`. Opening adds `is-search-open` to `<html>` and `<body>` to lock page scroll and compensates the scrollbar with `--search-scrollbar-gutter`.
 - Product media: `views/partials/product-media.ejs` renders `product.image` when present, otherwise a Lucide icon placeholder from `productIcon`. `--photo` uses `object-fit: contain` with a per-image `--media-bg` tile.
 
-## Data / DB (not wired)
+## Data / DB
 
-- `config/db.js` exports a `pg` Pool, but nothing imports it — all routes are static.
-- `schema.sql` is invalid Postgres: `SERIAL PRIMARY KEY AUTO INCREMENT` (AUTO INCREMENT is MySQL) and a trailing comma. Fix before applying.
+- `config/db.js` exports a `pg` Pool used by auth, cart, wishlist, order, and account routes.
+- `schema.sql` is valid Postgres and applied with `npm run migrate:shop`.
+- Commerce is DB-backed and requires login: `/cart`, `/checkout`, `/account`, plus POST routes for cart, wishlist, profile, password, and orders. Mock payment only (`cod` or `bank_transfer`); no payment gateway or password-reset email flow.
+- Shipping is free at a ₱2,000 subtotal (`FREE_SHIPPING_THRESHOLD`), otherwise ₱150 (`SHIPPING_FEE`).
 - `data/products.json` is the live catalog (24 products) and the source for all pages. Shape: `id, slug, name, description, discounted_price, real_price, brand, ratings, type[], is_featured, amount_sold, date_added, image`.
 - `image` is `/assets/products/<slug>.webp` for all 24 products. If an image is removed, the card falls back to a Lucide icon.
 - `data/product-assets.json` maps each product to its flat target path and stores `status`, `credit`, `license`, and `background`.
@@ -53,7 +59,8 @@ Each top-level page has its own layout — do not fold them into one template:
 
 ## Known gaps
 
-- Header links `/cameras`, `/lenses`, `/accessories`, `/about` have no routes and return 404.
+- No password reset flow; users can only change a password after logging in.
+- Order status is set to `placed` at checkout and has no admin update UI.
 
 ## User preferences (do not regress)
 

@@ -21,6 +21,46 @@ const shortDate = new Intl.DateTimeFormat('en-PH', {
   month: 'short',
   day: 'numeric',
 });
+const orderDate = new Intl.DateTimeFormat('en-PH', {
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric',
+});
+const orderDateTime = new Intl.DateTimeFormat('en-PH', {
+  dateStyle: 'medium',
+  timeStyle: 'short',
+});
+
+const FREE_SHIPPING_THRESHOLD = 2000;
+const SHIPPING_FEE = 150;
+const orderStatusCopy = {
+  placed: 'Order placed',
+  processing: 'Processing',
+  shipped: 'Shipped',
+  delivered: 'Delivered',
+  cancelled: 'Cancelled',
+};
+
+const safeNext = (value, fallback = '/') => {
+  if (typeof value !== 'string') return fallback;
+  const path = value.trim();
+  if (!path.startsWith('/') || path.startsWith('//') || path.includes('\\')) return fallback;
+  return path;
+};
+
+const shippingFor = (subtotal, hasItems = true) => {
+  if (!hasItems) return 0;
+  return subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE;
+};
+
+const requireAuth = (req, res, next) => {
+  if (!req.session.user) {
+    const nextPath =
+      req.method === 'GET' ? req.originalUrl : safeNext(req.body && req.body.next, '/');
+    return res.redirect(`/login?next=${encodeURIComponent(nextPath)}`);
+  }
+  next();
+};
 
 const discountPercent = (product) =>
   Number(product.real_price) > Number(product.discounted_price)
@@ -35,6 +75,102 @@ const productIcon = (product) => {
   if (types.includes('camera')) return 'camera';
   if (types.includes('lenses')) return 'aperture';
   return 'package';
+};
+
+const SEARCH_TYPES = [
+  { value: 'camera', label: 'Cameras' },
+  { value: 'lenses', label: 'Lenses' },
+  { value: 'accessories', label: 'Accessories' },
+];
+const SEARCH_QUICK_LINKS = [
+  { label: 'Sony', href: '/search?q=Sony' },
+  { label: 'Canon', href: '/search?q=Canon' },
+  { label: 'Nikon', href: '/search?q=Nikon' },
+  { label: 'Full frame', href: '/search?q=full%20frame' },
+  { label: 'Lenses', href: '/search?q=lenses' },
+];
+
+const normalizeSearchQuery = (value) => {
+  if (typeof value !== 'string') return '';
+  return value.trim().replace(/\s+/g, ' ').slice(0, 100);
+};
+
+const searchHref = (query, type = '') => {
+  const parts = [];
+  if (query) parts.push(`q=${encodeURIComponent(query)}`);
+  if (type) parts.push(`type=${encodeURIComponent(type)}`);
+  return parts.length ? `/search?${parts.join('&')}` : '/search';
+};
+
+const searchTypeMatches = (product, type) => {
+  if (type === 'camera') return product.type.includes('camera');
+  if (type === 'lenses') return product.type.includes('lenses');
+  if (type === 'accessories') {
+    return product.type.includes('accessories') && !product.type.includes('camera');
+  }
+  return true;
+};
+
+const specSearchText = (spec) => {
+  if (!spec) return '';
+
+  const parts = [];
+  (spec.overview || []).forEach((value) => parts.push(value));
+  (spec.highlights || []).forEach((item) => parts.push(item.value, item.label));
+  (spec.specs || []).forEach((group) => {
+    parts.push(group.title);
+    (group.items || []).forEach((item) => parts.push(item.label, item.value));
+  });
+  (spec.box || []).forEach((value) => parts.push(value));
+
+  return parts.filter(Boolean).join(' ').toLowerCase();
+};
+
+const searchProducts = (query, type = '') => {
+  const phrase = query.toLowerCase();
+  const tokens = phrase.split(' ').filter(Boolean);
+
+  return productsCache
+    .filter((product) => searchTypeMatches(product, type))
+    .map((product) => {
+      const name = product.name.toLowerCase();
+      const brand = product.brand.toLowerCase();
+      const description = String(product.description || '').toLowerCase();
+      const types = product.type.join(' ').toLowerCase();
+      const specs = specSearchText(productSpecs[product.slug]);
+      const haystack = `${name} ${brand} ${description} ${types} ${specs}`;
+
+      if (!tokens.every((token) => haystack.includes(token))) return null;
+
+      let score = 0;
+      if (name === phrase) score += 140;
+      else if (name.startsWith(phrase)) score += 95;
+      else if (name.includes(phrase)) score += 60;
+
+      if (brand === phrase) score += 80;
+      else if (brand.includes(phrase)) score += 45;
+
+      if (types.includes(phrase)) score += 20;
+
+      tokens.forEach((token) => {
+        if (name.includes(token)) score += 20;
+        if (brand.includes(token)) score += 15;
+        if (types.includes(token)) score += 8;
+        if (description.includes(token)) score += 4;
+        if (specs.includes(token)) score += 2;
+      });
+
+      score += Math.min(Number(product.amount_sold || 0) / 250, 12);
+      return { product, score };
+    })
+    .filter(Boolean)
+    .sort(
+      (a, b) =>
+        b.score - a.score ||
+        Number(b.product.amount_sold) - Number(a.product.amount_sold) ||
+        a.product.name.localeCompare(b.product.name),
+    )
+    .map((entry) => entry.product);
 };
 
 const fallbackSpecContent = (product) => {
@@ -201,7 +337,62 @@ app.use(session({
 }));
 
 app.use((req, res, next) => {
-  res.locals.user = req.session.user || null;
+  const user = req.session.user || null;
+  res.locals.user = user;
+  res.locals.userInitials = user
+    ? `${(user.first_name || '').charAt(0)}${(user.last_name || '').charAt(0)}`.toUpperCase()
+    : '';
+  next();
+});
+
+app.use(async (req, res, next) => {
+  res.locals.cartCount = 0;
+  res.locals.cartLines = 0;
+  res.locals.cartSubtotal = 0;
+  res.locals.cartPreview = [];
+  res.locals.wishlistIds = [];
+
+  if (!req.session.user) return next();
+
+  try {
+    const [stateResult, previewResult] = await Promise.all([
+      pool.query(
+        `SELECT
+           (SELECT COALESCE(SUM(quantity), 0) FROM cart_items WHERE user_id = $1) AS cart_count,
+           (SELECT COUNT(*) FROM cart_items WHERE user_id = $1) AS cart_lines,
+           (SELECT COALESCE(SUM(ci.quantity * p.discounted_price), 0)
+              FROM cart_items ci
+              JOIN products p ON p.id = ci.product_id
+              WHERE ci.user_id = $1) AS cart_subtotal,
+           (SELECT COALESCE(array_agg(product_id), '{}') FROM wishlist_items WHERE user_id = $1) AS wishlist_ids`,
+        [req.session.user.id],
+      ),
+      pool.query(
+        `SELECT ci.quantity, p.slug, p.name, p.brand, p.discounted_price,
+                p.image, p.image_background
+         FROM cart_items ci
+         JOIN products p ON p.id = ci.product_id
+         WHERE ci.user_id = $1
+         ORDER BY ci.created_at DESC
+         LIMIT 3`,
+        [req.session.user.id],
+      ),
+    ]);
+
+    const state = stateResult.rows[0];
+    res.locals.cartCount = Number(state.cart_count) || 0;
+    res.locals.cartLines = Number(state.cart_lines) || 0;
+    res.locals.cartSubtotal = Number(state.cart_subtotal) || 0;
+    res.locals.cartPreview = previewResult.rows.map((row) => ({
+      ...row,
+      quantity: Number(row.quantity),
+      discounted_price: Number(row.discounted_price),
+    }));
+    res.locals.wishlistIds = (state.wishlist_ids || []).map(Number);
+  } catch (error) {
+    console.error('Could not load cart state', error);
+  }
+
   next();
 });
 
@@ -219,10 +410,16 @@ app.use(async (req, res, next) => {
 app.locals.formatPrice = (value) => phpPrice.format(Number(value));
 app.locals.formatMonth = (date) => monthYear.format(new Date(date));
 app.locals.formatShortDate = (date) => shortDate.format(new Date(date));
+app.locals.formatOrderDate = (date) => orderDate.format(new Date(date));
+app.locals.formatDateTime = (date) => orderDateTime.format(new Date(date));
 app.locals.discountPercent = discountPercent;
 app.locals.savings = savings;
 app.locals.productIcon = productIcon;
 app.locals.currentYear = new Date().getFullYear();
+app.locals.freeShippingThreshold = FREE_SHIPPING_THRESHOLD;
+app.locals.shippingFee = SHIPPING_FEE;
+app.locals.orderStatusLabel = (status) => orderStatusCopy[status] || 'Order placed';
+app.locals.searchQuickLinks = SEARCH_QUICK_LINKS;
 
 app.get('/', (req, res) => {
   const featuredProducts = productsCache
@@ -372,6 +569,38 @@ app.get('/accessories', (req, res) => {
   res.render('accessories', {
     currentPath: req.path,
     items,
+  });
+});
+
+app.get('/search', (req, res) => {
+  const searchQuery = normalizeSearchQuery(req.query.q);
+  const requestedType = typeof req.query.type === 'string' ? req.query.type : '';
+  const activeType =
+    searchQuery && SEARCH_TYPES.some((item) => item.value === requestedType)
+      ? requestedType
+      : '';
+  const results = searchQuery ? searchProducts(searchQuery, activeType) : [];
+  const popularProducts = [...productsCache]
+    .sort((a, b) => Number(b.amount_sold) - Number(a.amount_sold))
+    .slice(0, 4);
+  const typeFilters = [
+    { label: 'All gear', href: searchHref(searchQuery), active: activeType === '' },
+    ...SEARCH_TYPES.map((item) => ({
+      label: item.label,
+      href: searchHref(searchQuery, item.value),
+      active: activeType === item.value,
+    })),
+  ];
+  const returnPath = searchQuery ? searchHref(searchQuery, activeType) : '/search';
+
+  res.render('search', {
+    currentPath: '/search',
+    searchQuery,
+    results,
+    activeType,
+    typeFilters,
+    popularProducts,
+    returnPath,
   });
 });
 
@@ -530,19 +759,22 @@ app.get('/login', redirectIfAuth, (req, res) => {
   res.render('login', {
     currentPath: req.path,
     error: null,
-    values: {}
+    values: {},
+    next: safeNext(req.query.next, '')
   });
 });
 
 app.post('/login', redirectIfAuth, async (req, res) => {
   const { email, password } = req.body || {};
   const formValues = { email: email || '' };
+  const next = safeNext(req.body.next, '/');
 
   if (!email || !password) {
     return res.render('login', {
       currentPath: '/login',
       error: 'Email and password are required.',
-      values: formValues
+      values: formValues,
+      next
     });
   }
 
@@ -558,7 +790,8 @@ app.post('/login', redirectIfAuth, async (req, res) => {
       return res.render('login', {
         currentPath: '/login',
         error: 'Invalid email or password.',
-        values: formValues
+        values: formValues,
+        next
       });
     }
 
@@ -569,7 +802,8 @@ app.post('/login', redirectIfAuth, async (req, res) => {
       return res.render('login', {
         currentPath: '/login',
         error: 'Invalid email or password.',
-        values: formValues
+        values: formValues,
+        next
       });
     }
 
@@ -585,7 +819,7 @@ app.post('/login', redirectIfAuth, async (req, res) => {
         last_name: user.last_name
       };
       req.session.save(() => {
-        res.redirect('/');
+        res.redirect(next);
       });
     });
   } catch (error) {
@@ -593,7 +827,8 @@ app.post('/login', redirectIfAuth, async (req, res) => {
     return res.render('login', {
       currentPath: '/login',
       error: 'Something went wrong. Please try again.',
-      values: formValues
+      values: formValues,
+      next
     });
   }
 });
@@ -602,6 +837,470 @@ app.get('/logout', (req, res) => {
   req.session.destroy(() => {
     res.redirect('/');
   });
+});
+
+const cartTotals = (items) => {
+  const subtotal = items.reduce(
+    (sum, item) => sum + Number(item.discounted_price) * Number(item.quantity),
+    0,
+  );
+  const itemCount = items.reduce((sum, item) => sum + Number(item.quantity), 0);
+  const shipping = shippingFor(subtotal, items.length > 0);
+
+  return { subtotal, shipping, total: subtotal + shipping, itemCount };
+};
+
+const loadCart = async (userId) => {
+  const { rows } = await pool.query(
+    `SELECT ci.product_id, ci.quantity, p.slug, p.name, p.brand, p.discounted_price,
+            p.image, p.image_background
+     FROM cart_items ci
+     JOIN products p ON p.id = ci.product_id
+     WHERE ci.user_id = $1
+     ORDER BY ci.created_at`,
+    [userId],
+  );
+
+  const items = rows.map((row) => ({
+    ...row,
+    product_id: Number(row.product_id),
+    quantity: Number(row.quantity),
+    discounted_price: Number(row.discounted_price),
+  }));
+
+  return { items, ...cartTotals(items) };
+};
+
+const loadAccount = async (userId) => {
+  const [userResult, ordersResult, savedResult] = await Promise.all([
+    pool.query(
+      'SELECT id, email, first_name, last_name, created_at FROM users WHERE id = $1',
+      [userId],
+    ),
+    pool.query(
+      `SELECT o.id, o.status, o.total, o.payment_method, o.created_at,
+              COALESCE(SUM(oi.quantity), 0)::int AS item_count
+       FROM orders o
+       LEFT JOIN order_items oi ON oi.order_id = o.id
+       WHERE o.user_id = $1
+       GROUP BY o.id
+       ORDER BY o.created_at DESC`,
+      [userId],
+    ),
+    pool.query(
+      `SELECT p.*
+       FROM wishlist_items w
+       JOIN products p ON p.id = w.product_id
+       WHERE w.user_id = $1
+       ORDER BY w.created_at DESC`,
+      [userId],
+    ),
+  ]);
+
+  if (!userResult.rows.length) return null;
+
+  return {
+    user: userResult.rows[0],
+    orders: ordersResult.rows.map((order) => ({
+      ...order,
+      id: Number(order.id),
+      total: Number(order.total),
+      item_count: Number(order.item_count),
+    })),
+    savedProducts: savedResult.rows.map((product) => ({
+      ...product,
+      id: Number(product.id),
+      discounted_price: Number(product.discounted_price),
+      real_price: Number(product.real_price),
+      ratings: product.ratings !== null ? Number(product.ratings) : null,
+      amount_sold: Number(product.amount_sold),
+    })),
+  };
+};
+
+const renderAccountPage = async (req, res, { errors = {}, profileValues = null, status = null } = {}) => {
+  const data = await loadAccount(req.session.user.id);
+  if (!data) {
+    return req.session.destroy(() => res.redirect('/login'));
+  }
+
+  const { user, orders, savedProducts } = data;
+  const initials = `${(user.first_name || '').charAt(0)}${(user.last_name || '').charAt(0)}`.toUpperCase();
+
+  return res.render('account', {
+    currentPath: '/account',
+    account: user,
+    initials,
+    orders,
+    savedProducts,
+    errors,
+    status,
+    profileValues: profileValues || {
+      firstName: user.first_name,
+      lastName: user.last_name,
+      email: user.email,
+    },
+  });
+};
+
+app.get('/cart', requireAuth, async (req, res) => {
+  try {
+    const cart = await loadCart(req.session.user.id);
+    res.render('cart', { currentPath: '/cart', cart });
+  } catch (error) {
+    console.error('Cart error', error);
+    res.status(500).send('Could not load your cart.');
+  }
+});
+
+app.post('/cart/add', requireAuth, async (req, res) => {
+  const productId = Number(req.body.productId);
+  const product = productsCache.find((entry) => Number(entry.id) === productId);
+  const redirectTo = req.body.checkout === '1' ? '/checkout' : safeNext(req.body.next, '/cart');
+  const quantity = Math.min(10, Math.max(1, Number(req.body.quantity) || 1));
+
+  if (!product) return res.redirect(redirectTo);
+
+  try {
+    await pool.query(
+      `INSERT INTO cart_items (user_id, product_id, quantity)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (user_id, product_id)
+       DO UPDATE SET quantity = LEAST(cart_items.quantity + EXCLUDED.quantity, 10), updated_at = NOW()`,
+      [req.session.user.id, productId, quantity],
+    );
+    res.redirect(redirectTo);
+  } catch (error) {
+    console.error('Add to cart error', error);
+    res.status(500).send('Could not add that item to your cart.');
+  }
+});
+
+app.post('/cart/update', requireAuth, async (req, res) => {
+  const productId = Number(req.body.productId);
+  const quantity = Math.min(10, Math.max(1, Number(req.body.quantity) || 1));
+
+  try {
+    await pool.query(
+      'UPDATE cart_items SET quantity = $1, updated_at = NOW() WHERE user_id = $2 AND product_id = $3',
+      [quantity, req.session.user.id, productId],
+    );
+    res.redirect('/cart');
+  } catch (error) {
+    console.error('Cart update error', error);
+    res.status(500).send('Could not update your cart.');
+  }
+});
+
+app.post('/cart/remove', requireAuth, async (req, res) => {
+  try {
+    await pool.query('DELETE FROM cart_items WHERE user_id = $1 AND product_id = $2', [
+      req.session.user.id,
+      Number(req.body.productId),
+    ]);
+    res.redirect('/cart');
+  } catch (error) {
+    console.error('Cart remove error', error);
+    res.status(500).send('Could not update your cart.');
+  }
+});
+
+app.post('/wishlist/toggle', requireAuth, async (req, res) => {
+  const productId = Number(req.body.productId);
+  const redirectTo = safeNext(req.body.next, '/account#saved');
+
+  if (!productsCache.some((entry) => Number(entry.id) === productId)) {
+    return res.redirect(redirectTo);
+  }
+
+  try {
+    const removed = await pool.query(
+      'DELETE FROM wishlist_items WHERE user_id = $1 AND product_id = $2 RETURNING product_id',
+      [req.session.user.id, productId],
+    );
+
+    if (!removed.rowCount) {
+      await pool.query(
+        'INSERT INTO wishlist_items (user_id, product_id) VALUES ($1, $2) ON CONFLICT DO NOTHING',
+        [req.session.user.id, productId],
+      );
+    }
+
+    res.redirect(redirectTo);
+  } catch (error) {
+    console.error('Wishlist error', error);
+    res.status(500).send('Could not update your saved gear.');
+  }
+});
+
+app.get('/checkout', requireAuth, async (req, res) => {
+  try {
+    const cart = await loadCart(req.session.user.id);
+    if (!cart.items.length) return res.redirect('/cart');
+
+    const user = req.session.user;
+    res.render('checkout', {
+      currentPath: '/checkout',
+      cart,
+      errors: {},
+      values: {
+        shipping_name: `${user.first_name} ${user.last_name}`.trim(),
+        shipping_phone: '',
+        shipping_address: '',
+        shipping_city: '',
+        shipping_province: '',
+        shipping_postal: '',
+        payment_method: 'cod',
+        notes: '',
+      },
+    });
+  } catch (error) {
+    console.error('Checkout error', error);
+    res.status(500).send('Could not load checkout.');
+  }
+});
+
+app.post('/checkout', requireAuth, async (req, res) => {
+  const values = {
+    shipping_name: String(req.body.shipping_name || '').trim(),
+    shipping_phone: String(req.body.shipping_phone || '').trim(),
+    shipping_address: String(req.body.shipping_address || '').trim(),
+    shipping_city: String(req.body.shipping_city || '').trim(),
+    shipping_province: String(req.body.shipping_province || '').trim(),
+    shipping_postal: String(req.body.shipping_postal || '').trim(),
+    payment_method: String(req.body.payment_method || 'cod'),
+    notes: String(req.body.notes || '').trim(),
+  };
+  const errors = {};
+
+  if (!values.shipping_name) errors.shipping_name = 'Enter the recipient name.';
+  if (!values.shipping_phone) errors.shipping_phone = 'Enter a contact number.';
+  if (!values.shipping_address) errors.shipping_address = 'Enter the delivery address.';
+  if (!values.shipping_city) errors.shipping_city = 'Enter the city or municipality.';
+  if (!values.shipping_province) errors.shipping_province = 'Enter the province.';
+  if (values.shipping_name.length > 200) errors.shipping_name = 'Keep this under 200 characters.';
+  if (values.shipping_phone.length > 50) errors.shipping_phone = 'Keep this under 50 characters.';
+  if (values.shipping_city.length > 100) errors.shipping_city = 'Keep this under 100 characters.';
+  if (values.shipping_province.length > 100) {
+    errors.shipping_province = 'Keep this under 100 characters.';
+  }
+  if (values.shipping_postal.length > 20) errors.shipping_postal = 'Keep this under 20 characters.';
+  if (!['cod', 'bank_transfer'].includes(values.payment_method)) {
+    values.payment_method = 'cod';
+  }
+
+  try {
+    const cart = await loadCart(req.session.user.id);
+    if (!cart.items.length) return res.redirect('/cart');
+
+    if (Object.keys(errors).length) {
+      return res.status(422).render('checkout', {
+        currentPath: '/checkout',
+        cart,
+        errors,
+        values,
+      });
+    }
+
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      const orderResult = await client.query(
+        `INSERT INTO orders (
+           user_id, payment_method, subtotal, shipping_fee, total,
+           shipping_name, shipping_phone, shipping_address, shipping_city,
+           shipping_province, shipping_postal, notes
+         ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
+         RETURNING id`,
+        [
+          req.session.user.id,
+          values.payment_method,
+          cart.subtotal,
+          cart.shipping,
+          cart.total,
+          values.shipping_name,
+          values.shipping_phone,
+          values.shipping_address,
+          values.shipping_city,
+          values.shipping_province,
+          values.shipping_postal || null,
+          values.notes || null,
+        ],
+      );
+      const orderId = orderResult.rows[0].id;
+
+      for (const item of cart.items) {
+        await client.query(
+          `INSERT INTO order_items (
+             order_id, product_id, product_name, product_slug, product_image,
+             image_background, unit_price, quantity, line_total
+           ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
+          [
+            orderId,
+            item.product_id,
+            item.name,
+            item.slug,
+            item.image,
+            item.image_background,
+            item.discounted_price,
+            item.quantity,
+            item.discounted_price * item.quantity,
+          ],
+        );
+      }
+
+      await client.query('DELETE FROM cart_items WHERE user_id = $1', [req.session.user.id]);
+      await client.query('COMMIT');
+      res.redirect(`/account/orders/${orderId}?placed=1`);
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  } catch (error) {
+    console.error('Place order error', error);
+    res.status(500).send('Could not place your order.');
+  }
+});
+
+app.get('/account', requireAuth, async (req, res) => {
+  try {
+    await renderAccountPage(req, res, { status: req.query.status || null });
+  } catch (error) {
+    console.error('Account error', error);
+    res.status(500).send('Could not load your account.');
+  }
+});
+
+app.post('/account/profile', requireAuth, async (req, res) => {
+  const profileValues = {
+    firstName: String(req.body.firstName || '').trim(),
+    lastName: String(req.body.lastName || '').trim(),
+    email: String(req.body.email || '').trim().toLowerCase(),
+  };
+  const errors = {};
+
+  if (!profileValues.firstName) errors.firstName = 'Enter your first name.';
+  if (!profileValues.lastName) errors.lastName = 'Enter your last name.';
+  if (profileValues.firstName.length > 100) errors.firstName = 'Keep this under 100 characters.';
+  if (profileValues.lastName.length > 100) errors.lastName = 'Keep this under 100 characters.';
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profileValues.email)) {
+    errors.email = 'Enter a valid email address.';
+  }
+  if (profileValues.email.length > 255) errors.email = 'Keep this under 255 characters.';
+
+  try {
+    if (!errors.email) {
+      const existing = await pool.query(
+        'SELECT id FROM users WHERE LOWER(email) = $1 AND id <> $2',
+        [profileValues.email, req.session.user.id],
+      );
+      if (existing.rows.length) errors.email = 'That email is already in use.';
+    }
+
+    if (Object.keys(errors).length) {
+      return await renderAccountPage(req, res, { errors, profileValues });
+    }
+
+    const { rows } = await pool.query(
+      `UPDATE users
+       SET first_name = $1, last_name = $2, email = $3, updated_at = NOW()
+       WHERE id = $4
+       RETURNING id, email, first_name, last_name`,
+      [profileValues.firstName, profileValues.lastName, profileValues.email, req.session.user.id],
+    );
+
+    const updated = rows[0];
+    req.session.user = {
+      id: updated.id,
+      email: updated.email,
+      first_name: updated.first_name,
+      last_name: updated.last_name,
+    };
+    req.session.save(() => {
+      res.redirect('/account?status=profile#profile');
+    });
+  } catch (error) {
+    console.error('Profile update error', error);
+    res.status(500).send('Could not update your profile.');
+  }
+});
+
+app.post('/account/password', requireAuth, async (req, res) => {
+  const currentPassword = String(req.body.currentPassword || '');
+  const newPassword = String(req.body.newPassword || '');
+  const confirmPassword = String(req.body.confirmPassword || '');
+  const errors = {};
+
+  if (!currentPassword) errors.currentPassword = 'Enter your current password.';
+  if (newPassword.length < 8) errors.newPassword = 'Use at least 8 characters.';
+  if (newPassword !== confirmPassword) errors.confirmPassword = 'Passwords do not match.';
+
+  try {
+    if (!errors.currentPassword && !errors.newPassword) {
+      const { rows } = await pool.query('SELECT password_hash FROM users WHERE id = $1', [
+        req.session.user.id,
+      ]);
+      const match = rows.length
+        ? await bcrypt.compare(currentPassword, rows[0].password_hash)
+        : false;
+
+      if (!match) errors.currentPassword = 'That password is not correct.';
+    }
+
+    if (Object.keys(errors).length) {
+      return await renderAccountPage(req, res, { errors });
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, 10);
+    await pool.query(
+      'UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2',
+      [passwordHash, req.session.user.id],
+    );
+    res.redirect('/account?status=password#security');
+  } catch (error) {
+    console.error('Password update error', error);
+    res.status(500).send('Could not update your password.');
+  }
+});
+
+app.get('/account/orders/:id', requireAuth, async (req, res) => {
+  const orderId = Number(req.params.id);
+  if (!Number.isInteger(orderId)) return res.status(404).send('Order not found');
+
+  try {
+    const [orderResult, itemsResult] = await Promise.all([
+      pool.query(
+        `SELECT id, status, payment_method, subtotal, shipping_fee, total,
+                shipping_name, shipping_phone, shipping_address, shipping_city,
+                shipping_province, shipping_postal, notes, created_at
+         FROM orders
+         WHERE id = $1 AND user_id = $2`,
+        [orderId, req.session.user.id],
+      ),
+      pool.query(
+        `SELECT product_name, product_slug, product_image, image_background,
+                unit_price, quantity, line_total
+         FROM order_items
+         WHERE order_id = $1
+         ORDER BY id`,
+        [orderId],
+      ),
+    ]);
+
+    if (!orderResult.rows.length) return res.status(404).send('Order not found');
+
+    res.render('order', {
+      currentPath: '/account',
+      order: orderResult.rows[0],
+      items: itemsResult.rows,
+      justPlaced: req.query.placed === '1',
+    });
+  } catch (error) {
+    console.error('Order error', error);
+    res.status(500).send('Could not load that order.');
+  }
 });
 
 loadProducts()

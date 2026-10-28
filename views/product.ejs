@@ -54,7 +54,12 @@
         </div>
       </div>
 
-      <div class="product-hero__buy">
+      <%
+        const isSaved = typeof wishlistIds !== 'undefined' && wishlistIds.includes(Number(product.id));
+      %>
+      <form class="product-hero__buy" method="POST" action="/cart/add">
+        <input type="hidden" name="productId" value="<%= product.id %>" />
+        <input type="hidden" name="next" value="/product/<%= product.slug %>" />
         <div class="qty" data-qty>
           <button class="qty__button" type="button" data-qty-decrease aria-label="Decrease quantity">
             <i data-lucide="minus" aria-hidden="true"></i>
@@ -63,6 +68,7 @@
             class="qty__input"
             type="text"
             inputmode="numeric"
+            name="quantity"
             value="1"
             min="1"
             max="10"
@@ -73,22 +79,33 @@
             <i data-lucide="plus" aria-hidden="true"></i>
           </button>
         </div>
-        <button class="btn btn--primary product-hero__add" type="button">
+        <button class="btn btn--primary product-hero__add" type="submit">
           <i data-lucide="shopping-bag" aria-hidden="true"></i>
           Add to cart
         </button>
-        <button class="btn btn--ghost product-hero__buy-now" type="button">
+        <button class="btn btn--ghost product-hero__buy-now" type="submit" name="checkout" value="1">
           <i data-lucide="zap" aria-hidden="true"></i>
           Buy now
         </button>
-      </div>
+        <button
+          class="btn btn--ghost product-hero__wishlist<%= isSaved ? ' is-saved' : '' %>"
+          type="submit"
+          formaction="/wishlist/toggle"
+          formmethod="post"
+          aria-pressed="<%= isSaved ? 'true' : 'false' %>"
+          aria-label="<%= isSaved ? 'Remove from saved gear' : 'Save to saved gear' %>"
+          title="<%= isSaved ? 'Remove from saved gear' : 'Save to saved gear' %>"
+        >
+          <i data-lucide="heart" aria-hidden="true"></i>
+        </button>
+      </form>
 
       <ul class="product-hero__assurances">
         <li class="assurance">
           <i data-lucide="truck" aria-hidden="true"></i>
           <span>
             <strong>Free shipping</strong>
-            <small>Orders over <%= formatPrice(2000) %></small>
+            <small>Orders <%= formatPrice(2000) %> and up</small>
           </span>
         </li>
         <li class="assurance">

@@ -1,7 +1,26 @@
 <%
   const discount = discountPercent(product);
+  const saved = typeof wishlistIds !== 'undefined' && wishlistIds.includes(Number(product.id));
+  const nextPath =
+    typeof returnPath !== 'undefined' && returnPath
+      ? returnPath
+      : typeof currentPath !== 'undefined'
+        ? currentPath
+        : `/product/${product.slug}`;
 %>
 <article class="product-card">
+  <form class="product-card__wishlist" method="POST" action="/wishlist/toggle">
+    <input type="hidden" name="productId" value="<%= product.id %>" />
+    <input type="hidden" name="next" value="<%= nextPath %>" />
+    <button
+      class="wishlist-toggle<%= saved ? ' is-saved' : '' %>"
+      type="submit"
+      aria-pressed="<%= saved ? 'true' : 'false' %>"
+      aria-label="<%= saved ? 'Remove from saved gear' : 'Save to saved gear' %>"
+    >
+      <i data-lucide="heart" aria-hidden="true"></i>
+    </button>
+  </form>
   <a class="product-card__link" href="/product/<%= product.slug %>" aria-label="<%= product.brand %> <%= product.name %>">
     <%- include('product-media', {
       product: product,
