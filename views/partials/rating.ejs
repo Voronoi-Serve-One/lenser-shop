@@ -3,7 +3,7 @@
   const ratingModifier = typeof ratingClass !== 'undefined' && ratingClass ? ' ' + ratingClass : '';
   const fillPercent = Math.max(0, Math.min(100, (ratingValue / 5) * 100));
 %>
-<span class="rating<%= ratingModifier %>" aria-label="Rated <%= ratingValue.toFixed(1) %> out of 5">
+<span class="rating<%= ratingModifier %>" role="img" aria-label="Rated <%= ratingValue.toFixed(1) %> out of 5">
   <span class="rating__stars" aria-hidden="true">
     <span class="rating__stars-base">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
     <span class="rating__stars-fill" style="width: <%= fillPercent.toFixed(1) %>%">&#9733;&#9733;&#9733;&#9733;&#9733;</span>

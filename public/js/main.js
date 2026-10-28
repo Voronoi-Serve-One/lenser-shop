@@ -28,9 +28,23 @@
     place(active);
   };
 
-  place(active);
+  const revealActive = () => {
+    if (!active || nav.scrollWidth <= nav.clientWidth) {
+      place(active);
+      return;
+    }
+
+    const target = active.offsetLeft - (nav.clientWidth - active.offsetWidth) / 2;
+    nav.scrollLeft = Math.max(0, Math.min(target, nav.scrollWidth - nav.clientWidth));
+    place(active);
+  };
+
+  revealActive();
   requestAnimationFrame(() => {
-    requestAnimationFrame(() => nav.classList.add('is-ready'));
+    requestAnimationFrame(() => {
+      nav.classList.add('is-ready');
+      revealActive();
+    });
   });
 
   nav.addEventListener('pointerover', (event) => {
@@ -57,7 +71,10 @@
   window.addEventListener('resize', () => place(hovered || active));
 
   if (document.fonts) {
-    document.fonts.ready.then(() => place(hovered || active));
+    document.fonts.ready.then(() => {
+      revealActive();
+      place(hovered || active);
+    });
   }
 })();
 
@@ -324,5 +341,371 @@
       });
     },
     onClose: unlockSearchScroll,
+  });
+})();
+
+(() => {
+  const header = document.querySelector('body > header');
+  if (!header) return undefined;
+
+  const brands = header.querySelector('.brands');
+  const root = document.documentElement;
+  let scrollFrame = 0;
+
+  const measureBrands = () => {
+    if (!brands) return;
+    const wasCompact = header.classList.contains('is-compact');
+    if (wasCompact) header.classList.remove('is-compact');
+    const height = Math.round(brands.getBoundingClientRect().height);
+    if (wasCompact) header.classList.add('is-compact');
+    root.style.setProperty('--brands-height', `${height}px`);
+  };
+
+  const measureHeader = () => {
+    root.style.setProperty('--header-height', `${Math.round(header.getBoundingClientRect().height)}px`);
+  };
+
+  const updateCompact = () => {
+    header.classList.toggle('is-compact', window.scrollY > 72);
+    measureHeader();
+  };
+
+  const onScroll = () => {
+    if (scrollFrame) return;
+    scrollFrame = requestAnimationFrame(() => {
+      scrollFrame = 0;
+      updateCompact();
+    });
+  };
+
+  measureBrands();
+  updateCompact();
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', () => {
+    measureBrands();
+    updateCompact();
+  });
+
+  if (document.fonts) {
+    document.fonts.ready.then(() => {
+      measureBrands();
+      updateCompact();
+    });
+  }
+
+  if ('ResizeObserver' in window) {
+    new ResizeObserver(measureHeader).observe(header);
+  }
+})();
+
+(() => {
+  const buttons = Array.from(document.querySelectorAll('[data-nav-toggle]'));
+  if (!buttons.length) return;
+
+  const setLabel = (button, open) => {
+    const label = button.getAttribute('aria-label') || '';
+    button.setAttribute('aria-label', label.replace(/^(Show|Hide)\b/, open ? 'Hide' : 'Show'));
+  };
+
+  const close = (button) => {
+    button.setAttribute('aria-expanded', 'false');
+    button.closest('.nav-item')?.classList.remove('is-open');
+    setLabel(button, false);
+  };
+
+  buttons.forEach((button) => {
+    const menu = document.getElementById(button.getAttribute('aria-controls'));
+    const wrapper = button.closest('.nav-item');
+    if (!menu || !wrapper) return;
+
+    button.addEventListener('click', () => {
+      const open = button.getAttribute('aria-expanded') !== 'true';
+      buttons.forEach((other) => {
+        if (other !== button) close(other);
+      });
+      button.setAttribute('aria-expanded', String(open));
+      wrapper.classList.toggle('is-open', open);
+      setLabel(button, open);
+    });
+
+    menu.addEventListener('click', (event) => {
+      if (event.target.closest('a')) close(button);
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!wrapper.contains(event.target)) close(button);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      if (button.getAttribute('aria-expanded') !== 'true') return;
+      close(button);
+      button.focus({ preventScroll: true });
+    });
+
+    wrapper.addEventListener('focusout', (event) => {
+      if (!wrapper.contains(event.relatedTarget)) close(button);
+    });
+  });
+})();
+
+(() => {
+  const input = document.querySelector('.search-form--page input[name="q"]');
+  if (!input || input.value) return;
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+  requestAnimationFrame(() => input.focus({ preventScroll: true }));
+})();
+
+(() => {
+  const render = () => window.lucide?.createIcons();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', render, { once: true });
+  } else {
+    render();
+  }
+})();
+
+(() => {
+  const summary = document.querySelector('[data-error-summary]');
+  if (!summary) return;
+  summary.focus({ preventScroll: true });
+})();
+
+(() => {
+  const region = document.querySelector('[data-toast-region]');
+  if (!region) return;
+
+  const removeToast = (toast) => {
+    if (!toast.isConnected) return;
+    toast.classList.add('is-leaving');
+    window.setTimeout(() => toast.remove(), 180);
+  };
+
+  const showToast = (message, { type = 'success', actionUrl = '', actionLabel = '' } = {}) => {
+    const toast = document.createElement('div');
+    toast.className = `toast toast--${type}`;
+    toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+
+    const icon = document.createElement('i');
+    icon.className = 'toast__icon';
+    icon.setAttribute('data-lucide', type === 'error' ? 'circle-alert' : 'circle-check');
+    icon.setAttribute('aria-hidden', 'true');
+
+    const body = document.createElement('div');
+    body.className = 'toast__body';
+
+    const text = document.createElement('p');
+    text.textContent = message;
+    body.append(text);
+
+    if (actionUrl && actionLabel) {
+      const action = document.createElement('a');
+      action.className = 'toast__action';
+      action.href = actionUrl;
+      action.textContent = actionLabel;
+      body.append(action);
+    }
+
+    const close = document.createElement('button');
+    close.className = 'toast__close';
+    close.type = 'button';
+    close.setAttribute('aria-label', 'Dismiss notification');
+    close.innerHTML = '<i data-lucide="x" aria-hidden="true"></i>';
+
+    toast.append(icon, body, close);
+    region.append(toast);
+
+    while (region.children.length > 3) {
+      region.firstElementChild.remove();
+    }
+
+    window.lucide?.createIcons();
+
+    const duration = actionUrl ? 6500 : 4200;
+    let timer = window.setTimeout(() => removeToast(toast), duration);
+
+    const pause = () => window.clearTimeout(timer);
+    const resume = () => {
+      pause();
+      timer = window.setTimeout(() => removeToast(toast), Math.min(3200, duration));
+    };
+
+    toast.addEventListener('mouseenter', pause);
+    toast.addEventListener('mouseleave', resume);
+    close.addEventListener('click', () => {
+      pause();
+      removeToast(toast);
+    });
+  };
+
+  window.lenserToast = showToast;
+})();
+
+(() => {
+  if (!window.fetch || !window.FormData) return;
+
+  const postForm = async (endpoint, form, submitter) => {
+    const data = new FormData(form);
+    if (submitter && submitter.name) data.append(submitter.name, submitter.value);
+
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'X-Requested-With': 'fetch',
+        Accept: 'application/json',
+      },
+      body: new URLSearchParams(data),
+      credentials: 'same-origin',
+    });
+
+    let payload = null;
+    try {
+      payload = await response.json();
+    } catch {
+      payload = null;
+    }
+
+    if (response.status === 401 && payload) {
+      if (payload.registerUrl) {
+        window.location.assign(payload.registerUrl);
+        return { unauthorized: true };
+      }
+
+      if (payload.loginUrl) {
+        window.lenserToast?.(payload.error || 'Sign in to continue.', {
+          type: 'error',
+          actionUrl: payload.loginUrl,
+          actionLabel: 'Sign in',
+        });
+        return { unauthorized: true };
+      }
+    }
+
+    if (!response.ok || !payload || payload.ok === false) {
+      throw new Error(payload?.error || 'Something went wrong. Please try again.');
+    }
+
+    return payload;
+  };
+
+  const setPending = (button, pending) => {
+    if (!button) return;
+    button.disabled = pending;
+    button.classList.toggle('is-pending', pending);
+    button.setAttribute('aria-busy', String(pending));
+  };
+
+  const updateCartBadge = (count) => {
+    const numericCount = Number(count) || 0;
+    document.querySelectorAll('.icon-btn--cart').forEach((trigger) => {
+      let badge = trigger.querySelector('.cart-count');
+      if (numericCount > 0) {
+        if (!badge) {
+          badge = document.createElement('span');
+          badge.className = 'cart-count';
+          badge.setAttribute('aria-hidden', 'true');
+          trigger.append(badge);
+        }
+        badge.textContent = numericCount > 9 ? '9+' : String(numericCount);
+      } else if (badge) {
+        badge.remove();
+      }
+
+      const itemCopy = numericCount === 1 ? 'item' : 'items';
+      trigger.setAttribute(
+        'aria-label',
+        numericCount > 0 ? `Cart, ${numericCount} ${itemCopy}` : 'Cart, empty',
+      );
+    });
+  };
+
+  const updateMiniCart = (html) => {
+    const container = document.querySelector('[data-cart-menu]');
+    if (!container || !html) return;
+    container.innerHTML = html;
+    window.lucide?.createIcons();
+  };
+
+  const setWishlistState = (button, saved) => {
+    if (!button) return;
+    const label = saved ? 'Remove from saved gear' : 'Save to saved gear';
+    button.classList.toggle('is-saved', saved);
+    button.setAttribute('aria-pressed', String(saved));
+    button.setAttribute('aria-label', label);
+    button.setAttribute('title', label);
+  };
+
+  document.addEventListener('submit', async (event) => {
+    const form = event.target;
+    if (!(form instanceof HTMLFormElement)) return;
+
+    const submitter =
+      event.submitter || form.querySelector('button[type="submit"], button:not([type])');
+    const wishlistButton =
+      submitter && submitter.matches('[data-wishlist-toggle]')
+        ? submitter
+        : form.querySelector('[data-wishlist-toggle]');
+    const wishlistAction = submitter?.getAttribute('formaction') || form.getAttribute('action') || '';
+    const isWishlistSubmit =
+      Boolean(wishlistButton) &&
+      (form.action.includes('/wishlist/toggle') || wishlistAction.includes('/wishlist/toggle'));
+
+    if (isWishlistSubmit) {
+      event.preventDefault();
+      const productId =
+        wishlistButton.dataset.productId ||
+        form.querySelector('input[name="productId"]')?.value ||
+        '';
+      setPending(wishlistButton, true);
+
+      try {
+        const payload = await postForm(wishlistAction || '/wishlist/toggle', form, submitter);
+        if (payload.unauthorized) return;
+
+        document
+          .querySelectorAll(`[data-wishlist-toggle][data-product-id="${productId}"]`)
+          .forEach((button) => setWishlistState(button, payload.saved));
+
+        window.lenserToast?.(
+          payload.saved
+            ? `${payload.productName} saved to your gear.`
+            : `${payload.productName} removed from saved gear.`,
+        );
+      } catch (error) {
+        window.lenserToast?.(error.message, { type: 'error' });
+      } finally {
+        setPending(wishlistButton, false);
+      }
+      return;
+    }
+
+    if (!form.matches('form[action="/cart/add"]')) return;
+
+    if (
+      !submitter ||
+      submitter.name === 'checkout' ||
+      submitter.value === '1' ||
+      (submitter.getAttribute('formaction') || '').includes('/wishlist/toggle') ||
+      (submitter.getAttribute('formaction') || '').includes('/checkout')
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+    setPending(submitter, true);
+
+    try {
+      const payload = await postForm(form.action, form, submitter);
+      if (payload.unauthorized) return;
+
+      updateCartBadge(payload.cartCount);
+      updateMiniCart(payload.miniCartHtml);
+      window.lenserToast?.(`${payload.productName} added to your cart.`);
+    } catch (error) {
+      window.lenserToast?.(error.message, { type: 'error' });
+    } finally {
+      setPending(submitter, false);
+    }
   });
 })();

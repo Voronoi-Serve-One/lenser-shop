@@ -20,19 +20,20 @@
       </header>
 
       <nav class="auth__tabs" aria-label="Account access">
-        <a class="auth__tab" href="/login">Sign in</a>
-        <a class="auth__tab is-active" href="/register" aria-current="page">Create account</a>
+        <a class="auth__tab" href="/login<%= typeof next !== 'undefined' && next ? '?next=' + encodeURIComponent(next) : '' %>">Sign in</a>
+        <a class="auth__tab is-active" href="/register<%= typeof next !== 'undefined' && next ? '?next=' + encodeURIComponent(next) : '' %>" aria-current="page">Create account</a>
       </nav>
 
       <div class="auth__panel">
         <% if (error) { %>
-          <p class="auth__error" role="alert">
+          <p class="auth__error" id="register-error" role="alert">
             <i data-lucide="circle-alert" aria-hidden="true"></i>
             <span><%= error %></span>
           </p>
         <% } %>
 
-        <form class="auth__form" action="/register" method="POST" data-auth-form>
+        <form class="auth__form" action="/register" method="POST" data-auth-form <% if (error) { %>aria-describedby="register-error"<% } %>>
+          <input type="hidden" name="next" value="<%= typeof next !== 'undefined' ? next : '' %>" />
           <div class="auth__row">
             <div class="auth__field">
               <label for="register-first">First name</label>

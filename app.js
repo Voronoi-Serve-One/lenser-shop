@@ -52,11 +52,40 @@ const shippingFor = (subtotal, hasItems = true) => {
   return subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE;
 };
 
+const isFetchRequest = (req) =>
+  req.get('X-Requested-With') === 'fetch' ||
+  (req.get('Accept') || '').includes('application/json');
+
 const requireAuth = (req, res, next) => {
   if (!req.session.user) {
     const nextPath =
       req.method === 'GET' ? req.originalUrl : safeNext(req.body && req.body.next, '/');
-    return res.redirect(`/login?next=${encodeURIComponent(nextPath)}`);
+    const loginUrl = `/login?next=${encodeURIComponent(nextPath)}`;
+    if (isFetchRequest(req)) {
+      return res.status(401).json({
+        ok: false,
+        error: 'Sign in to continue.',
+        loginUrl,
+      });
+    }
+    return res.redirect(loginUrl);
+  }
+  next();
+};
+
+const requireSignup = (req, res, next) => {
+  if (!req.session.user) {
+    const nextPath =
+      req.method === 'GET' ? req.originalUrl : safeNext(req.body && req.body.next, '/');
+    const registerUrl = `/register?next=${encodeURIComponent(nextPath)}`;
+    if (isFetchRequest(req)) {
+      return res.status(401).json({
+        ok: false,
+        error: 'Create an account to continue.',
+        registerUrl,
+      });
+    }
+    return res.redirect(registerUrl);
   }
   next();
 };
@@ -443,6 +472,79 @@ app.locals.shippingFee = SHIPPING_FEE;
 app.locals.orderStatusLabel = (status) => orderStatusCopy[status] || 'Order placed';
 app.locals.searchQuickLinks = SEARCH_QUICK_LINKS;
 
+const PAGE_META = {
+  '/': {
+    title: 'Lenser | Cameras, Lenses & Accessories',
+    description: 'Cameras, lenses, and accessories picked for the way you actually shoot.',
+  },
+  '/featured': {
+    title: 'Featured Gear | Lenser',
+    description: 'Featured cameras, lenses, and accessories selected by Lenser.',
+  },
+  '/deals': {
+    title: 'Camera & Lens Deals | Lenser',
+    description: 'Current deals on cameras, lenses, and camera accessories at Lenser.',
+  },
+  '/best-sellers': {
+    title: 'Best Sellers | Lenser',
+    description: 'The best-selling cameras, lenses, and accessories at Lenser.',
+  },
+  '/new-arrivals': {
+    title: 'New Arrivals | Lenser',
+    description: 'The latest cameras, lenses, and accessories to land at Lenser.',
+  },
+  '/cameras': {
+    title: 'Cameras | Lenser',
+    description: 'Shop mirrorless, DSLR, and action cameras at Lenser.',
+  },
+  '/lenses': {
+    title: 'Lenses | Lenser',
+    description: 'Shop primes, zooms, and specialty lenses at Lenser.',
+  },
+  '/accessories': {
+    title: 'Camera Accessories | Lenser',
+    description: 'Shop bags, lighting, support, and camera accessories at Lenser.',
+  },
+  '/search': {
+    title: 'Search | Lenser',
+    description: 'Search Lenser for cameras, lenses, and accessories.',
+  },
+  '/about': {
+    title: 'About | Lenser',
+    description: 'Learn about Lenser and the camera gear we carry.',
+  },
+  '/login': {
+    title: 'Sign In | Lenser',
+    description: 'Sign in to your Lenser account.',
+  },
+  '/register': {
+    title: 'Create Account | Lenser',
+    description: 'Create a Lenser account to save gear and track orders.',
+  },
+  '/cart': {
+    title: 'Your Cart | Lenser',
+    description: 'Review the camera gear in your Lenser cart.',
+  },
+  '/checkout': {
+    title: 'Checkout | Lenser',
+    description: 'Enter delivery and payment details for your Lenser order.',
+  },
+  '/account': {
+    title: 'Your Account | Lenser',
+    description: 'Manage your Lenser profile, orders, and saved gear.',
+  },
+};
+
+app.use((req, res, next) => {
+  const meta = PAGE_META[req.path] || {
+    title: 'Lenser',
+    description: 'Cameras, lenses, and accessories for the way you shoot.',
+  };
+  res.locals.pageTitle = meta.title;
+  res.locals.pageDescription = meta.description;
+  next();
+});
+
 app.get('/', (req, res) => {
   const featuredProducts = productsCache
     .filter((product) => product.is_featured)
@@ -623,6 +725,10 @@ app.get('/search', (req, res) => {
     typeFilters,
     popularProducts,
     returnPath,
+    pageTitle: searchQuery ? `Search: ${searchQuery} | Lenser` : 'Search | Lenser',
+    pageDescription: searchQuery
+      ? `Search results for ${searchQuery} across the Lenser catalog.`
+      : 'Search Lenser for cameras, lenses, and accessories.',
   });
 });
 
@@ -682,6 +788,12 @@ app.get('/product/:slug', (req, res) => {
     box: storedSpec?.box?.length ? storedSpec.box : fallbackSpec.box,
   };
 
+  const productDescription = String(product.description || '').replace(/\s+/g, ' ').trim();
+  const metaDescription =
+    productDescription.length > 157
+      ? `${productDescription.slice(0, 157).trimEnd()}…`
+      : productDescription;
+
   res.render('product', {
     currentPath: req.path,
     product,
@@ -692,6 +804,8 @@ app.get('/product/:slug', (req, res) => {
     savingsAmount,
     savingsPercentValue,
     specContent,
+    pageTitle: `${product.brand} ${product.name} | Lenser`,
+    pageDescription: metaDescription,
   });
 });
 
@@ -712,7 +826,8 @@ app.get('/register', redirectIfAuth, (req, res) => {
   res.render('register', {
     currentPath: req.path,
     error: null,
-    values: {}
+    values: {},
+    next: safeNext(req.query.next, '')
   });
 });
 
@@ -723,12 +838,14 @@ app.post('/register', redirectIfAuth, async (req, res) => {
     lastName: lastName || '',
     email: email || ''
   };
+  const next = safeNext(req.body.next, '/');
 
   if (!firstName || !lastName || !email || !password) {
     return res.render('register', {
       currentPath: '/register',
       error: 'All fields are required.',
-      values: formValues
+      values: formValues,
+      next
     });
   }
 
@@ -736,7 +853,8 @@ app.post('/register', redirectIfAuth, async (req, res) => {
     return res.render('register', {
       currentPath: '/register',
       error: 'Password must be at least 8 characters.',
-      values: formValues
+      values: formValues,
+      next
     });
   }
 
@@ -748,7 +866,8 @@ app.post('/register', redirectIfAuth, async (req, res) => {
       return res.render('register', {
         currentPath: '/register',
         error: 'An account with that email already exists.',
-        values: formValues
+        values: formValues,
+        next
       });
     }
 
@@ -762,7 +881,7 @@ app.post('/register', redirectIfAuth, async (req, res) => {
     req.session.regenerate((err) => {
       if (err) {
         console.error(err);
-        return res.redirect('/login');
+        return res.redirect(`/login?next=${encodeURIComponent(next)}`);
       }
       req.session.user = {
         id: user.id,
@@ -771,7 +890,7 @@ app.post('/register', redirectIfAuth, async (req, res) => {
         last_name: user.last_name
       };
       req.session.save(() => {
-        res.redirect('/');
+        res.redirect(next);
       });
     });
   } catch (error) {
@@ -779,7 +898,8 @@ app.post('/register', redirectIfAuth, async (req, res) => {
     return res.render('register', {
       currentPath: '/register',
       error: 'Something went wrong. Please try again.',
-      values: formValues
+      values: formValues,
+      next
     });
   }
 });
@@ -982,13 +1102,19 @@ app.get('/cart', requireAuth, async (req, res) => {
   }
 });
 
-app.post('/cart/add', requireAuth, async (req, res) => {
+app.post('/cart/add', requireSignup, async (req, res) => {
   const productId = Number(req.body.productId);
   const product = productsCache.find((entry) => Number(entry.id) === productId);
   const redirectTo = req.body.checkout === '1' ? '/checkout' : safeNext(req.body.next, '/cart');
   const quantity = Math.min(10, Math.max(1, Number(req.body.quantity) || 1));
+  const wantJson = isFetchRequest(req) && req.body.checkout !== '1';
 
-  if (!product) return res.redirect(redirectTo);
+  if (!product) {
+    if (wantJson) {
+      return res.status(404).json({ ok: false, error: 'That product is no longer available.' });
+    }
+    return res.redirect(redirectTo);
+  }
 
   try {
     await pool.query(
@@ -998,10 +1124,36 @@ app.post('/cart/add', requireAuth, async (req, res) => {
        DO UPDATE SET quantity = LEAST(cart_items.quantity + EXCLUDED.quantity, 10), updated_at = NOW()`,
       [req.session.user.id, productId, quantity],
     );
-    res.redirect(redirectTo);
+
+    if (!wantJson) return res.redirect(redirectTo);
+
+    const cart = await loadCart(req.session.user.id);
+    const miniCartHtml = await new Promise((resolve, reject) => {
+      res.render(
+        'partials/mini-cart',
+        {
+          layout: false,
+          cartPreview: cart.items.slice(-3).reverse(),
+          cartCount: cart.itemCount,
+          cartLines: cart.items.length,
+          cartSubtotal: cart.subtotal,
+        },
+        (error, html) => (error ? reject(error) : resolve(html)),
+      );
+    });
+
+    return res.json({
+      ok: true,
+      cartCount: cart.itemCount,
+      productName: product.name,
+      miniCartHtml,
+    });
   } catch (error) {
     console.error('Add to cart error', error);
-    res.status(500).send('Could not add that item to your cart.');
+    if (wantJson) {
+      return res.status(500).json({ ok: false, error: 'Could not add that item to your cart.' });
+    }
+    return res.status(500).send('Could not add that item to your cart.');
   }
 });
 
@@ -1034,11 +1186,16 @@ app.post('/cart/remove', requireAuth, async (req, res) => {
   }
 });
 
-app.post('/wishlist/toggle', requireAuth, async (req, res) => {
+app.post('/wishlist/toggle', requireSignup, async (req, res) => {
   const productId = Number(req.body.productId);
+  const product = productsCache.find((entry) => Number(entry.id) === productId);
   const redirectTo = safeNext(req.body.next, '/account#saved');
+  const wantJson = isFetchRequest(req);
 
-  if (!productsCache.some((entry) => Number(entry.id) === productId)) {
+  if (!product) {
+    if (wantJson) {
+      return res.status(404).json({ ok: false, error: 'That product is no longer available.' });
+    }
     return res.redirect(redirectTo);
   }
 
@@ -1055,10 +1212,22 @@ app.post('/wishlist/toggle', requireAuth, async (req, res) => {
       );
     }
 
-    res.redirect(redirectTo);
+    if (wantJson) {
+      return res.json({
+        ok: true,
+        saved: removed.rowCount === 0,
+        productId,
+        productName: product.name,
+      });
+    }
+
+    return res.redirect(redirectTo);
   } catch (error) {
     console.error('Wishlist error', error);
-    res.status(500).send('Could not update your saved gear.');
+    if (wantJson) {
+      return res.status(500).json({ ok: false, error: 'Could not update your saved gear.' });
+    }
+    return res.status(500).send('Could not update your saved gear.');
   }
 });
 
@@ -1320,11 +1489,14 @@ app.get('/account/orders/:id', requireAuth, async (req, res) => {
 
     if (!orderResult.rows.length) return res.status(404).send('Order not found');
 
+    const order = orderResult.rows[0];
     res.render('order', {
       currentPath: '/account',
-      order: orderResult.rows[0],
+      order,
       items: itemsResult.rows,
       justPlaced: req.query.placed === '1',
+      pageTitle: `Order #${String(order.id).padStart(5, '0')} | Lenser`,
+      pageDescription: `Details for Lenser order #${String(order.id).padStart(5, '0')}.`,
     });
   } catch (error) {
     console.error('Order error', error);

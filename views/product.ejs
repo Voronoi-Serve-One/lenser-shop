@@ -79,7 +79,7 @@
             <i data-lucide="plus" aria-hidden="true"></i>
           </button>
         </div>
-        <button class="btn btn--primary product-hero__add" type="submit">
+        <button class="btn btn--primary product-hero__add" type="submit" data-busy-label="Adding...">
           <i data-lucide="shopping-bag" aria-hidden="true"></i>
           Add to cart
         </button>
@@ -95,6 +95,8 @@
           aria-pressed="<%= isSaved ? 'true' : 'false' %>"
           aria-label="<%= isSaved ? 'Remove from saved gear' : 'Save to saved gear' %>"
           title="<%= isSaved ? 'Remove from saved gear' : 'Save to saved gear' %>"
+          data-wishlist-toggle
+          data-product-id="<%= product.id %>"
         >
           <i data-lucide="heart" aria-hidden="true"></i>
         </button>
@@ -105,7 +107,7 @@
           <i data-lucide="truck" aria-hidden="true"></i>
           <span>
             <strong>Free shipping</strong>
-            <small>Orders <%= formatPrice(2000) %> and up</small>
+            <small>Orders <%= formatPrice(freeShippingThreshold) %> and up</small>
           </span>
         </li>
         <li class="assurance">

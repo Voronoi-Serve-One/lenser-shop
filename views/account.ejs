@@ -29,6 +29,16 @@
       <% } %>
 
       <form class="account__form" action="/account/profile" method="POST" data-account-form>
+        <% if (errors.firstName || errors.lastName || errors.email) { %>
+          <div class="form-error-summary" role="alert" tabindex="-1" data-error-summary>
+            <strong>Please check the profile details.</strong>
+            <ul>
+              <% if (errors.firstName) { %><li><a href="#account-first"><%= errors.firstName %></a></li><% } %>
+              <% if (errors.lastName) { %><li><a href="#account-last"><%= errors.lastName %></a></li><% } %>
+              <% if (errors.email) { %><li><a href="#account-email"><%= errors.email %></a></li><% } %>
+            </ul>
+          </div>
+        <% } %>
         <input type="hidden" name="next" value="/account#profile" />
         <div class="account__row">
           <div class="auth__field">
@@ -42,9 +52,10 @@
                 autocomplete="given-name"
                 value="<%= profileValues.firstName %>"
                 required
+                <% if (errors.firstName) { %>aria-invalid="true" aria-describedby="account-first-error"<% } %>
               />
             </div>
-            <% if (errors.firstName) { %><p class="account__field-error"><%= errors.firstName %></p><% } %>
+            <% if (errors.firstName) { %><p class="account__field-error" id="account-first-error"><%= errors.firstName %></p><% } %>
           </div>
 
           <div class="auth__field">
@@ -58,9 +69,10 @@
                 autocomplete="family-name"
                 value="<%= profileValues.lastName %>"
                 required
+                <% if (errors.lastName) { %>aria-invalid="true" aria-describedby="account-last-error"<% } %>
               />
             </div>
-            <% if (errors.lastName) { %><p class="account__field-error"><%= errors.lastName %></p><% } %>
+            <% if (errors.lastName) { %><p class="account__field-error" id="account-last-error"><%= errors.lastName %></p><% } %>
           </div>
         </div>
 
@@ -75,9 +87,10 @@
               autocomplete="email"
               value="<%= profileValues.email %>"
               required
+              <% if (errors.email) { %>aria-invalid="true" aria-describedby="account-email-error"<% } %>
             />
           </div>
-          <% if (errors.email) { %><p class="account__field-error"><%= errors.email %></p><% } %>
+          <% if (errors.email) { %><p class="account__field-error" id="account-email-error"><%= errors.email %></p><% } %>
         </div>
 
         <div class="account__actions">
@@ -100,6 +113,16 @@
       <% } %>
 
       <form class="account__form" action="/account/password" method="POST" data-account-form>
+        <% if (errors.currentPassword || errors.newPassword || errors.confirmPassword) { %>
+          <div class="form-error-summary" role="alert" tabindex="-1" data-error-summary>
+            <strong>Please check the password fields.</strong>
+            <ul>
+              <% if (errors.currentPassword) { %><li><a href="#account-current-password"><%= errors.currentPassword %></a></li><% } %>
+              <% if (errors.newPassword) { %><li><a href="#account-new-password"><%= errors.newPassword %></a></li><% } %>
+              <% if (errors.confirmPassword) { %><li><a href="#account-confirm-password"><%= errors.confirmPassword %></a></li><% } %>
+            </ul>
+          </div>
+        <% } %>
         <input type="hidden" name="next" value="/account#security" />
         <div class="auth__field">
           <label for="account-current-password">Current password</label>
@@ -111,6 +134,7 @@
               name="currentPassword"
               autocomplete="current-password"
               required
+              <% if (errors.currentPassword) { %>aria-invalid="true" aria-describedby="account-current-password-error"<% } %>
             />
             <button
               class="auth__reveal"
@@ -124,7 +148,7 @@
               <span class="auth__reveal-hide" aria-hidden="true"><i data-lucide="eye-off"></i></span>
             </button>
           </div>
-          <% if (errors.currentPassword) { %><p class="account__field-error"><%= errors.currentPassword %></p><% } %>
+          <% if (errors.currentPassword) { %><p class="account__field-error" id="account-current-password-error"><%= errors.currentPassword %></p><% } %>
         </div>
 
         <div class="account__row">
@@ -140,6 +164,7 @@
                 minlength="8"
                 data-password
                 required
+                <% if (errors.newPassword) { %>aria-invalid="true" aria-describedby="account-new-password-error"<% } %>
               />
               <button
                 class="auth__reveal"
@@ -153,7 +178,7 @@
                 <span class="auth__reveal-hide" aria-hidden="true"><i data-lucide="eye-off"></i></span>
               </button>
             </div>
-            <% if (errors.newPassword) { %><p class="account__field-error"><%= errors.newPassword %></p><% } %>
+            <% if (errors.newPassword) { %><p class="account__field-error" id="account-new-password-error"><%= errors.newPassword %></p><% } %>
           </div>
 
           <div class="auth__field">
@@ -168,6 +193,7 @@
                 minlength="8"
                 data-confirm
                 required
+                <% if (errors.confirmPassword) { %>aria-invalid="true" aria-describedby="account-confirm-password-error"<% } %>
               />
               <button
                 class="auth__reveal"
@@ -181,7 +207,7 @@
                 <span class="auth__reveal-hide" aria-hidden="true"><i data-lucide="eye-off"></i></span>
               </button>
             </div>
-            <% if (errors.confirmPassword) { %><p class="account__field-error"><%= errors.confirmPassword %></p><% } %>
+            <% if (errors.confirmPassword) { %><p class="account__field-error" id="account-confirm-password-error"><%= errors.confirmPassword %></p><% } %>
           </div>
         </div>
         <p class="auth__hint" data-confirm-hint aria-live="polite">Enter the same password again</p>
@@ -229,7 +255,7 @@
     <section class="account__section" id="saved" aria-labelledby="account-saved-title">
       <header class="account__section-head">
         <p class="account__label">Saved gear</p>
-        <h2 id="account-saved-title">Your wishlist</h2>
+        <h2 id="account-saved-title">Your saved gear</h2>
         <p>Bodies, lenses, and accessories you want to come back to.</p>
       </header>
 
@@ -249,7 +275,7 @@
                 <form method="POST" action="/cart/add">
                   <input type="hidden" name="productId" value="<%= saved.id %>" />
                   <input type="hidden" name="next" value="/account#saved" />
-                  <button class="btn btn--primary" type="submit">Add to cart</button>
+                  <button class="btn btn--primary" type="submit" data-busy-label="Adding...">Add to cart</button>
                 </form>
                 <form method="POST" action="/wishlist/toggle">
                   <input type="hidden" name="productId" value="<%= saved.id %>" />

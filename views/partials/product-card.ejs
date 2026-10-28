@@ -17,6 +17,8 @@
       type="submit"
       aria-pressed="<%= saved ? 'true' : 'false' %>"
       aria-label="<%= saved ? 'Remove from saved gear' : 'Save to saved gear' %>"
+      data-wishlist-toggle
+      data-product-id="<%= product.id %>"
     >
       <i data-lucide="heart" aria-hidden="true"></i>
     </button>

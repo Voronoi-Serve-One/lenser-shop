@@ -1,0 +1,55 @@
+<div class="mini-cart">
+  <header class="mini-cart__head">
+    <p class="mini-cart__title">Your cart</p>
+    <% if (cartCount > 0) { %>
+      <span class="mini-cart__count"><%= cartCount %> <%= cartCount === 1 ? 'item' : 'items' %></span>
+    <% } else { %>
+      <span class="mini-cart__count">Empty</span>
+    <% } %>
+  </header>
+
+  <% if (cartPreview.length) { %>
+    <ul class="mini-cart__items">
+      <% cartPreview.forEach((item) => { %>
+        <li class="mini-cart__item">
+          <a class="mini-cart__media" href="/product/<%= item.slug %>" aria-label="<%= item.brand %> <%= item.name %>">
+            <%- include('product-media', {
+              product: item,
+              mediaClass: 'product-media--thumb'
+            }) %>
+          </a>
+          <div class="mini-cart__info">
+            <a class="mini-cart__name" href="/product/<%= item.slug %>"><%= item.name %></a>
+            <p class="mini-cart__meta"><%= item.quantity %> &times; <%= formatPrice(item.discounted_price) %></p>
+          </div>
+          <p class="mini-cart__line"><%= formatPrice(item.discounted_price * item.quantity) %></p>
+        </li>
+      <% }) %>
+    </ul>
+
+    <% if (cartLines > cartPreview.length) { %>
+      <p class="mini-cart__more">
+        and <%= cartLines - cartPreview.length %> more <%= cartLines - cartPreview.length === 1 ? 'product' : 'products' %>
+      </p>
+    <% } %>
+
+    <div class="mini-cart__footer">
+      <div class="mini-cart__subtotal">
+        <span>Subtotal</span>
+        <strong><%= formatPrice(cartSubtotal) %></strong>
+      </div>
+      <div class="mini-cart__actions">
+        <a class="btn btn--ghost" href="/cart">View cart</a>
+        <a class="btn btn--primary" href="/checkout">Checkout</a>
+      </div>
+    </div>
+  <% } else { %>
+    <div class="mini-cart__empty">
+      <p><strong>Your cart is empty</strong>Add the gear you are considering and it will wait here.</p>
+      <div class="mini-cart__empty-actions">
+        <a class="btn btn--primary" href="/cameras">Shop cameras</a>
+        <a class="btn btn--ghost" href="/lenses">Shop lenses</a>
+      </div>
+    </div>
+  <% } %>
+</div>

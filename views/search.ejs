@@ -23,7 +23,6 @@
         value="<%= searchQuery %>"
         autocomplete="off"
         maxlength="100"
-        <% if (!isSearching) { %>autofocus<% } %>
       />
       <button class="search-form__submit" type="submit" aria-label="Search products">
         <i data-lucide="arrow-right" aria-hidden="true"></i>
@@ -33,6 +32,7 @@
 
   <% if (isSearching) { %>
   <div class="search-results">
+    <h2 class="sr-only">Search results</h2>
     <div class="search-results__bar">
       <p class="search-results__summary">
         <strong><%= results.length %></strong>

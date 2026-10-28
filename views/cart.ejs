@@ -1,12 +1,12 @@
 <section class="cart" aria-labelledby="cart-title">
   <header class="cart__header">
-    <p class="eyebrow">Your bag</p>
+    <p class="eyebrow">Your cart</p>
     <h1 id="cart-title">Cart</h1>
     <p class="cart__lede">
       <% if (cart.items.length) { %>
         <%= cart.itemCount %> <%= cart.itemCount === 1 ? 'item' : 'items' %> ready to check out.
       <% } else { %>
-        Nothing in the bag yet.
+        Nothing in your cart yet.
       <% } %>
     </p>
   </header>

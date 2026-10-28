@@ -37,16 +37,23 @@
   <div class="nav-top">
     <a class="logo" href="/" aria-label="Lenser home">LENSER</a>
     <nav class="nav" aria-label="Shop categories">
-      <a href="/" class="<%= currentPath === '/' ? 'active' : '' %>" <%- currentPath === '/' ? 'aria-current="page"' : '' %>>Shop</a>
+      <a href="/">Shop</a>
       <div class="nav-item">
-        <a href="/cameras" class="<%= currentPath === '/cameras' ? 'active' : '' %>" <%- currentPath === '/cameras' ? 'aria-current="page"' : '' %>>
-          Cameras
+        <a href="/cameras" class="<%= currentPath === '/cameras' ? 'active' : '' %>" <%- currentPath === '/cameras' ? 'aria-current="page"' : '' %>>Cameras</a>
+        <button
+          class="nav-item__toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="cameras-menu"
+          aria-label="Show Cameras menu"
+          data-nav-toggle
+        >
           <i data-lucide="chevron-down" class="chevron"></i>
-        </a>
-        <div class="dropdown">
+        </button>
+        <div class="dropdown" id="cameras-menu" data-nav-menu>
           <div class="dropdown__aside">
             <span class="dropdown__eyebrow">Bodies</span>
-            <h3 class="dropdown__title">Cameras</h3>
+            <p class="dropdown__title">Cameras</p>
             <p class="dropdown__desc">Mirrorless, DSLR and action cams built for every frame.</p>
             <a class="dropdown-more" href="/cameras">Shop all cameras <i data-lucide="arrow-right"></i></a>
           </div>
@@ -69,14 +76,21 @@
         </div>
       </div>
       <div class="nav-item">
-        <a href="/lenses" class="<%= currentPath === '/lenses' ? 'active' : '' %>" <%- currentPath === '/lenses' ? 'aria-current="page"' : '' %>>
-          Lenses
+        <a href="/lenses" class="<%= currentPath === '/lenses' ? 'active' : '' %>" <%- currentPath === '/lenses' ? 'aria-current="page"' : '' %>>Lenses</a>
+        <button
+          class="nav-item__toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="lenses-menu"
+          aria-label="Show Lenses menu"
+          data-nav-toggle
+        >
           <i data-lucide="chevron-down" class="chevron"></i>
-        </a>
-        <div class="dropdown">
+        </button>
+        <div class="dropdown" id="lenses-menu" data-nav-menu>
           <div class="dropdown__aside">
             <span class="dropdown__eyebrow">Glass</span>
-            <h3 class="dropdown__title">Lenses</h3>
+            <p class="dropdown__title">Lenses</p>
             <p class="dropdown__desc">Primes and zooms matched to the way you shoot.</p>
             <a class="dropdown-more" href="/lenses">Shop all lenses <i data-lucide="arrow-right"></i></a>
           </div>
@@ -99,14 +113,21 @@
         </div>
       </div>
       <div class="nav-item">
-        <a href="/accessories" class="<%= currentPath === '/accessories' ? 'active' : '' %>" <%- currentPath === '/accessories' ? 'aria-current="page"' : '' %>>
-          Accessories
+        <a href="/accessories" class="<%= currentPath === '/accessories' ? 'active' : '' %>" <%- currentPath === '/accessories' ? 'aria-current="page"' : '' %>>Accessories</a>
+        <button
+          class="nav-item__toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="accessories-menu"
+          aria-label="Show Accessories menu"
+          data-nav-toggle
+        >
           <i data-lucide="chevron-down" class="chevron"></i>
-        </a>
-        <div class="dropdown">
+        </button>
+        <div class="dropdown" id="accessories-menu" data-nav-menu>
           <div class="dropdown__aside">
             <span class="dropdown__eyebrow">Gear</span>
-            <h3 class="dropdown__title">Accessories</h3>
+            <p class="dropdown__title">Accessories</p>
             <p class="dropdown__desc">Bags, lighting and support to complete the kit.</p>
             <a class="dropdown-more" href="/accessories">Shop all accessories <i data-lucide="arrow-right"></i></a>
           </div>
@@ -176,7 +197,6 @@
           <button
             class="account-trigger"
             type="button"
-            aria-haspopup="true"
             aria-expanded="false"
             aria-controls="account-menu"
             aria-label="Account menu for <%= user.first_name %> <%= user.last_name %>"
@@ -227,61 +247,7 @@
           </button>
 
           <div class="dropdown dropdown--cart" id="cart-menu" data-cart-menu aria-label="Cart preview">
-            <div class="mini-cart">
-              <header class="mini-cart__head">
-                <p class="mini-cart__title">Your cart</p>
-                <% if (cartCount > 0) { %>
-                  <span class="mini-cart__count"><%= cartCount %> <%= cartCount === 1 ? 'item' : 'items' %></span>
-                <% } else { %>
-                  <span class="mini-cart__count">Empty</span>
-                <% } %>
-              </header>
-
-              <% if (cartPreview.length) { %>
-                <ul class="mini-cart__items">
-                  <% cartPreview.forEach((item) => { %>
-                    <li class="mini-cart__item">
-                      <a class="mini-cart__media" href="/product/<%= item.slug %>" aria-label="<%= item.brand %> <%= item.name %>">
-                        <%- include('product-media', {
-                          product: item,
-                          mediaClass: 'product-media--thumb'
-                        }) %>
-                      </a>
-                      <div class="mini-cart__info">
-                        <a class="mini-cart__name" href="/product/<%= item.slug %>"><%= item.name %></a>
-                        <p class="mini-cart__meta"><%= item.quantity %> &times; <%= formatPrice(item.discounted_price) %></p>
-                      </div>
-                      <p class="mini-cart__line"><%= formatPrice(item.discounted_price * item.quantity) %></p>
-                    </li>
-                  <% }) %>
-                </ul>
-
-                <% if (cartLines > cartPreview.length) { %>
-                  <p class="mini-cart__more">
-                    and <%= cartLines - cartPreview.length %> more <%= cartLines - cartPreview.length === 1 ? 'product' : 'products' %>
-                  </p>
-                <% } %>
-
-                <div class="mini-cart__footer">
-                  <div class="mini-cart__subtotal">
-                    <span>Subtotal</span>
-                    <strong><%= formatPrice(cartSubtotal) %></strong>
-                  </div>
-                  <div class="mini-cart__actions">
-                    <a class="btn btn--ghost" href="/cart">View cart</a>
-                    <a class="btn btn--primary" href="/checkout">Checkout</a>
-                  </div>
-                </div>
-              <% } else { %>
-                <div class="mini-cart__empty">
-                  <p><strong>Your bag is empty</strong>Add the gear you are considering and it will wait here.</p>
-                  <div class="mini-cart__empty-actions">
-                    <a class="btn btn--primary" href="/cameras">Shop cameras</a>
-                    <a class="btn btn--ghost" href="/lenses">Shop lenses</a>
-                  </div>
-                </div>
-              <% } %>
-            </div>
+            <%- include('mini-cart', { cartPreview, cartCount, cartLines, cartSubtotal }) %>
           </div>
         </div>
       <% } else { %>

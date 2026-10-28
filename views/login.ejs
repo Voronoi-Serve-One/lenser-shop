@@ -15,24 +15,24 @@
       <header class="auth__intro">
         <h1 id="login-title">Sign in to Lenser</h1>
         <p class="auth__lede">
-          Pick up where you left off: saved gear, orders, and your wishlist.
+          Pick up where you left off: saved gear, orders, and the gear you're weighing.
         </p>
       </header>
 
       <nav class="auth__tabs" aria-label="Account access">
-        <a class="auth__tab is-active" href="/login" aria-current="page">Sign in</a>
-        <a class="auth__tab" href="/register">Create account</a>
+        <a class="auth__tab is-active" href="/login<%= typeof next !== 'undefined' && next ? '?next=' + encodeURIComponent(next) : '' %>" aria-current="page">Sign in</a>
+        <a class="auth__tab" href="/register<%= typeof next !== 'undefined' && next ? '?next=' + encodeURIComponent(next) : '' %>">Create account</a>
       </nav>
 
       <div class="auth__panel">
         <% if (error) { %>
-          <p class="auth__error" role="alert">
+          <p class="auth__error" id="login-error" role="alert">
             <i data-lucide="circle-alert" aria-hidden="true"></i>
             <span><%= error %></span>
           </p>
         <% } %>
 
-        <form class="auth__form" action="/login" method="POST" data-auth-form>
+        <form class="auth__form" action="/login" method="POST" data-auth-form <% if (error) { %>aria-describedby="login-error"<% } %>>
           <input type="hidden" name="next" value="<%= typeof next !== 'undefined' ? next : '' %>" />
           <div class="auth__field">
             <label for="login-email">Email address</label>

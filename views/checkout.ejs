@@ -7,6 +7,18 @@
 
   <div class="checkout__layout">
     <form class="checkout__form" method="POST" action="/checkout">
+      <% const checkoutErrorFields = { shipping_name: 'checkout-name', shipping_phone: 'checkout-phone', shipping_address: 'checkout-address', shipping_city: 'checkout-city', shipping_province: 'checkout-province', shipping_postal: 'checkout-postal' }; %>
+      <% const checkoutErrorKeys = Object.keys(errors || {}).filter((key) => checkoutErrorFields[key]); %>
+      <% if (checkoutErrorKeys.length) { %>
+        <div class="form-error-summary" role="alert" tabindex="-1" data-error-summary>
+          <strong>Please check the delivery details.</strong>
+          <ul>
+            <% checkoutErrorKeys.forEach((key) => { %>
+              <li><a href="#<%= checkoutErrorFields[key] %>"><%= errors[key] %></a></li>
+            <% }) %>
+          </ul>
+        </div>
+      <% } %>
       <input type="hidden" name="next" value="/checkout" />
       <section class="checkout__section" aria-labelledby="checkout-shipping-title">
         <h2 id="checkout-shipping-title">Shipping</h2>
@@ -15,18 +27,18 @@
             <label for="checkout-name">Full name</label>
             <div class="auth__control">
               <span class="auth__field-icon" aria-hidden="true"><i data-lucide="user-round"></i></span>
-              <input id="checkout-name" type="text" name="shipping_name" autocomplete="name" value="<%= values.shipping_name %>" required />
+              <input id="checkout-name" type="text" name="shipping_name" autocomplete="name" value="<%= values.shipping_name %>" required <% if (errors.shipping_name) { %>aria-invalid="true" aria-describedby="shipping_name-error"<% } %> />
             </div>
-            <% if (errors.shipping_name) { %><p class="account__field-error"><%= errors.shipping_name %></p><% } %>
+            <% if (errors.shipping_name) { %><p class="account__field-error" id="shipping_name-error"><%= errors.shipping_name %></p><% } %>
           </div>
 
           <div class="auth__field">
             <label for="checkout-phone">Contact number</label>
             <div class="auth__control">
               <span class="auth__field-icon" aria-hidden="true"><i data-lucide="phone"></i></span>
-              <input id="checkout-phone" type="tel" name="shipping_phone" autocomplete="tel" value="<%= values.shipping_phone %>" required />
+              <input id="checkout-phone" type="tel" name="shipping_phone" autocomplete="tel" value="<%= values.shipping_phone %>" required <% if (errors.shipping_phone) { %>aria-invalid="true" aria-describedby="shipping_phone-error"<% } %> />
             </div>
-            <% if (errors.shipping_phone) { %><p class="account__field-error"><%= errors.shipping_phone %></p><% } %>
+            <% if (errors.shipping_phone) { %><p class="account__field-error" id="shipping_phone-error"><%= errors.shipping_phone %></p><% } %>
           </div>
         </div>
 
@@ -34,34 +46,34 @@
           <label for="checkout-address">Street address</label>
           <div class="auth__control">
             <span class="auth__field-icon" aria-hidden="true"><i data-lucide="map-pin"></i></span>
-            <input id="checkout-address" type="text" name="shipping_address" autocomplete="street-address" value="<%= values.shipping_address %>" required />
+            <input id="checkout-address" type="text" name="shipping_address" autocomplete="street-address" value="<%= values.shipping_address %>" required <% if (errors.shipping_address) { %>aria-invalid="true" aria-describedby="shipping_address-error"<% } %> />
           </div>
-          <% if (errors.shipping_address) { %><p class="account__field-error"><%= errors.shipping_address %></p><% } %>
+          <% if (errors.shipping_address) { %><p class="account__field-error" id="shipping_address-error"><%= errors.shipping_address %></p><% } %>
         </div>
 
         <div class="checkout__row checkout__row--three">
           <div class="auth__field">
             <label for="checkout-city">City</label>
             <div class="auth__control">
-              <input id="checkout-city" type="text" name="shipping_city" autocomplete="address-level2" value="<%= values.shipping_city %>" required />
+              <input id="checkout-city" type="text" name="shipping_city" autocomplete="address-level2" value="<%= values.shipping_city %>" required <% if (errors.shipping_city) { %>aria-invalid="true" aria-describedby="shipping_city-error"<% } %> />
             </div>
-            <% if (errors.shipping_city) { %><p class="account__field-error"><%= errors.shipping_city %></p><% } %>
+            <% if (errors.shipping_city) { %><p class="account__field-error" id="shipping_city-error"><%= errors.shipping_city %></p><% } %>
           </div>
 
           <div class="auth__field">
             <label for="checkout-province">Province</label>
             <div class="auth__control">
-              <input id="checkout-province" type="text" name="shipping_province" autocomplete="address-level1" value="<%= values.shipping_province %>" required />
+              <input id="checkout-province" type="text" name="shipping_province" autocomplete="address-level1" value="<%= values.shipping_province %>" required <% if (errors.shipping_province) { %>aria-invalid="true" aria-describedby="shipping_province-error"<% } %> />
             </div>
-            <% if (errors.shipping_province) { %><p class="account__field-error"><%= errors.shipping_province %></p><% } %>
+            <% if (errors.shipping_province) { %><p class="account__field-error" id="shipping_province-error"><%= errors.shipping_province %></p><% } %>
           </div>
 
           <div class="auth__field">
             <label for="checkout-postal">Postal code</label>
             <div class="auth__control">
-              <input id="checkout-postal" type="text" name="shipping_postal" inputmode="numeric" autocomplete="postal-code" value="<%= values.shipping_postal %>" />
+              <input id="checkout-postal" type="text" name="shipping_postal" inputmode="numeric" autocomplete="postal-code" value="<%= values.shipping_postal %>" <% if (errors.shipping_postal) { %>aria-invalid="true" aria-describedby="shipping_postal-error"<% } %> />
             </div>
-            <% if (errors.shipping_postal) { %><p class="account__field-error"><%= errors.shipping_postal %></p><% } %>
+            <% if (errors.shipping_postal) { %><p class="account__field-error" id="shipping_postal-error"><%= errors.shipping_postal %></p><% } %>
           </div>
         </div>
       </section>
