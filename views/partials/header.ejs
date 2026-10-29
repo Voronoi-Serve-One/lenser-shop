@@ -193,6 +193,31 @@
         </div>
       </div>
       <% if (typeof user !== 'undefined' && user) { %>
+        <div class="nav-item--cart">
+          <button
+            class="icon-btn icon-btn--cart"
+            type="button"
+            aria-expanded="false"
+            aria-controls="cart-menu"
+            aria-label="Cart<%= cartCount > 0 ? `, ${cartCount} item${cartCount === 1 ? '' : 's'}` : ', empty' %>"
+            data-cart-trigger
+          >
+            <i data-lucide="shopping-cart"></i>
+            <% if (cartCount > 0) { %>
+              <span class="cart-count" aria-hidden="true"><%= cartCount > 9 ? '9+' : cartCount %></span>
+            <% } %>
+          </button>
+
+          <div class="dropdown dropdown--cart" id="cart-menu" data-cart-menu aria-label="Cart preview">
+            <%- include('mini-cart', { cartPreview, cartCount, cartLines, cartSubtotal }) %>
+          </div>
+        </div>
+      <% } else { %>
+        <a class="icon-btn icon-btn--cart" href="/cart" aria-label="Cart">
+          <i data-lucide="shopping-cart"></i>
+        </a>
+      <% } %>
+      <% if (typeof user !== 'undefined' && user) { %>
         <div class="nav-item nav-item--account<%= currentPath === '/account' ? ' is-current' : '' %>">
           <button
             class="account-trigger"
@@ -226,33 +251,8 @@
           </div>
         </div>
       <% } else { %>
-        <a class="icon-btn" href="/register" aria-label="Create account">
+        <a class="icon-btn icon-btn--account" href="/register" aria-label="Create account">
           <i data-lucide="user-round"></i>
-        </a>
-      <% } %>
-      <% if (typeof user !== 'undefined' && user) { %>
-        <div class="nav-item--cart">
-          <button
-            class="icon-btn icon-btn--cart"
-            type="button"
-            aria-expanded="false"
-            aria-controls="cart-menu"
-            aria-label="Cart<%= cartCount > 0 ? `, ${cartCount} item${cartCount === 1 ? '' : 's'}` : ', empty' %>"
-            data-cart-trigger
-          >
-            <i data-lucide="shopping-cart"></i>
-            <% if (cartCount > 0) { %>
-              <span class="cart-count" aria-hidden="true"><%= cartCount > 9 ? '9+' : cartCount %></span>
-            <% } %>
-          </button>
-
-          <div class="dropdown dropdown--cart" id="cart-menu" data-cart-menu aria-label="Cart preview">
-            <%- include('mini-cart', { cartPreview, cartCount, cartLines, cartSubtotal }) %>
-          </div>
-        </div>
-      <% } else { %>
-        <a class="icon-btn icon-btn--cart" href="/cart" aria-label="Cart">
-          <i data-lucide="shopping-cart"></i>
         </a>
       <% } %>
     </div>

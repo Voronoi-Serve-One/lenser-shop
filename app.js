@@ -1160,15 +1160,49 @@ app.post('/cart/add', requireSignup, async (req, res) => {
 app.post('/cart/update', requireAuth, async (req, res) => {
   const productId = Number(req.body.productId);
   const quantity = Math.min(10, Math.max(1, Number(req.body.quantity) || 1));
+  const wantJson = isFetchRequest(req);
 
   try {
     await pool.query(
       'UPDATE cart_items SET quantity = $1, updated_at = NOW() WHERE user_id = $2 AND product_id = $3',
       [quantity, req.session.user.id, productId],
     );
-    res.redirect('/cart');
+
+    if (!wantJson) return res.redirect('/cart');
+
+    const cart = await loadCart(req.session.user.id);
+    const line = cart.items.find((item) => item.product_id === productId);
+    const miniCartHtml = await new Promise((resolve, reject) => {
+      res.render(
+        'partials/mini-cart',
+        {
+          layout: false,
+          cartPreview: cart.items.slice(-3).reverse(),
+          cartCount: cart.itemCount,
+          cartLines: cart.items.length,
+          cartSubtotal: cart.subtotal,
+        },
+        (error, html) => (error ? reject(error) : resolve(html)),
+      );
+    });
+
+    return res.json({
+      ok: true,
+      productId,
+      quantity: line ? line.quantity : quantity,
+      cartCount: cart.itemCount,
+      cartLines: cart.items.length,
+      subtotal: cart.subtotal,
+      shipping: cart.shipping,
+      total: cart.total,
+      lineTotal: line ? line.discounted_price * line.quantity : null,
+      miniCartHtml,
+    });
   } catch (error) {
     console.error('Cart update error', error);
+    if (wantJson) {
+      return res.status(500).json({ ok: false, error: 'Could not update your cart.' });
+    }
     res.status(500).send('Could not update your cart.');
   }
 });

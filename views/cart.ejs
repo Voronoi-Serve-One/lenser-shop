@@ -2,7 +2,7 @@
   <header class="cart__header">
     <p class="eyebrow">Your cart</p>
     <h1 id="cart-title">Cart</h1>
-    <p class="cart__lede">
+    <p class="cart__lede" data-cart-lede>
       <% if (cart.items.length) { %>
         <%= cart.itemCount %> <%= cart.itemCount === 1 ? 'item' : 'items' %> ready to check out.
       <% } else { %>
@@ -27,7 +27,7 @@
     <div class="cart__layout">
       <div class="cart__lines">
         <% cart.items.forEach((item) => { %>
-          <article class="cart-line">
+          <article class="cart-line" data-cart-line data-product-id="<%= item.product_id %>">
             <a class="cart-line__media" href="/product/<%= item.slug %>" aria-label="<%= item.brand %> <%= item.name %>">
               <%- include('partials/product-media', { product: item, mediaClass: 'product-media--thumb' }) %>
             </a>
@@ -38,22 +38,44 @@
               <p class="cart-line__unit"><%= formatPrice(item.discounted_price) %> each</p>
             </div>
 
-            <form class="cart-line__qty" method="POST" action="/cart/update">
+            <form class="cart-line__qty" method="POST" action="/cart/update" data-cart-line-form>
               <input type="hidden" name="productId" value="<%= item.product_id %>" />
               <input type="hidden" name="next" value="/cart" />
               <label class="sr-only" for="cart-qty-<%= item.product_id %>">Quantity for <%= item.name %></label>
-              <input
-                id="cart-qty-<%= item.product_id %>"
-                type="number"
-                name="quantity"
-                min="1"
-                max="10"
-                value="<%= item.quantity %>"
-              />
-              <button class="btn btn--ghost" type="submit">Update</button>
+              <div class="qty" data-qty>
+                <button
+                  class="qty__button"
+                  type="button"
+                  data-qty-decrease
+                  aria-label="Decrease quantity for <%= item.name %>"
+                >
+                  <i data-lucide="minus" aria-hidden="true"></i>
+                </button>
+                <input
+                  class="qty__input"
+                  id="cart-qty-<%= item.product_id %>"
+                  type="text"
+                  inputmode="numeric"
+                  name="quantity"
+                  min="1"
+                  max="10"
+                  value="<%= item.quantity %>"
+                  aria-label="Quantity for <%= item.name %>"
+                  data-qty-input
+                />
+                <button
+                  class="qty__button"
+                  type="button"
+                  data-qty-increase
+                  aria-label="Increase quantity for <%= item.name %>"
+                >
+                  <i data-lucide="plus" aria-hidden="true"></i>
+                </button>
+              </div>
+              <noscript><button class="btn btn--ghost" type="submit">Update</button></noscript>
             </form>
 
-            <p class="cart-line__total"><%= formatPrice(item.discounted_price * item.quantity) %></p>
+            <p class="cart-line__total" data-line-total><%= formatPrice(item.discounted_price * item.quantity) %></p>
 
             <form class="cart-line__remove" method="POST" action="/cart/remove">
               <input type="hidden" name="productId" value="<%= item.product_id %>" />
@@ -69,15 +91,15 @@
         <dl class="cart__totals">
           <div>
             <dt>Subtotal</dt>
-            <dd><%= formatPrice(cart.subtotal) %></dd>
+            <dd data-cart-subtotal><%= formatPrice(cart.subtotal) %></dd>
           </div>
           <div>
             <dt>Shipping</dt>
-            <dd><%= cart.shipping === 0 ? 'Free' : formatPrice(cart.shipping) %></dd>
+            <dd data-cart-shipping><%= cart.shipping === 0 ? 'Free' : formatPrice(cart.shipping) %></dd>
           </div>
           <div class="cart__totals-total">
             <dt>Total</dt>
-            <dd><%= formatPrice(cart.total) %></dd>
+            <dd data-cart-total><%= formatPrice(cart.total) %></dd>
           </div>
         </dl>
         <p class="cart__shipping-note">

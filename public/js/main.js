@@ -253,14 +253,29 @@
     const min = Number(input.min) || 1;
     const max = Number(input.max) || 10;
     const clamp = (value) => Math.min(max, Math.max(min, value));
+
+    const sync = () => {
+      const value = Number(input.value);
+      if (decrease) decrease.disabled = value <= min;
+      if (increase) increase.disabled = value >= max;
+    };
+
     const setValue = (value) => {
-      input.value = String(clamp(value));
+      const next = clamp(value);
+      const changed = String(next) !== input.value;
+      input.value = String(next);
+      sync();
+      if (changed) {
+        input.dispatchEvent(new CustomEvent('qtychange', { bubbles: true }));
+      }
     };
 
     decrease?.addEventListener('click', () => setValue(Number(input.value) - 1));
     increase?.addEventListener('click', () => setValue(Number(input.value) + 1));
     input.addEventListener('change', () => setValue(Number(input.value) || min));
     input.addEventListener('blur', () => setValue(Number(input.value) || min));
+    input.addEventListener('qty-sync', sync);
+    sync();
   });
 })();
 
@@ -627,6 +642,67 @@
     window.lucide?.createIcons();
   };
 
+  const formatPhp = new Intl.NumberFormat('en-PH', {
+    style: 'currency',
+    currency: 'PHP',
+    maximumFractionDigits: 0,
+  });
+
+  const updateCartTotals = (payload) => {
+    const setText = (selector, value) => {
+      const node = document.querySelector(selector);
+      if (node) node.textContent = value;
+    };
+
+    if (typeof payload.subtotal === 'number') {
+      setText('[data-cart-subtotal]', formatPhp.format(payload.subtotal));
+    }
+    if (typeof payload.shipping === 'number') {
+      setText(
+        '[data-cart-shipping]',
+        payload.shipping === 0 ? 'Free' : formatPhp.format(payload.shipping),
+      );
+    }
+    if (typeof payload.total === 'number') {
+      setText('[data-cart-total]', formatPhp.format(payload.total));
+    }
+  };
+
+  const updateCartLede = (count) => {
+    const lede = document.querySelector('[data-cart-lede]');
+    if (!lede) return;
+    const numericCount = Number(count) || 0;
+    lede.textContent =
+      numericCount > 0
+        ? `${numericCount} ${numericCount === 1 ? 'item' : 'items'} ready to check out.`
+        : 'Nothing in your cart yet.';
+  };
+
+  const cartTimers = new WeakMap();
+
+  document.querySelectorAll('[data-cart-line-form]').forEach((form) => {
+    const input = form.querySelector('[data-qty-input]');
+    if (!input) return;
+
+    input.dataset.savedValue = input.value;
+
+    input.addEventListener('qtychange', () => {
+      window.clearTimeout(cartTimers.get(form));
+      if (input.value === input.dataset.savedValue) return;
+
+      cartTimers.set(
+        form,
+        window.setTimeout(() => {
+          if (typeof form.requestSubmit === 'function') {
+            form.requestSubmit();
+          } else {
+            form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+          }
+        }, 300),
+      );
+    });
+  });
+
   const setWishlistState = (button, saved) => {
     if (!button) return;
     const label = saved ? 'Remove from saved gear' : 'Save to saved gear';
@@ -677,6 +753,64 @@
       } finally {
         setPending(wishlistButton, false);
       }
+      return;
+    }
+
+    if (form.matches('[data-cart-line-form]')) {
+      event.preventDefault();
+
+      const input = form.querySelector('[data-qty-input]');
+      const line = form.closest('[data-cart-line]');
+
+      if (form.dataset.saving === 'true') {
+        form.dataset.pending = 'true';
+        return;
+      }
+
+      const submittedValue = input ? input.value : null;
+
+      form.dataset.saving = 'true';
+      form.dataset.pending = 'false';
+      line?.classList.add('is-saving');
+
+      try {
+        const payload = await postForm(form.action, form);
+        if (payload.unauthorized) return;
+
+        updateCartBadge(payload.cartCount);
+        updateMiniCart(payload.miniCartHtml);
+        updateCartTotals(payload);
+        updateCartLede(payload.cartCount);
+
+        if (input) {
+          const savedValue = String(payload.quantity);
+          if (input.value === submittedValue) {
+            input.value = savedValue;
+            input.dispatchEvent(new Event('qty-sync'));
+          }
+          input.dataset.savedValue = savedValue;
+        }
+
+        const lineTotal = line?.querySelector('[data-line-total]');
+        if (lineTotal && typeof payload.lineTotal === 'number') {
+          lineTotal.textContent = formatPhp.format(payload.lineTotal);
+        }
+      } catch (error) {
+        if (input) {
+          input.value = input.dataset.savedValue || input.value;
+          input.dispatchEvent(new Event('qty-sync'));
+        }
+        window.lenserToast?.(error.message, { type: 'error' });
+      } finally {
+        form.dataset.saving = 'false';
+        line?.classList.remove('is-saving');
+
+        if (form.dataset.pending === 'true' && input && input.value !== input.dataset.savedValue) {
+          form.dataset.pending = 'false';
+          if (typeof form.requestSubmit === 'function') form.requestSubmit();
+        }
+      }
+
       return;
     }
 
